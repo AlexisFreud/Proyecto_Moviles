@@ -33,8 +33,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< HEAD
         System.out.println("HOLA MUNDO");
         System.out.println("Alexis2.0.2");
+=======
+
+>>>>>>> c19985e268c7aa522105bb705a11470c7a748322
     }
 
     @SuppressLint("WrongViewCast")
