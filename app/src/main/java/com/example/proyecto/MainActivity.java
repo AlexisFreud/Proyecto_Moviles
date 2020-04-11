@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button calcular;
 
-    String tex = "$$(3+(2\\times10))\\times10-30+-100$$";
+    String tex = "$$(3+(2\\times10))10-30+-100$$";
 
     String numerosString[] = {"\\(\\space\\space1\\)","\\(\\space\\space2\\)","\\(\\space\\space3\\)","\\(\\space\\space4\\)","\\(\\space\\space5\\)","\\(\\space\\space6\\)"
             ,"\\(\\space\\space7\\)","\\(\\space\\space8\\)","\\(\\space\\space9\\)","\\(\\space\\space0\\)"};
@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         newTex.add("+");
         newTex.add("(");
         newTex.add("2");
-        newTex.add("\\times");
         newTex.add("10");
         newTex.add(")");
         newTex.add(")");
@@ -193,6 +192,9 @@ public class MainActivity extends AppCompatActivity {
             System.out.print(equationAux.get(i) + " . ");
         }
         System.out.println();
+
+        // Check for division or fraction
+
 
         // Check for addition
         boolean possible_sum = false;
