@@ -1,23 +1,28 @@
 package com.example.proyecto;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.LinkedList;
 
 import io.github.kexanie.library.MathView;
 
 public class MainActivity extends AppCompatActivity {
-    
+
     MathView formula_two;
     MathView num1,num2,num3,num4,num5,num6,num7,num8,num9,num0;
     MathView op1,op2,op3,op4,op5,op6,op7,op8,op9,op10;
     MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
     MathView rt1,rt2,rt3,rt4,rt5;
 
-    String tex = "This come from string. You can insert inline formula:" +
-            " \\([ ]^2 + bx + c = 0\\) " +
-            "or displayed formula: $$\\sum_{i=0}^n i^2 = \\frac{[]}{[]}$$";
+    Button calcular;
+
+    String tex = "$$(3+2)\\times3\\times2\\times2$$";
 
     String numerosString[] = {"\\(\\space\\space1\\)","\\(\\space\\space2\\)","\\(\\space\\space3\\)","\\(\\space\\space4\\)","\\(\\space\\space5\\)","\\(\\space\\space6\\)"
             ,"\\(\\space\\space7\\)","\\(\\space\\space8\\)","\\(\\space\\space9\\)","\\(\\space\\space0\\)"};
@@ -33,12 +38,39 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-<<<<<<< HEAD
-        System.out.println("HOLA MUNDO");
-        System.out.println("Alexis2.0.2");
-=======
+        calcular = findViewById(R.id.bt_calcular);
+        calcular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                muestraResultado();
+            }
+        });
+    }
 
->>>>>>> c19985e268c7aa522105bb705a11470c7a748322
+    public void muestraResultado(){
+        String newTex = tex.replace("$", "");
+        newTex = solve(newTex);
+        Toast.makeText(this, newTex, Toast.LENGTH_SHORT).show();
+    }
+
+    public String solve(String equation){
+        /*
+        Use PEMDAS for operations order
+            - P: Parentesis
+            - E: Exponentes
+            - M: Multiplicacion
+            - D: Division
+            - A: Adicion
+            - S: Sustraccion
+         */
+        String finalString = "";
+        char[] arr = equation.toCharArray();
+        for (int i = 0; i < equation.length(); i++) {
+            if(arr[i] == '('){
+
+            }
+        }
+        return finalString;
     }
 
     @SuppressLint("WrongViewCast")
@@ -122,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
         rt4.setText(recorrerTexto[3]);
         rt5 = (MathView) findViewById(R.id.rt5);
         rt5.setText(recorrerTexto[4]);
-
     }
 
 }
