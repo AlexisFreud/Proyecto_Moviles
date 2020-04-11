@@ -1,16 +1,10 @@
 package com.example.proyecto;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +16,6 @@ import io.github.kexanie.library.MathView;
 public class MainActivity extends AppCompatActivity {
     
     MathView formula_two, ecuacion;
-
-    MathView formula_two;
     MathView num1,num2,num3,num4,num5,num6,num7,num8,num9,num0;
     MathView op1,op2,op3,op4,op5,op6,op7,op8,op9,op10;
     MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
@@ -31,9 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
     TextView prueba;
 
-    String tex = "This come from string. You can insert inline formula:" +
-            " \\([ ]^2 + bx + c = 0\\) " +
-            "or displayed formula: $$\\sum_{i=0}^n i^2 = \\frac{[]}{[]}$$";
     Button calcular;
 
     String tex = "$$(3+(2\\times10))10-30+-100$$";
