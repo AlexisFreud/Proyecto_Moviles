@@ -8,12 +8,9 @@ import android.view.View;
 import io.github.kexanie.library.MathView;
 
 public class MainActivity extends AppCompatActivity {
+    
     MathView formula_two;
     String tex = "This come from string. You can insert inline formula:" +
-            " \\(ax^2 + bx + c = 0\\) " +
-            "or displayed formula: $$\\sum_{i=0}^n i^2 = \\frac{(n^2+n)(2n+1)}{6}$$";
-
-    String tex2 = " Minecraft tio This come from string. You can insert inline formula:" +
             " \\(ax^2 + bx + c = 0\\) " +
             "or displayed formula: $$\\sum_{i=0}^n i^2 = \\frac{(n^2+n)(2n+1)}{6}$$";
 
