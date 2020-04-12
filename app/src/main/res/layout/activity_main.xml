@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="94dp"
         android:text="When \\(a \\ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\)         and they are $$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$"
-        app:engine="MathJax"
+        app:engine="KaTeX"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         tools:layout_editor_absoluteX="97dp" />
 
