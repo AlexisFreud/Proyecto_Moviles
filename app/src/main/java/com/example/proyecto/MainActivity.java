@@ -3,11 +3,15 @@ package com.example.proyecto;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.LinkedList;
 
@@ -23,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
     TextView prueba;
 
-    String tex = "This come from string. You can insert inline formula:" +
-            " \\([ ]^2 + bx + c = 0\\) " +
-            "or displayed formula: $$\\sum_{i=0}^n i^2 = \\frac{[]}{[]}$$";
+    Button calcular;
+
+    String tex = "$$(3+(2\\times10))10-30+-100$$";
 
     String numerosString[] = {"\\(\\space\\space1\\)","\\(\\space\\space2\\)","\\(\\space\\space3\\)","\\(\\space\\space4\\)","\\(\\space\\space5\\)","\\(\\space\\space6\\)"
             ,"\\(\\space\\space7\\)","\\(\\space\\space8\\)","\\(\\space\\space9\\)","\\(\\space\\space0\\)"};
@@ -50,6 +54,216 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        calcular = findViewById(R.id.bt_calcular);
+        calcular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                muestraResultado();
+            }
+        });
+    }
+
+    public void muestraResultado(){
+        String subTex = tex.replace("$", "");
+        LinkedList<String> newTex = new LinkedList<>();
+        newTex.add("(");
+        newTex.add("3");
+        newTex.add("+");
+        newTex.add("(");
+        newTex.add("2");
+        newTex.add("10");
+        newTex.add(")");
+        newTex.add(")");
+        newTex.add("\\times");
+        newTex.add("10");
+        newTex.add("-");
+        newTex.add("30");
+        newTex.add("+");
+        newTex.add("-100");
+        String result = solve_arithmetic(newTex);
+        Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+    }
+
+    private LinkedList<String> creaLink(String equation){
+        char[] numsArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
+        LinkedList<String> lista = new LinkedList<>();
+        for (int i = 0; i < equation.length(); i++) {
+            for (int j = 0; j < numsArray.length; j++) {
+                if (equation.charAt(i) == numsArray[j]){
+                    String str = numsArray[j]+"";
+                    boolean isNumber = true;
+                    i++;
+                    while(isNumber){
+                        isNumber = false;
+                        for (int k = 0; k < numsArray.length; k++) {
+                            if (equation.charAt(i) == numsArray[k]) {
+                                str += numsArray[k]+"";
+                                isNumber = true;
+                                i++;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            if(equation.charAt(i) == '('){
+                lista.add("(");
+            }else if(equation.charAt(i) == ')') {
+                lista.add(")");
+            }else if(equation.charAt(i) == '+') {
+                lista.add("+");
+            }else if(equation.charAt(i) == '-'){
+                lista.add("-");
+            }else if (equation.charAt(i) == '\\'){
+                lista.add("\\times");
+            }
+        }
+        return lista;
+    }
+
+    public String solve_arithmetic(LinkedList<String> equation){
+        /*
+        Use PEMDAS for operations order
+            - P: Parentesis
+            - E: Exponentes
+            - M: Multiplicacion
+            - D: Division
+            - A: Adicion
+            - S: Sustraccion
+         */
+        String finalString = "";
+        LinkedList<String> equationAux = equation;
+        LinkedList<String> operaciones = new LinkedList<>();
+        System.out.println("Before start");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        // Check for parentesis
+        for (int i = 0; i < equationAux.size(); i++) {
+            if (equationAux.get(i).equals("(")){
+                LinkedList<String> aux = new LinkedList<>();
+                i++;
+                int parentesis = 1;
+                while(parentesis > 0){
+                    if (equationAux.get(i).equals("(")) {
+                        parentesis++;
+                        i++;
+                    }else if(equationAux.get(i).equals(")")){
+                        parentesis--;
+                        i++;
+                    }else {
+                        aux.add(equationAux.get(i));
+                        i++;
+                    }
+                }
+                operaciones.add(solve_arithmetic(aux));
+                i--;
+            }
+            else{
+                operaciones.add(equationAux.get(i));
+            }
+        }
+        equationAux = operaciones;
+        operaciones = new LinkedList<>();
+
+        System.out.println("After parentesis");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        // Check for exponents
+
+        // Check for multiplication
+        boolean possible_multiplication = false;
+        double numA = 0;
+        for (int i = 0; i < equationAux.size(); i++) {
+            if (isNumber(equationAux.get(i)) && possible_multiplication){
+                double numB = Double.parseDouble(equationAux.get(i));
+                numA *= numB;
+            }else if(equationAux.get(i).equals("\\times")){
+                double numB = Double.parseDouble(equationAux.get(i+1));
+                numA *= numB;
+                i++;
+            }else if(isNumber(equationAux.get(i))){
+                possible_multiplication = true;
+                numA = Double.parseDouble(equationAux.get(i));
+            }else if (possible_multiplication){
+                operaciones.add(numA+"");
+                operaciones.add(equationAux.get(i));
+                possible_multiplication = false;
+            }
+        }
+        if(numA != 0){
+            operaciones.add(numA+"");
+        }
+        equationAux = operaciones;
+        operaciones = new LinkedList<>();
+
+        System.out.println("After multiplication");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        // Check for division or fraction
+
+
+        // Check for addition
+        boolean possible_sum = false;
+        numA = 0;
+        for (int i = 0; i < equationAux.size(); i++) {
+            if (isNumber(equationAux.get(i)) && possible_sum){
+                double numB = Double.parseDouble(equationAux.get(i));
+                numA += numB;
+            }else if(equationAux.get(i).equals("+")) {
+                double numB = Double.parseDouble(equationAux.get(i + 1));
+                numA += numB;
+                i++;
+            }else if(equationAux.get(i).equals("-")){
+                double numB = Double.parseDouble(equationAux.get(i+1));
+                numA -= numB;
+                i++;
+            }else if(isNumber(equationAux.get(i))){
+                possible_sum = true;
+                numA = Double.parseDouble(equationAux.get(i));
+            }else if (possible_sum){
+                operaciones.add(numA+"");
+                operaciones.add(equationAux.get(i));
+            }
+        }
+        if(numA != 0){
+            operaciones.add(numA+"");
+        }
+        equationAux = operaciones;
+
+        System.out.println("End");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        for (int i = 0; i < equationAux.size(); i++) {
+            finalString += equationAux.get(i);
+            System.out.println(equationAux.get(i));
+        }
+        System.out.println("Final string: " + finalString);
+        return finalString;
+    }
+
+    private boolean isNumber(String str){
+        char[] numsArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
+        for (int i = 0; i < numsArray.length; i++) {
+            if (str.charAt(0) == numsArray[i]){
+                return true;
+            }else if(str.length() > 1 && str.charAt(0) == '-'){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -857,7 +1071,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
 
     public String getEcuacion(LinkedList<String> notacion){
