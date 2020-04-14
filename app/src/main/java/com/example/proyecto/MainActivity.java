@@ -1,9 +1,6 @@
 package com.example.proyecto;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
-
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     MathView op1,op2,op3,op4,op5,op6,op7,op8,op9,op10;
     MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
     MathView rt1,rt2,rt3,rt4,rt5;
+    String numeros;
 
     TextView prueba;
 
@@ -55,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         calcular = findViewById(R.id.bt_calcular);
+        numeros = "";
         calcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void muestraResultado(){
-        String subTex = tex.replace("$", "");
+        /*String subTex = tex.replace("$", "");
         LinkedList<String> newTex = new LinkedList<>();
         newTex.add("(");
         newTex.add("3");
@@ -79,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         newTex.add("-");
         newTex.add("30");
         newTex.add("+");
-        newTex.add("-100");
-        String result = solve_arithmetic(newTex);
+        newTex.add("-100");*/
+        String result = solve_arithmetic(notacion);
         Toast.makeText(this, result, Toast.LENGTH_LONG).show();
     }
 
@@ -282,6 +281,33 @@ public class MainActivity extends AppCompatActivity {
         setBotones();
     }
 
+    public boolean escribeNumero(String numero){
+        if(atras == true){
+            String num = notacion.get(notacion.size()-posiciones_atras);
+            if (isNumber(num)){
+                notacion.set(notacion.size()-posiciones_atras, num+numero);
+            }else{
+                notacion.add(notacion.size()-posiciones_atras, numero);
+            }
+            ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+            return false;
+        }
+        else{
+            if (!notacion.isEmpty()){
+                String num = notacion.getLast();
+                if(isNumber(num)){
+                    notacion.set(notacion.size()-1, num+numero);
+                }else{
+                    notacion.add(numero);
+                }
+            }else{
+                notacion.add(numero);
+            }
+            ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
+            return false;
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public void setBotones(){
 
@@ -290,16 +316,7 @@ public class MainActivity extends AppCompatActivity {
         num1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "1");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("1");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("1");
             }
         });
 
@@ -308,16 +325,7 @@ public class MainActivity extends AppCompatActivity {
         num2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "2");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("2");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("2");
             }
         });
 
@@ -326,16 +334,7 @@ public class MainActivity extends AppCompatActivity {
         num3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "3");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("3");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("3");
             }
         });
 
@@ -344,16 +343,7 @@ public class MainActivity extends AppCompatActivity {
         num4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "4");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("4");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("4");
             }
         });
 
@@ -362,16 +352,7 @@ public class MainActivity extends AppCompatActivity {
         num5.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "5");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("5");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("5");
             }
         });
 
@@ -380,16 +361,7 @@ public class MainActivity extends AppCompatActivity {
         num6.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "6");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("6");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("6");
             }
         });
 
@@ -398,16 +370,7 @@ public class MainActivity extends AppCompatActivity {
         num7.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "7");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("7");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("7");
             }
         });
 
@@ -416,16 +379,7 @@ public class MainActivity extends AppCompatActivity {
         num8.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "8");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("8");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("8");
             }
         });
 
@@ -434,16 +388,7 @@ public class MainActivity extends AppCompatActivity {
         num9.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "9");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("9");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("9");
             }
         });
 
@@ -452,16 +397,7 @@ public class MainActivity extends AppCompatActivity {
         num0.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, "0");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("0");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero("0");
             }
         });
 
@@ -641,16 +577,7 @@ public class MainActivity extends AppCompatActivity {
         op10.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
-                    notacion.add(notacion.size()-posiciones_atras, ".");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add(".");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
+                return escribeNumero(".");
             }
         });
 
