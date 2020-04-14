@@ -463,11 +463,23 @@ public class MainActivity extends AppCompatActivity {
         pl2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                notacion.add(" ");
-                ecuacion.setText("$$" + getEcuacion(notacion) + "\\square^2$$");
-                apuntador = notacion.size();
-                notacion.add("^2");
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, "^2");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\square");
+                    notacion.add("^2");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    atras = true;
+                    return false;
+                }
             }
         });
 
@@ -476,8 +488,23 @@ public class MainActivity extends AppCompatActivity {
         pl3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, "^\\square");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\square");
+                    notacion.add("^\\square");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    atras = true;
+                    return false;
+                }
             }
         });
 
@@ -486,8 +513,35 @@ public class MainActivity extends AppCompatActivity {
         pl4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\frac{");
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, "}{");
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, "}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\frac{");
+                    notacion.add("\\square");
+                    notacion.add("}{");
+                    notacion.add("\\square");
+                    notacion.add("}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    atras = true;
+                    return false;
+                }
             }
         });
 
@@ -496,8 +550,27 @@ public class MainActivity extends AppCompatActivity {
         pl5.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\sqrt{");
+                    notacion.add(notacion.size()-posiciones_atras, "[]");
+                    notacion.add(notacion.size()-posiciones_atras, "}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\sqrt{");
+                    notacion.add("[]");
+                    notacion.add("}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    atras = true;
+                    return false;
+                }
             }
         });
 
@@ -506,8 +579,35 @@ public class MainActivity extends AppCompatActivity {
         pl6.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\sqrt[");
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, "]{");
+                    notacion.add(notacion.size()-posiciones_atras, "[]");
+                    notacion.add(notacion.size()-posiciones_atras, "}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\sqrt[");
+                    notacion.add("\\square");
+                    notacion.add("]{");
+                    notacion.add("[]");
+                    notacion.add("}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    atras = true;
+                    return false;
+                }
             }
         });
 
@@ -516,8 +616,27 @@ public class MainActivity extends AppCompatActivity {
         pl7.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "(");
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, ")");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("(");
+                    notacion.add("\\square");
+                    notacion.add(")");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    atras = true;
+                    return false;
+                }
             }
         });
 
@@ -526,8 +645,16 @@ public class MainActivity extends AppCompatActivity {
         pl8.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\frac{d}{dx}");
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\frac{d}{dx}");
+                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
+                    return false;
+                }
             }
         });
 
@@ -536,18 +663,54 @@ public class MainActivity extends AppCompatActivity {
         pl9.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\smallint");
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\smallint");
+                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
+                    return false;
+                }
             }
         });
 
         pl10 =  findViewById(R.id.pl10);
         pl10.setText(potenciaLogaritmos[9]);
         pl10.setOnTouchListener(new View.OnTouchListener() {
+            // \\int_{\\square}^{\\square}
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
-                return false;
+                if(atras == true){
+                    notacion.add(notacion.size()-posiciones_atras, "\\int_{");
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, "}^{");
+                    notacion.add(notacion.size()-posiciones_atras, "\\square");
+                    notacion.add(notacion.size()-posiciones_atras, "}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    return false;
+                }
+                else{
+                    notacion.add("\\int_{");
+                    notacion.add("\\square");
+                    notacion.add("}^{");
+                    notacion.add("\\square");
+                    notacion.add("}");
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    posiciones_atras++;
+                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
+                    atras = true;
+                    return false;
+                }
             }
         });
 
@@ -560,7 +723,17 @@ public class MainActivity extends AppCompatActivity {
                     posiciones_atras++;
                     atras = true;
                     apuntador = notacion.size()-posiciones_atras;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
+                    if(apuntador+1 < notacion.size()){
+                        if(notacion.get(apuntador+1).equals("^2")){
+                            notacion.set(apuntador+1, "2");
+                        }
+                        else{
+                            ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
+                        }
+                    }
+                    else{
+                        ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
+                    }
                 }
                 return false;
             }
@@ -572,9 +745,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(posiciones_atras != 0 && atras == true){
-                    posiciones_atras--;
-                    apuntador = notacion.size()-posiciones_atras;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
+                    if(notacion.size()-posiciones_atras > 0){
+                        if(notacion.get(notacion.size()-posiciones_atras).compareTo("^2") == 0 && notacion.get(notacion.size()-posiciones_atras-1).compareTo("^2") == 0){
+                            notacion.set(notacion.size()-posiciones_atras-1, "2");
+                            posiciones_atras--;
+                            apuntador = notacion.size()-posiciones_atras;
+                            ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
+                        }
+                        else{
+                            posiciones_atras--;
+                            apuntador = notacion.size()-posiciones_atras;
+                            ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
+                        }
+                    }
+                    else{
+                        posiciones_atras--;
+                        apuntador = notacion.size()-posiciones_atras;
+                        ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
+                    }
                 }
                 if(posiciones_atras == 0){
                     atras = false;
@@ -598,6 +786,20 @@ public class MainActivity extends AppCompatActivity {
                         if(aux.compareTo("=") == 0){
                             igual = false;
                         }
+                        if(aux.compareTo("^2") == 0){
+                            if(!notacion.isEmpty()){
+                                if(notacion.getLast().compareTo("\\square") == 0){
+                                    notacion.removeLast();
+                                }
+                            }
+                        }
+                        if(aux.compareTo("^\\square") == 0){
+                            if(!notacion.isEmpty()){
+                                if(notacion.getLast().compareTo("\\square") == 0){
+                                    notacion.removeLast();
+                                }
+                            }
+                        }
                         ecuacion.setText("$$"+ getEcuacion(notacion) + "|$$");
                     }
                     else{
@@ -607,6 +809,20 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if(aux.compareTo("=") == 0){
                             igual = false;
+                        }
+                        if(aux.compareTo("^2") == 0){
+                            if(!notacion.isEmpty()){
+                                if(notacion.get(notacion.size()-posiciones_atras-1).compareTo("\\square") == 0){
+                                    notacion.remove(notacion.size()-posiciones_atras-1);
+                                }
+                            }
+                        }
+                        if(aux.compareTo("^\\square") == 0){
+                            if(!notacion.isEmpty()){
+                                if(notacion.get(notacion.size()-posiciones_atras-1).compareTo("\\square") == 0){
+                                    notacion.remove(notacion.size()-posiciones_atras-1);
+                                }
+                            }
                         }
                         ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
                     }
