@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,12 +21,12 @@ public class MainActivity extends AppCompatActivity {
     MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
     MathView rt1,rt2,rt3,rt4,rt5;
     String numeros;
-    TextView resultado;
+    MathView resultado;
 
-    TextView prueba;
 
     Button calcular;
     Button bt_factorizar;
+    Button polinomios;
 
     String tex = "$$(3+(2\\times10))10-30+-100$$";
 
@@ -60,18 +59,69 @@ public class MainActivity extends AppCompatActivity {
         try {
             result = factorComun(equation);
             if (!result.equals("")){
-                this.resultado.setText(result);
+                this.resultado.setText("$$"+result+"$$");
+                return;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\nAAAAAAAAAAAAAAAAAAAAA");
-
-        this.resultado.setText("No se puede factorizar.");
+        try{
+            result = binomioCuadrado(equation);
+            if (!result.equals("")){
+                this.resultado.setText("$$"+result+"$$");
+                return;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            result = diferenciaCuadrados(equation);
+            if (!result.equals("")){
+                this.resultado.setText("$$"+result+"$$");
+                return;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        this.resultado.setText("$$"+"No se puede factorizar"+"$$");
     }
 
     public String factorComun(LinkedList<String> equation) throws Exception{
-        double a, b, c;
+        LinkedList<String> fixed = new LinkedList<>();
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals("-")){
+                if (i != 0){
+                    if (!equation.get(i-1).equals("(")){
+                        fixed.add("+");
+                    }
+                }
+                fixed.add("-"+equation.get(i+1));
+                i++;
+            }else if(equation.get(i).equals("\\times")) {
+                continue;
+            }else{
+                fixed.add(equation.get(i));
+            }
+        }
+        for (int i = 0; i < fixed.size(); i++) {
+            System.out.println(fixed.get(i) + " . ");
+        }
+        if (fixed.get(fixed.size()-2).equals("x") && isNumber(fixed.get(fixed.size()-3))) {
+            String aStr = fixed.get(fixed.size()-3);
+            String bStr = fixed.get(2);
+            fixed.set(2, aStr);
+            fixed.set(fixed.size()-3, bStr);
+            fixed.remove(fixed.size()-2);
+            fixed.add(3, "x");
+        }
+        // Fixed is now of the form c(ax+b)
+        double c = Double.parseDouble(fixed.getFirst());
+        double a = Double.parseDouble(fixed.get(2));
+        double b = Double.parseDouble(fixed.get(5));
+        return c*a+"x+"+c*b;
+    }
+
+    public String binomioCuadrado(LinkedList<String> equation) throws Exception{
         LinkedList<String> fixed = new LinkedList<>();
         for (int i = 0; i < equation.size(); i++) {
             if (equation.get(i).equals("-")){
@@ -86,22 +136,112 @@ public class MainActivity extends AppCompatActivity {
                 fixed.add(equation.get(i));
             }
         }
-        if (fixed.get(fixed.size()-2).equals("x")){
-            String aStr = fixed.get(fixed.size()-3);
-            String bStr = fixed.get(2);
-            fixed.set(2, aStr);
-            fixed.set(fixed.size()-3, bStr);
-            fixed.remove(fixed.size()-2);
-            fixed.add(3, "x");
-        }
-        // Fixed is now of the form c(ax+b)
-        String eq = "";
-        for (String str: fixed){
-            eq += str;
-        }
-        Toast.makeText(this, eq, Toast.LENGTH_LONG).show();
+        if(fixed.getLast().equals("2") && fixed.get(fixed.size()-2).equals("^")){
+            if(fixed.get(fixed.size()-6).equals("x") && fixed.get(fixed.size()-7).equals("(")) {
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-4)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-4));
+                b = b*b;
+                return x+"+"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-6).equals("-x") && fixed.get(fixed.size()-8).equals("(")){
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-4)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-4));
+                b = b*b;
+                return x+"+-"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-6).equals("x")){
+                double a = Double.parseDouble(fixed.get(fixed.size()-7));
+                a = a*a;
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-4))*Double.parseDouble(fixed.get(fixed.size()-7)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-4));
+                b = b*b;
+                return a+x+"+"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-4).equals("-x") && fixed.get(fixed.size()-2).equals("^") && ((fixed.get(fixed.size()-5).equals("+")) || fixed.get(fixed.size()-5).equals("-"))){
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-7)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-7));
+                b = b*b;
+                return x+"+-"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-4).equals("x") && fixed.get(fixed.size()-2).equals("^")){
+                double a = Double.parseDouble(fixed.get(fixed.size()-5));
+                a = a*a;
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-5))*Double.parseDouble(fixed.get(fixed.size()-7)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-7));
+                b = b*b;
+                return a+x+"+"+ab2+"+"+b;
+            }
 
+        }
         return "";
+    }
+
+    public String diferenciaCuadrados(LinkedList<String> equation) throws Exception{
+        LinkedList<String> fixed = new LinkedList<>();
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals("-")){
+                if (i != 0){
+                    fixed.add("+");
+                }
+                fixed.add("-"+equation.get(i+1));
+                i++;
+            }else if(equation.get(i).equals("\\times")){
+                continue;
+            }else{
+                fixed.add(equation.get(i));
+            }
+        }
+        if(fixed.getLast().equals("2") && fixed.get(fixed.size() - 2).equals("^") && fixed.get(fixed.size()-3).equals("x") && Double.parseDouble(fixed.get(fixed.size()-4)) < 0){
+            Toast.makeText(this, "P", Toast.LENGTH_SHORT).show();
+            double b = Math.abs(Double.parseDouble(fixed.get(fixed.size()-4)));
+            double a = Double.parseDouble(fixed.get(fixed.size()-6));
+            if(cuadrado(a,b)){
+                return "("+Math.sqrt(a)+"-"+Math.sqrt(b)+"x) ("+Math.sqrt(a)+"+"+Math.sqrt(b)+"x)";
+            }
+            else{
+                return "";
+            }
+        }
+        else if(fixed.get(fixed.size()-3).equals("2") && fixed.get(fixed.size()-4).equals("^") && fixed.get(fixed.size()-4).equals("x") && Double.parseDouble(fixed.getLast()) < 0){
+            double b = Math.abs(Double.parseDouble(fixed.getLast()));
+            double a = Double.parseDouble(fixed.getFirst());
+            if(cuadrado(a,b)){
+                String s = "(" + Math.sqrt(a) + "x -" + Math.sqrt(b) + ") (" + Math.sqrt(a) + "x +" + Math.sqrt(b) + ")";
+                return s;
+            }
+            else{
+                return "";
+            }
+        }
+        else if(Double.parseDouble(fixed.getFirst()) < 0 && fixed.getLast().equals("2") && fixed.get(fixed.size()-2).equals("^") && fixed.get(fixed.size()-3).equals("x") && fixed.get(fixed.size()-5).equals("+")){
+            double b = Math.abs(Double.parseDouble(fixed.getFirst()));
+            double a = Double.parseDouble(fixed.get(fixed.size()-4));
+            if(cuadrado(a,b)){
+                String s = "(" + Math.sqrt(a) + "x -" + Math.sqrt(b) + ") (" + Math.sqrt(a) + "x +" + Math.sqrt(b) + ")";
+                return s;
+            }
+        }
+        else if(Double.parseDouble(fixed.getFirst()) < 0 && fixed.get(fixed.size()-2).equals("+") && fixed.get(fixed.size()-3).equals("2") && fixed.get(fixed.size()-4).equals("^") && fixed.get(fixed.size()-5).equals("x")){
+            double a = Double.parseDouble(fixed.getLast());
+            double b = Math.abs(Double.parseDouble(fixed.getFirst()));
+            if(cuadrado(a,b)){
+                String s = "(" + Math.sqrt(a) + " -" + Math.sqrt(b) + "x ) (" + Math.sqrt(a) + " +" + Math.sqrt(b) + "x )";
+                return s;
+            }
+        }
+        return "";
+    }
+
+    public boolean cuadrado(double a, double b){
+        if(Math.floor(Math.sqrt(b)) == Math.sqrt(b) && Math.floor(Math.sqrt(a)) == Math.sqrt(a)){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -123,6 +263,113 @@ public class MainActivity extends AppCompatActivity {
                 factorizar(notacion);
             }
         });
+        polinomios = findViewById(R.id.bt_polinomios);
+        polinomios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    dividePolinomios(notacion);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void dividePolinomios(LinkedList<String> equation) throws Exception{
+        LinkedList<String> polinomioA = new LinkedList<>();
+        LinkedList<String> polinomioB = new LinkedList<>();
+        int last_parentesis = 0;
+        for (int i = 1; i < equation.size(); i++) {
+            if (equation.get(i).equals(")")){
+                last_parentesis = i+3;
+                break;
+            }else{
+                polinomioA.add(equation.get(i));
+            }
+        }
+        for (int i = last_parentesis; i<equation.size()-1;i++){
+            polinomioB.add(equation.get(i));
+        }
+        for (int i = 0; i < polinomioA.size(); i++) {
+            if (i != 0){
+                if (polinomioA.get(i).equals("-")){
+                    if (polinomioA.get(i+1).equals("x")){
+                        polinomioA.set(i, "-1");
+                    }else{
+                        polinomioA.set(i, "-"+polinomioA.get(i+1));
+                        polinomioA.remove(i+1);
+                    }
+                }else if(polinomioA.get(i).equals("x") && !isNumber(polinomioA.get(i-1))){
+                    polinomioA.add(i, "1");
+                    i++;
+                }
+            }else{
+                if (polinomioA.getFirst().equals("-")){
+                    if (polinomioA.get(1).equals("x")){
+                        polinomioA.set(0, "-1");
+                    }else{
+                        polinomioA.set(0, "-"+polinomioA.get(1));
+                    }
+                }else if(polinomioA.getFirst().equals("x")){
+                    polinomioA.add(0, "1");
+                    i++;
+                }
+            }
+        }
+
+        for (int i = 0; i < polinomioB.size(); i++) {
+            if (i != 0){
+                if (polinomioB.get(i).equals("-")){
+                    if (polinomioB.get(i+1).equals("x")){
+                        polinomioB.set(i, "-1");
+                    }else{
+                        polinomioB.set(i, "-"+polinomioB.get(i+1));
+                        polinomioB.remove(i+1);
+                    }
+                }else if(polinomioB.get(i).equals("x") && !isNumber(polinomioB.get(i-1))){
+                    polinomioB.add(i, "1");
+                    i++;
+                }
+            }else{
+                if (polinomioB.getFirst().equals("-")){
+                    if (polinomioB.get(1).equals("x")){
+                        polinomioB.set(0, "-1");
+                    }else{
+                        polinomioB.set(0, "-"+polinomioB.get(1));
+                    }
+                }else if(polinomioB.getFirst().equals("x")){
+                    polinomioB.add(0, "1");
+                    i++;
+                }
+            }
+        }
+
+        LinkedList<Double> coeficientesA = new LinkedList<>();
+        LinkedList<Double> coeficientesB = new LinkedList<>();
+        for (int i = 0; i < polinomioA.size(); i++) {
+            if (isNumber(polinomioA.get(i))){
+                coeficientesA.add(Double.parseDouble(polinomioA.get(i)));
+            }
+        }
+        for (int i = 0; i < polinomioB.size(); i++) {
+            if (isNumber(polinomioB.get(i))){
+                coeficientesA.add(Double.parseDouble(polinomioB.get(i)));
+            }
+        }
+        double[] results = new double[coeficientesA.size()];
+        for (int i = 0; i < results.length-1; i++) {
+            results[i] = coeficientesA.get(i)/coeficientesB.get(0);
+            for (int j = 0; j < coeficientesB.size(); j++) {
+                coeficientesA.set(i+j, coeficientesA.get(i+j)-results[i]*coeficientesB.get(j));
+            }
+        }
+        String result = "";
+        result = results[0]+"x"+results[1];
+        if (coeficientesA.getLast() != 0.0){
+            result += "\\frac{"+coeficientesA.getLast()+"}{"+coeficientesB.getFirst()+"x"+coeficientesB.getLast()+"}";
+        }
+        this.resultado.setText("$$"+result+"$$");
     }
 
     public void muestraResultado(){
