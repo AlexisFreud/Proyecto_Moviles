@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             result = factorComun(equation);
             if (!result.equals("")){
+                Toast.makeText(this, "Factor comun", Toast.LENGTH_LONG).show();
                 this.resultado.setText("$$"+result+"$$");
                 return;
             }
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             result = binomioCuadrado(equation);
             if (!result.equals("")){
+                Toast.makeText(this, "Binomio al cuadrado", Toast.LENGTH_LONG).show();
                 this.resultado.setText("$$"+result+"$$");
                 return;
             }
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             result = diferenciaCuadrados(equation);
             if (!result.equals("")){
+                Toast.makeText(this, "Diferencia de cuadrados", Toast.LENGTH_LONG).show();
                 this.resultado.setText("$$"+result+"$$");
                 return;
             }
@@ -113,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
             fixed.set(fixed.size()-3, bStr);
             fixed.remove(fixed.size()-2);
             fixed.add(3, "x");
+        }
+        if (!fixed.getLast().equals(")")){
+            return "";
         }
         // Fixed is now of the form c(ax+b)
         double c = Double.parseDouble(fixed.getFirst());
@@ -349,12 +355,18 @@ public class MainActivity extends AppCompatActivity {
         LinkedList<Double> coeficientesB = new LinkedList<>();
         for (int i = 0; i < polinomioA.size(); i++) {
             if (isNumber(polinomioA.get(i))){
-                coeficientesA.add(Double.parseDouble(polinomioA.get(i)));
+                if (i-1 >= 0){
+                    if (!polinomioA.get(i-1).equals("^")){
+                        coeficientesA.add(Double.parseDouble(polinomioA.get(i)));
+                    }
+                }else{
+                    coeficientesA.add(Double.parseDouble(polinomioA.get(i)));
+                }
             }
         }
         for (int i = 0; i < polinomioB.size(); i++) {
             if (isNumber(polinomioB.get(i))){
-                coeficientesA.add(Double.parseDouble(polinomioB.get(i)));
+                coeficientesB.add(Double.parseDouble(polinomioB.get(i)));
             }
         }
         double[] results = new double[coeficientesA.size()];
@@ -367,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
         String result = "";
         result = results[0]+"x"+results[1];
         if (coeficientesA.getLast() != 0.0){
-            result += "\\frac{"+coeficientesA.getLast()+"}{"+coeficientesB.getFirst()+"x"+coeficientesB.getLast()+"}";
+            result += "+\\frac{"+coeficientesA.getLast()+"}{"+coeficientesB.getFirst()+"x+"+coeficientesB.getLast()+"}";
         }
         this.resultado.setText("$$"+result+"$$");
     }

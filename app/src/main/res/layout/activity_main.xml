@@ -500,10 +500,10 @@
     <view
         android:id="@+id/resultado"
         class="io.github.kexanie.library.MathView"
-        android:layout_width="179dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="244dp"
+        android:layout_width="366dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="236dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
