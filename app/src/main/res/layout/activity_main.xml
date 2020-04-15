@@ -6,55 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="312dp"
-        android:text="Formula one: from xml with mathjax"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <view
-        android:id="@+id/formula_one"
-        class="io.github.kexanie.library.MathView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="33dp"
-        android:text="When \\(a \\ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\)         and they are $$x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}.$$"
-        app:engine="MathJax"
-        app:layout_constraintBottom_toTopOf="@+id/formula_two"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-    <view
-        android:id="@+id/formula_two"
-        class="io.github.kexanie.library.MathView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#C51F1F"
-        app:engine="KaTeX"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/formula_one" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="21dp"
-        android:text="Formula two: from java string with katex"
-        app:layout_constraintBottom_toTopOf="@+id/formula_one"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
     <view
         android:id="@+id/rt1"
         class="io.github.kexanie.library.MathView"
@@ -128,7 +79,6 @@
         android:layout_marginBottom="156dp"
         android:animateOnClick="?android:attr/windowOverscan"
         android:autoSizeTextType="uniform"
-        android:onClick="num1"
         android:textAlignment="center"
         android:theme="@android:style/Widget.Button"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -517,19 +467,17 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:onClick="num1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/resultado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="175dp"
         android:layout_marginTop="96dp"
         android:layout_marginEnd="178dp"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ecuacion" />
@@ -539,9 +487,19 @@
         android:id="@+id/bt_calcular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="448dp"
+        android:layout_marginStart="296dp"
+        android:layout_marginTop="468dp"
         android:text="Calcular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bt_factorizar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="468dp"
+        android:text="Factorizar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     >>>>>>> d00d8efb41fbf4a1f0cae569b61dffa18f1794b9

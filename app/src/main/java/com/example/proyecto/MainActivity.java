@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
     MathView rt1,rt2,rt3,rt4,rt5;
     String numeros;
+    TextView resultado;
 
     TextView prueba;
 
@@ -46,7 +47,46 @@ public class MainActivity extends AppCompatActivity {
     boolean atras = false;
     int posiciones_atras = 0;
     boolean igual = false;
+    boolean haveX = false;
 
+    public String factorizar(LinkedList<String> equation){
+        String result;
+        if (isHaveX(equation)){
+            return "Invalido." +
+                    "\nNo se puede factorizar con x." +
+                    "\nEspere futuras actualizaciones.";
+        }
+        if (!(result = factorComun(equation)).equals("")){
+            return result;
+        }
+
+        return "No se puede factorizar.";
+    }
+
+    public String factorComun(LinkedList<String> equation){
+        double a, b, c;
+        if(equation.get(1).equals("(")) {
+            // Forma c(a+b)
+            if(equation.getFirst().equals("-")){
+                c = Double.parseDouble(equation.get(1))*-1;
+                if (equation.get(3).equals("-")){
+
+                }
+            }else{
+                c = Double.parseDouble(equation.getFirst());
+            }
+
+            b = Double.parseDouble(equation.get(5));
+        }else if(equation.get(2).equals("(")){
+            // Forma c*(a+b)
+
+        }else{
+            // Forma ac+bc
+        }
+
+
+        return "";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,62 +103,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void muestraResultado(){
-        /*String subTex = tex.replace("$", "");
-        LinkedList<String> newTex = new LinkedList<>();
-        newTex.add("(");
-        newTex.add("3");
-        newTex.add("+");
-        newTex.add("(");
-        newTex.add("2");
-        newTex.add("10");
-        newTex.add(")");
-        newTex.add(")");
-        newTex.add("\\times");
-        newTex.add("10");
-        newTex.add("-");
-        newTex.add("30");
-        newTex.add("+");
-        newTex.add("-100");*/
         String result = solve_arithmetic(notacion);
-        Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+        if (result.equals("")){
+            result = "0.0";
+        }
+        this.resultado.setText("Resultado: " + result);
     }
 
-    private LinkedList<String> creaLink(String equation){
-        char[] numsArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
-        LinkedList<String> lista = new LinkedList<>();
-        for (int i = 0; i < equation.length(); i++) {
-            for (int j = 0; j < numsArray.length; j++) {
-                if (equation.charAt(i) == numsArray[j]){
-                    String str = numsArray[j]+"";
-                    boolean isNumber = true;
-                    i++;
-                    while(isNumber){
-                        isNumber = false;
-                        for (int k = 0; k < numsArray.length; k++) {
-                            if (equation.charAt(i) == numsArray[k]) {
-                                str += numsArray[k]+"";
-                                isNumber = true;
-                                i++;
-                                break;
-                            }
-                        }
-                    }
-                    break;
+    public boolean isHaveX(LinkedList<String> equation){
+        for (String num: equation){
+            for (char c: num.toCharArray()){
+                if (c == 'x'){
+                    return true;
                 }
             }
-            if(equation.charAt(i) == '('){
-                lista.add("(");
-            }else if(equation.charAt(i) == ')') {
-                lista.add(")");
-            }else if(equation.charAt(i) == '+') {
-                lista.add("+");
-            }else if(equation.charAt(i) == '-'){
-                lista.add("-");
-            }else if (equation.charAt(i) == '\\'){
-                lista.add("\\times");
-            }
         }
-        return lista;
+        return false;
+    }
+
+    public String solve_withX(LinkedList<String> equation){
+        String finalString = "Invalido." +
+                "\nNo se puede calcular con x." +
+                "\n Espere futuras actualizaciones.";
+        return finalString;
     }
 
     public String solve_arithmetic(LinkedList<String> equation){
@@ -131,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
             - A: Adicion
             - S: Sustraccion
          */
+        if (isHaveX(equation)){
+            return solve_withX(equation);
+        }
         String finalString = "";
         LinkedList<String> equationAux = equation;
         LinkedList<String> operaciones = new LinkedList<>();
@@ -184,21 +194,38 @@ public class MainActivity extends AppCompatActivity {
         boolean possible_multiplication = false;
         double numA = 0;
         for (int i = 0; i < equationAux.size(); i++) {
+            if (Double.isInfinite(numA)){
+                return "Infinity";
+            }else if(Double.isNaN(numA)){
+                return "Not defined";
+            }
             if (isNumber(equationAux.get(i)) && possible_multiplication){
                 double numB = Double.parseDouble(equationAux.get(i));
                 numA *= numB;
             }else if(equationAux.get(i).equals("\\times")){
-                double numB = Double.parseDouble(equationAux.get(i+1));
-                numA *= numB;
-                i++;
+                if (equationAux.get(i+1).equals("-")){
+                    numA *= -1;
+                }else{
+                    double numB = Double.parseDouble(equationAux.get(i+1));
+                    numA *= numB;
+                    i++;
+                }
+            }else if(equationAux.get(i).equals("/")){
+                if (equationAux.get(i+1).equals("-")){
+                    numA *= -1;
+                }else{
+                    double numB = Double.parseDouble(equationAux.get(i+1));
+                    numA /= numB;
+                    i++;
+                }
             }else if(isNumber(equationAux.get(i))) {
                 possible_multiplication = true;
                 numA = Double.parseDouble(equationAux.get(i));
-            }else if(equationAux.get(i) == "-" && isNumber(equationAux.get(i+1))){
+            }else if(equationAux.get(i) == "-" && isNumber(equationAux.get(i+1))) {
                 equationAux.set(i, "+");
-                double numC = Double.parseDouble(equationAux.get(i+1));
+                double numC = Double.parseDouble(equationAux.get(i + 1));
                 numC *= -1;
-                equationAux.set(i+1, numC+"");
+                equationAux.set(i + 1, numC + "");
                 i--;
             }else if (possible_multiplication){
                 operaciones.add(numA+"");
@@ -217,9 +244,6 @@ public class MainActivity extends AppCompatActivity {
             System.out.print(equationAux.get(i) + " . ");
         }
         System.out.println();
-
-        // Check for division or fraction
-
 
         // Check for addition
         boolean possible_sum = false;
@@ -260,6 +284,9 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(equationAux.get(i));
         }
         System.out.println("Final string: " + finalString);
+        if (finalString.equals("")){
+            return "0.0";
+        }
         return finalString;
     }
 
@@ -278,15 +305,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        formula_two = findViewById(R.id.formula_two);
-        formula_two.setText(tex);
-
         ecuacion =  findViewById(R.id.ecuacion);
         ecuacion.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         ecuacion.setText("$$|$$");
 
-        prueba = findViewById(R.id.textView);
+        resultado = findViewById(R.id.resultado);
 
         setBotones();
     }
@@ -316,6 +339,14 @@ public class MainActivity extends AppCompatActivity {
             ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
             return false;
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void setBotones(){
+        setBotonesNumeros();
+        setBotonesOperadores();
+        setBotonesPotencias();
+        setBotonesRt();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -534,7 +565,8 @@ public class MainActivity extends AppCompatActivity {
         pl1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                haveX = true;
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "x");
                     ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
                     return false;
@@ -552,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
         pl2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "^");
                     notacion.add(notacion.size()-posiciones_atras, "2");
@@ -581,7 +613,7 @@ public class MainActivity extends AppCompatActivity {
         pl3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "^");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
@@ -605,7 +637,7 @@ public class MainActivity extends AppCompatActivity {
         pl4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\frac{");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "}{");
@@ -642,7 +674,7 @@ public class MainActivity extends AppCompatActivity {
         pl5.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\sqrt{");
                     notacion.add(notacion.size()-posiciones_atras, "[]");
                     notacion.add(notacion.size()-posiciones_atras, "}");
@@ -671,7 +703,7 @@ public class MainActivity extends AppCompatActivity {
         pl6.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\sqrt[");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "]{");
@@ -708,7 +740,7 @@ public class MainActivity extends AppCompatActivity {
         pl7.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "(");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, ")");
@@ -737,7 +769,7 @@ public class MainActivity extends AppCompatActivity {
         pl8.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\frac{d}{dx}");
                     ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
                     return false;
@@ -755,7 +787,7 @@ public class MainActivity extends AppCompatActivity {
         pl9.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\smallint");
                     ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
                     return false;
@@ -774,7 +806,7 @@ public class MainActivity extends AppCompatActivity {
             // \\int_{\\square}^{\\square}
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras == true){
+                if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\int_{");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "}^{");
@@ -925,17 +957,11 @@ public class MainActivity extends AppCompatActivity {
                 atras = false;
                 posiciones_atras = 0;
                 igual = false;
+                resultado.setText("");
+                haveX = false;
                 return false;
             }
         });
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    public void setBotones(){
-        setBotonesNumeros();
-        setBotonesOperadores();
-        setBotonesPotencias();
-        setBotonesRt();
     }
 
     public String getEcuacion(LinkedList<String> notacion){
