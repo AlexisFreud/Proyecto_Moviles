@@ -16,7 +16,7 @@ import io.github.kexanie.library.MathView;
 
 public class MainActivity extends AppCompatActivity {
     
-    MathView formula_two, ecuacion;
+    MathView ecuacion;
     MathView num1,num2,num3,num4,num5,num6,num7,num8,num9,num0;
     MathView op1,op2,op3,op4,op5,op6,op7,op8,op9,op10;
     MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     TextView prueba;
 
     Button calcular;
+    Button bt_factorizar;
 
     String tex = "$$(3+(2\\times10))10-30+-100$$";
 
@@ -49,41 +50,56 @@ public class MainActivity extends AppCompatActivity {
     boolean igual = false;
     boolean haveX = false;
 
-    public String factorizar(LinkedList<String> equation){
+    public void factorizar(LinkedList<String> equation){
         String result;
-        if (isHaveX(equation)){
-            return "Invalido." +
-                    "\nNo se puede factorizar con x." +
-                    "\nEspere futuras actualizaciones.";
+        if (!isHaveX(equation)){
+            this.resultado.setText("Invalido." +
+                    "\nSe necesita una x para factorizar." +
+                    "\nEspere futuras actualizaciones.");
         }
-        if (!(result = factorComun(equation)).equals("")){
-            return result;
+        try {
+            result = factorComun(equation);
+            if (!result.equals("")){
+                this.resultado.setText(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\nAAAAAAAAAAAAAAAAAAAAA");
 
-        return "No se puede factorizar.";
+        this.resultado.setText("No se puede factorizar.");
     }
 
-    public String factorComun(LinkedList<String> equation){
+    public String factorComun(LinkedList<String> equation) throws Exception{
         double a, b, c;
-        if(equation.get(1).equals("(")) {
-            // Forma c(a+b)
-            if(equation.getFirst().equals("-")){
-                c = Double.parseDouble(equation.get(1))*-1;
-                if (equation.get(3).equals("-")){
-
+        LinkedList<String> fixed = new LinkedList<>();
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals("-")){
+                if (i != 0){
+                    fixed.add("+");
                 }
+                fixed.add("-"+equation.get(i+1));
+                i++;
+            }else if(equation.get(i).equals("\\times")){
+                continue;
             }else{
-                c = Double.parseDouble(equation.getFirst());
+                fixed.add(equation.get(i));
             }
-
-            b = Double.parseDouble(equation.get(5));
-        }else if(equation.get(2).equals("(")){
-            // Forma c*(a+b)
-
-        }else{
-            // Forma ac+bc
         }
-
+        if (fixed.get(fixed.size()-2).equals("x")){
+            String aStr = fixed.get(fixed.size()-3);
+            String bStr = fixed.get(2);
+            fixed.set(2, aStr);
+            fixed.set(fixed.size()-3, bStr);
+            fixed.remove(fixed.size()-2);
+            fixed.add(3, "x");
+        }
+        // Fixed is now of the form c(ax+b)
+        String eq = "";
+        for (String str: fixed){
+            eq += str;
+        }
+        Toast.makeText(this, eq, Toast.LENGTH_LONG).show();
 
         return "";
     }
@@ -98,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 muestraResultado();
+            }
+        });
+        bt_factorizar = findViewById(R.id.bt_factorizar);
+        bt_factorizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                factorizar(notacion);
             }
         });
     }
