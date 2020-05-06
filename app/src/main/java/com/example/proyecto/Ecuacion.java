@@ -38,7 +38,7 @@ public class Ecuacion {
                         this.insertBetween(element, i);
                         break;
                     } else if (posiciones > this.position) {
-                        this.insertInside(element, i, this.position - (posiciones - this.polinomios.get(i).length()));
+                        this.insertInside(element, i, posiciones-this.polinomios.get(i).length());
                         break;
                     }
                 }
@@ -64,6 +64,7 @@ public class Ecuacion {
                     }else{
                         this.polinomios.set(i, polinomito.substring(0, polinomito.length()-1));
                     }
+                    break;
                 } else if (posiciones > this.position) {
                     String polinomito = this.polinomios.get(i);
                     if (polinomito.length() == 1){
@@ -71,10 +72,11 @@ public class Ecuacion {
                     }else{
                         posiciones -= this.polinomios.get(i).length();
                         int posicionString = this.position-posiciones;
-                        String substringA = polinomito.substring(0, posicionString);
-                        String substringB = polinomito.substring(posicionString+1);
+                        String substringA = polinomito.substring(0, posicionString-1);
+                        String substringB = polinomito.substring(posicionString);
                         this.polinomios.set(i, substringA+substringB);
                     }
+                    break;
                 }
             }
             numOfElements--;
@@ -82,11 +84,11 @@ public class Ecuacion {
         }
     }
 
-    private void insertInside(String element, int listPosition, int stringPosition)
+    private void insertInside(String element, int listPosition, int posiciones)
     {
         String polinomio = this.polinomios.get(listPosition);
-        String substringA = polinomio.substring(0, stringPosition);
-        String substringB = polinomio.substring(stringPosition);
+        String substringA = polinomio.substring(0, position-posiciones);
+        String substringB = polinomio.substring(position-posiciones);
         if (isSigno(element)) // Separa el String en 2
         {
             this.polinomios.set(listPosition, substringA);
