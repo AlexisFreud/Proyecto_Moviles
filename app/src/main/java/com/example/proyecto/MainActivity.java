@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     MathView rt1,rt2,rt3,rt4,rt5;
     String numeros;
     MathView resultado;
-
+    Ecuacion funcion;
 
     Button calcular;
     Button bt_factorizar;
@@ -280,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        funcion = new Ecuacion();
     }
 
     public void dividePolinomios(LinkedList<String> equation) throws Exception{
@@ -597,6 +598,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean escribeNumero(String numero){
+        funcion.insert(numero);
+        resultado.setText(funcion.getEquationToShow());
+        return false;
+        /*
         if(atras == true){
             String num = notacion.get(notacion.size()-posiciones_atras);
             if (isNumber(num)){
@@ -621,6 +626,7 @@ public class MainActivity extends AppCompatActivity {
             ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
             return false;
         }
+         */
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -633,6 +639,10 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     public boolean operadoresBasicos(String operador){
+        funcion.insert(operador);
+        resultado.setText(funcion.getEquationToShow());
+        return false;
+        /*
         if(atras == true){
             notacion.add(notacion.size()-posiciones_atras, operador);
             ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
@@ -643,6 +653,7 @@ public class MainActivity extends AppCompatActivity {
             ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
             return false;
         }
+         */
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -847,6 +858,10 @@ public class MainActivity extends AppCompatActivity {
         pl1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                funcion.insert("x");
+                resultado.setText(funcion.getEquationToShow());
+                return false;
+                /*
                 haveX = true;
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "x");
@@ -858,6 +873,7 @@ public class MainActivity extends AppCompatActivity {
                     ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
                     return false;
                 }
+                 */
             }
         });
 
@@ -1128,6 +1144,8 @@ public class MainActivity extends AppCompatActivity {
         rt1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                funcion.cambiarPosicion(false);
+                resultado.setText(funcion.getEquationToShow());
                 if(posiciones_atras != notacion.size()){
                     posiciones_atras++;
                     atras = true;
@@ -1142,6 +1160,8 @@ public class MainActivity extends AppCompatActivity {
         rt2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                funcion.cambiarPosicion(true);
+                resultado.setText(funcion.getEquationToShow());
                 if(posiciones_atras != 0 && atras == true){
                     if(notacion.size()-posiciones_atras > 0){
                         posiciones_atras--;
@@ -1161,6 +1181,8 @@ public class MainActivity extends AppCompatActivity {
         rt3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                funcion.delete();
+                resultado.setText(funcion.getEquationToShow());
                 String aux;
                 if(notacion.size() != 0 && posiciones_atras != notacion.size()){
                     if(atras == false){
@@ -1222,7 +1244,9 @@ public class MainActivity extends AppCompatActivity {
         rt4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
+                funcion.imprimeEcuacion();
+                resultado.setText(funcion.getEquationToShow());
+                //Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -1241,6 +1265,8 @@ public class MainActivity extends AppCompatActivity {
                 igual = false;
                 resultado.setText("");
                 haveX = false;
+                funcion = new Ecuacion();
+                resultado.setText(funcion.getEquationToShow());
                 return false;
             }
         });
