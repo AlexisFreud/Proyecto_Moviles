@@ -259,7 +259,8 @@ public class MainActivity extends AppCompatActivity {
         calcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                muestraResultado();
+                // muestraResultado();
+                resultado.setText(funcion.solve());
             }
         });
         bt_factorizar = findViewById(R.id.bt_factorizar);
@@ -599,7 +600,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean escribeNumero(String numero){
         funcion.insert(numero);
-        resultado.setText(funcion.getEquationToShow());
+        ecuacion.setText(funcion.getEquationToShow());
         return false;
         /*
         if(atras == true){
@@ -640,7 +641,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     public boolean operadoresBasicos(String operador){
         funcion.insert(operador);
-        resultado.setText(funcion.getEquationToShow());
+        ecuacion.setText(funcion.getEquationToShow());
         return false;
         /*
         if(atras == true){
@@ -859,7 +860,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.insert("x");
-                resultado.setText(funcion.getEquationToShow());
+                ecuacion.setText(funcion.getEquationToShow());
                 return false;
                 /*
                 haveX = true;
@@ -877,11 +878,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Potencia al cuadrado
         pl2 =  findViewById(R.id.pl2);
         pl2.setText(potenciaLogaritmos[1]);
         pl2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                funcion.insert("%se");
+                ecuacion.setText(funcion.getEquationToShow());
+                return false;
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "^");
@@ -903,14 +909,20 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
 
+        // Potencia general
         pl3 =  findViewById(R.id.pl3);
         pl3.setText(potenciaLogaritmos[2]);
         pl3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                funcion.insert("%e");
+                ecuacion.setText(funcion.getEquationToShow());
+                return false;
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "^");
@@ -926,15 +938,20 @@ public class MainActivity extends AppCompatActivity {
                 posiciones_atras++;
                 posiciones_atras++;
                 ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                return false;
+                 */
             }
         });
 
+        //
         pl4 =  findViewById(R.id.pl4);
         pl4.setText(potenciaLogaritmos[3]);
         pl4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                funcion.insert("%f");
+                ecuacion.setText(funcion.getEquationToShow());
+                return false;
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\frac{");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
@@ -964,6 +981,7 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
 
@@ -1145,7 +1163,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.cambiarPosicion(false);
-                resultado.setText(funcion.getEquationToShow());
+                ecuacion.setText(funcion.getEquationToShow());
                 if(posiciones_atras != notacion.size()){
                     posiciones_atras++;
                     atras = true;
@@ -1161,7 +1179,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.cambiarPosicion(true);
-                resultado.setText(funcion.getEquationToShow());
+                ecuacion.setText(funcion.getEquationToShow());
                 if(posiciones_atras != 0 && atras == true){
                     if(notacion.size()-posiciones_atras > 0){
                         posiciones_atras--;
@@ -1182,7 +1200,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.delete();
-                resultado.setText(funcion.getEquationToShow());
+                ecuacion.setText(funcion.getEquationToShow());
                 String aux;
                 if(notacion.size() != 0 && posiciones_atras != notacion.size()){
                     if(atras == false){
