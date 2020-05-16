@@ -18,13 +18,13 @@ public class Ecuacion {
         /*
     Nota:
         Lista de simbolos para funciones especiales:
-            - f:  fraccion
-            - e: exponencial (potencia)
+            - fr:  fraccion
+            - ee: exponencial (potencia)
             - se: exponencial cuadrado (^2)
             - sr: square root
-            - r: n root
-            - p: parentesis abre y cierra
-            - d: derivada
+            - ro: n root
+            - pa: parentesis abre y cierra
+            - de: derivada
             - ii: integral indefinida
             - id: integral definida
      */
@@ -70,7 +70,52 @@ public class Ecuacion {
     }
 
     public void insertSpecial(String identifier){
-
+        switch (identifier) {
+            case "fr":
+                insert("%fr[][]%");
+                numOfElements += ("%fr[][]%").length() - 1;
+                this.position += 3;
+                break;
+            case "sr":
+                insert("%ro[2][]%");
+                numOfElements += "%ro[2][]%".length() - 1;
+                this.position += 6;
+                break;
+            case "ro":
+                insert("%ro[][]%");
+                numOfElements += "%ro[][]%".length() - 1;
+                this.position += 3;
+                break;
+            case "ee":
+                insert("^{}");
+                numOfElements += "^{}".length() - 1;
+                this.position += 1;
+                break;
+            case "se":
+                insert("^{2}");
+                numOfElements += "^{2}".length() - 1;
+                this.position += 3;
+                break;
+            case "pa":
+                insert("()");
+                this.numOfElements++;
+                break;
+            case "de":
+                insert("%de[]%");
+                numOfElements += "%de[]%".length()-1;
+                this.position += 3;
+                break;
+            case "ii":
+                insert("%ii[]%");
+                numOfElements += "%ii[]%".length()-1;
+                this.position += 4;
+                break;
+            case "id":
+                insert("%id[][][]%");
+                numOfElements += "%id[][][]%".length()-1;
+                this.position += 3;
+                break;
+        }
     }
 
     public void delete()
@@ -83,10 +128,17 @@ public class Ecuacion {
                 if (posiciones == this.position) { // Borrar ultimo elemento de String anterior
                     System.out.println("Entroe a posiciones == position");
                     String polinomito = this.polinomios.get(i);
-                    if (polinomito.length() == 1){
+                    if (polinomito.length() == 1)
+                    {
                         this.polinomios.remove(i);
                         break;
-                    }else{
+                    }
+                    else if(polinomito.endsWith("%"))
+                    {
+                        System.out.println("Eliminar especial");
+                    }
+                    else
+                    {
                         this.polinomios.set(i, polinomito.substring(0, polinomito.length()-1));
                         break;
                     }
@@ -109,6 +161,11 @@ public class Ecuacion {
             numOfElements--;
             position--;
         }
+    }
+
+    private void especialDelete(int i, String polinomito)
+    {
+
     }
 
     private void insertInside(String element, int listPosition, int stringPosition)
@@ -166,15 +223,141 @@ public class Ecuacion {
     }
 
     public void cambiarPosicion(boolean right){
-        if (right){
+        if (right)
+        {
             if (position < numOfElements){
                 position++;
+                if (!validPosition(position, right)){
+                    cambiarPosicion(right);
+                }
+            }
+        }
+        else
+        {
+            if (position > 0){
+                position--;
+                if (!validPosition(position, right)){
+                    cambiarPosicion(right);
+                }
+            }
+        }
+        /*
+        if (right){
+            if (position < numOfElements){
+                String elementInPos = getElement(position);
+                if (isEspecial(elementInPos)){
+                    if (elementInPos.equals("{")) {
+                        if (isInside) {
+                            position++;
+                            isInside = false;
+                            cambiarPosicion(right);
+                        } else {
+                            isInside = true;
+                            position++;
+                        }
+                    }else if (elementInPos.equals("}")){
+                            isInside = false;
+                            position++;
+                    }
+                    else{
+                        position++;
+                        cambiarPosicion(right);
+                    }
+                }else{
+                    position++;
+                }
             }
         }else {
             if (position > 0){
-                position--;
+                String elementInPos = getElement(position);
+                if (isEspecial(elementInPos)){
+                    if (elementInPos.equals("}")) {
+                        if (isInside) {
+                            position--;
+                            isInside = false;
+                            cambiarPosicion(right);
+                        } else {
+                            isInside = true;
+                            position--;
+                        }
+                    }else if (elementInPos.equals("{")){
+                        isInside = false;
+                        position--;
+                    }
+                    else{
+                        position--;
+                        cambiarPosicion(right);
+                    }
+                }else{
+                    position--;
+                }
             }
         }
+         */
+    }
+
+    private boolean validPosition(int position, boolean right){
+        if (right)
+        {
+            String prevElem = getElement(position-1);
+            if (prevElem.equals("{")){
+                return true;
+            }else if(prevElem.equals("}")) {
+                if (position > 0 & getElement(position).equals("{")) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }else if(position > 0 & getElement(position).equals("{")){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        else
+        {
+            String prevElem = getElement(position-1);
+            if (prevElem.equals("{")){
+                return true;
+            }else if(prevElem.equals("}")){
+                if (position < numOfElements & getElement(position).equals("{")) {
+                    return false;
+                }else{
+                    return true;
+                }
+            }else if(isEspecial(prevElem)){
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
+
+    public String getElement(int position){
+        if (!this.polinomios.isEmpty())
+        {
+            if (position < this.numOfElements){
+                int posiciones = 0;
+                for (int i = 0; i < this.polinomios.size(); i++) {
+                    posiciones += polinomios.get(i).length();
+                    if (posiciones == position)
+                    {
+                        String polinomito = this.polinomios.get(i);
+                        return polinomito.substring(polinomito.length()-1);
+                    }
+                    else if(posiciones > position)
+                    {
+                        posiciones -= polinomios.get(i).length();
+                        for (int j = 0; j < polinomios.get(i).length(); j++) {
+                            if (posiciones+j == position){
+                                return polinomios.get(i).charAt(j) + "";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return "";
     }
 
     private boolean isSigno(String element){
@@ -239,4 +422,25 @@ public class Ecuacion {
         return "$$" + equation + "$$";
     }
 
+    private final String[] especiales = {"^", "{", "}"};
+    private boolean isEspecial(String caracter){
+        for (String caracterEspecial: especiales
+             ) {
+            if (caracter.equals(caracterEspecial)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8",
+                                      "9", ".", "x"};
+    private boolean isNumber(String element){
+        for (String num: numeros
+             ) {
+            if (element.equals(num))
+                return true;
+        }
+        return false;
+    }
 }

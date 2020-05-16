@@ -629,6 +629,12 @@ public class MainActivity extends AppCompatActivity {
          */
     }
 
+    public boolean escribeEspecial(String identifier){
+        this.funcion.insertSpecial(identifier);
+        this.resultado.setText(funcion.getEquationToShow());
+        return false;
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public void setBotones(){
         setBotonesNumeros();
@@ -882,6 +888,8 @@ public class MainActivity extends AppCompatActivity {
         pl2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("se");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "^");
@@ -903,6 +911,7 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
 
@@ -911,6 +920,8 @@ public class MainActivity extends AppCompatActivity {
         pl3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("ee");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
                     notacion.add(notacion.size()-posiciones_atras, "^");
@@ -927,6 +938,7 @@ public class MainActivity extends AppCompatActivity {
                 posiciones_atras++;
                 ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
                 return false;
+                 */
             }
         });
 
@@ -935,6 +947,8 @@ public class MainActivity extends AppCompatActivity {
         pl4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("fr");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\frac{");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
@@ -964,6 +978,7 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
 
@@ -972,6 +987,8 @@ public class MainActivity extends AppCompatActivity {
         pl5.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("sr");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\sqrt{");
                     notacion.add(notacion.size()-posiciones_atras, "[]");
@@ -993,6 +1010,7 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
 
@@ -1001,6 +1019,8 @@ public class MainActivity extends AppCompatActivity {
         pl6.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("ro");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\sqrt[");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
@@ -1030,6 +1050,7 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
 
@@ -1038,6 +1059,8 @@ public class MainActivity extends AppCompatActivity {
         pl7.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("pa");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "(");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
@@ -1059,6 +1082,7 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
 
@@ -1067,6 +1091,8 @@ public class MainActivity extends AppCompatActivity {
         pl8.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("de");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\frac{d}{dx}");
                     ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
@@ -1077,6 +1103,7 @@ public class MainActivity extends AppCompatActivity {
                     ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
                     return false;
                 }
+                 */
             }
         });
 
@@ -1085,7 +1112,9 @@ public class MainActivity extends AppCompatActivity {
         pl9.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(atras){
+                return escribeEspecial("ii");
+                /*
+                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\smallint");
                     ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
                     return false;
@@ -1095,6 +1124,7 @@ public class MainActivity extends AppCompatActivity {
                     ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
                     return false;
                 }
+                 */
             }
         });
 
@@ -1104,6 +1134,8 @@ public class MainActivity extends AppCompatActivity {
             // \\int_{\\square}^{\\square}
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                return escribeEspecial("id");
+                /*
                 if(atras){
                     notacion.add(notacion.size()-posiciones_atras, "\\int_{");
                     notacion.add(notacion.size()-posiciones_atras, "\\square");
@@ -1133,6 +1165,7 @@ public class MainActivity extends AppCompatActivity {
                     atras = true;
                     return false;
                 }
+                 */
             }
         });
     }
@@ -1146,11 +1179,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.cambiarPosicion(false);
                 resultado.setText(funcion.getEquationToShow());
+                /*
                 if(posiciones_atras != notacion.size()){
                     posiciones_atras++;
                     atras = true;
                     ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
                 }
+                 */
                 return false;
             }
         });
