@@ -105,7 +105,7 @@ public class Ecuacion {
 
                 // Option 2
                 insert("f\'()");
-                numOfElements += 4;
+                numOfElements += 3;
                 this.position += 2;
                 break;
             case "ii":
@@ -122,7 +122,8 @@ public class Ecuacion {
     }
 
     private void eraseLeft(){
-        if (getElement(position-1).equals("(")){
+        if (getElement(position-1).equals("("))
+        {
             especialDelete();
             int actualPosition = position;
             int parentesis = 1;
@@ -141,7 +142,8 @@ public class Ecuacion {
             }
             position = actualPosition;
         }
-        if (getElement(position-1).equals(")") || getElement(position).equals(")")){
+        if (getElement(position-1).equals(")") || getElement(position).equals(")"))
+        {
             int closeKeys = 1;
             while(closeKeys > 0){
                 especialDelete();
@@ -154,7 +156,9 @@ public class Ecuacion {
                 }
             }
             eraseLeft();
-        } else if (getElement(position-1).equals("}") || getElement(position).equals("}")){
+        }
+        else if (getElement(position-1).equals("}") || getElement(position).equals("}"))
+        {
             int closeKeys = 1;
             especialDelete();
             while(closeKeys > 0){
@@ -169,17 +173,42 @@ public class Ecuacion {
                 }
             }
             eraseLeft();
-        }else if(getElement(position-1).equals("^")){
+        }
+        else if (getElement(position-1).equals("]") || getElement(position).equals("]"))
+        {
+            int closeKeys = 1;
             especialDelete();
-        }else if(getElement(position-1).equals("t") || getElement(position-1).equals("c")){
+            while(closeKeys > 0){
+                if (getElement(position-1).equals("[")){
+                    especialDelete();
+                    closeKeys--;
+                }else if (getElement(position-1).equals("]")){
+                    especialDelete();
+                    closeKeys++;
+                }else{
+                    especialDelete();
+                }
+            }
+            eraseLeft();
+        }
+        else if(getElement(position-1).equals("^"))
+        {
+            especialDelete();
+        }
+        else if(getElement(position-1).equals("t") || getElement(position-1).equals("c"))
+        {
             eraseNElements(5);
-        }else if(getElement(position-1).equals("x") &&
-                 getElement(position-2).equals("d")){
+        }
+        else if(getElement(position-1).equals("x") &&
+                 getElement(position-2).equals("d"))
+        {
             eraseNElements(2);
+            eraseLeft();
         }
     }
 
-    private void eraseNElements(int N){
+    private void eraseNElements(int N)
+    {
         for (int i = 0; i < N; i++) {
             especialDelete();
         }
@@ -358,6 +387,8 @@ public class Ecuacion {
                         position++;
                     }
                 }*/
+            }else{
+                position = numOfElements;
             }
         }
         else
@@ -485,22 +516,30 @@ public class Ecuacion {
     public String getElement(int position){
         if (!this.polinomios.isEmpty())
         {
-            if (position == this.numOfElements){
+            if (position == this.numOfElements || position == this.numOfElements-1){
+                System.out.print("if: 1" + "position: " + position + " element: ");
                 return this.polinomios.getLast().substring(this.polinomios.getLast().length()-1);
-            }else if (position < this.numOfElements){
+            }
+            else if(position == 0){
+                System.out.print("if: 0 " + "position: " + position + " element: ");
+                return polinomios.getFirst().charAt(0) + "";
+            }
+            else {
                 int posiciones = 0;
                 for (int i = 0; i < this.polinomios.size(); i++) {
                     posiciones += polinomios.get(i).length();
-                    if (posiciones == position)
+                    /*if (posiciones == position)
                     {
                         String polinomito = this.polinomios.get(i);
+                        System.out.print("if: 2" + "position: " + position + "element: ");
                         return polinomito.substring(polinomito.length()-1);
                     }
-                    else if(posiciones > position)
+                    else */if(posiciones > position)
                     {
                         posiciones -= polinomios.get(i).length();
                         for (int j = 0; j < polinomios.get(i).length(); j++) {
                             if (posiciones+j == position){
+                                System.out.print("if: 3" + "position: " + position + " element: ");
                                 return polinomios.get(i).charAt(j) + "";
                             }
                         }
@@ -508,6 +547,7 @@ public class Ecuacion {
                 }
             }
         }
+
         return "";
     }
 
@@ -594,8 +634,18 @@ public class Ecuacion {
         return false;
     }
 
+    private void orderEcuation(){
+        System.out.println();
+        for (int i = 0; i < numOfElements; i++) {
+            System.out.print(getElement(i));
+            System.out.println();
+        }
+    }
+
+    // Ejemplo: x²- 3x + 5 - (15x-3)/(2x²-1)
     public void solve(){
-        convertToPolinomial();
+        orderEcuation();
+        // convertToPolinomial();
     }
 
     private void convertToPolinomial(){
