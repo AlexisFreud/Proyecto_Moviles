@@ -72,9 +72,9 @@ public class Ecuacion {
     public void insertSpecial(String identifier){
         switch (identifier) {
             case "fr":
-                insert("%fr[][]%");
-                numOfElements += ("%fr[][]%").length() - 1;
-                this.position += 3;
+                insert("\\frac{}{}");
+                numOfElements += ("\\frac{}{}").length() - 1;
+                this.position += 5;
                 break;
             case "sr":
                 insert("%ro[2][]%");
@@ -126,16 +126,11 @@ public class Ecuacion {
             for (int i = 0; i < this.polinomios.size(); i++) {
                 posiciones += this.polinomios.get(i).length();
                 if (posiciones == this.position) { // Borrar ultimo elemento de String anterior
-                    System.out.println("Entroe a posiciones == position");
                     String polinomito = this.polinomios.get(i);
                     if (polinomito.length() == 1)
                     {
                         this.polinomios.remove(i);
                         break;
-                    }
-                    else if(polinomito.endsWith("%"))
-                    {
-                        System.out.println("Eliminar especial");
                     }
                     else
                     {
@@ -143,7 +138,6 @@ public class Ecuacion {
                         break;
                     }
                 } else if (posiciones > this.position) {
-                    System.out.println("Entro a posiciones > position");
                     String polinomito = this.polinomios.get(i);
                     if (polinomito.length() == 1){
                         this.polinomios.remove(i);
@@ -230,6 +224,10 @@ public class Ecuacion {
                 if (!validPosition(position, right)){
                     cambiarPosicion(right);
                 }
+                if (getElement(position).equals("f")){
+                    position++;
+                    cambiarPosicion(right);
+                }
             }
         }
         else
@@ -238,6 +236,9 @@ public class Ecuacion {
                 position--;
                 if (!validPosition(position, right)){
                     cambiarPosicion(right);
+                }
+                if (getElement(position).equals("f")){
+                    position--;
                 }
             }
         }
@@ -308,7 +309,11 @@ public class Ecuacion {
                 } else {
                     return true;
                 }
-            }else if(position > 0 & getElement(position).equals("{")){
+            }else if(position > 0 & getElement(position).equals("{")) {
+                return false;
+            }else if(getElement(position).equals("}")){
+                return false;
+            }else if(isEspecial(prevElem)){
                 return false;
             }else{
                 return true;
@@ -419,10 +424,11 @@ public class Ecuacion {
             }
         }
         imprimeEcuacion();
+        System.out.println("Ecuacion: "+equation);
         return "$$" + equation + "$$";
     }
 
-    private final String[] especiales = {"^", "{", "}"};
+    private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\"};
     private boolean isEspecial(String caracter){
         for (String caracterEspecial: especiales
              ) {
