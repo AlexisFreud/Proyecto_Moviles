@@ -240,6 +240,7 @@ public class Ecuacion {
                 if (getElement(position).equals("f")){
                     position--;
                 }
+                System.out.println(getElement(position));
             }
         }
         /*
@@ -311,8 +312,6 @@ public class Ecuacion {
                 }
             }else if(position > 0 & getElement(position).equals("{")) {
                 return false;
-            }else if(getElement(position).equals("}")){
-                return false;
             }else if(isEspecial(prevElem)){
                 return false;
             }else{
@@ -330,6 +329,8 @@ public class Ecuacion {
                 }else{
                     return true;
                 }
+            }else if(getElement(position).equals("{")){
+                return false;
             }else if(isEspecial(prevElem)){
                 return false;
             }else{
