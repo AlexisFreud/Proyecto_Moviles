@@ -51,11 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void factorizar(LinkedList<String> equation){
         String result;
-        if (!isHaveX(equation)){
-            this.resultado.setText("Invalido." +
-                    "\nSe necesita una x para factorizar." +
-                    "\nEspere futuras actualizaciones.");
-        }
         try {
             result = factorComun(equation);
             if (!result.equals("")){
@@ -266,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         bt_factorizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                factorizar(notacion);
+                funcion.factorizar();
             }
         });
         polinomios = findViewById(R.id.bt_polinomios);

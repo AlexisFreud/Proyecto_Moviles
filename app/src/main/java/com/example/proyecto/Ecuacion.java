@@ -647,25 +647,17 @@ public class Ecuacion {
         }
         return false;
     }
-    
-    private boolean isNumber(String element){
-        for (String num: numeros
-             ) {
-            if (element.equals(num))
+
+    private boolean isNumber(String str){
+        char[] numsArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
+        for (int i = 0; i < numsArray.length; i++) {
+            if (str.charAt(0) == numsArray[i]){
                 return true;
+            }else if(str.length() > 1 && str.charAt(0) == '-'){
+                return true;
+            }
         }
         return false;
-    }
-
-    private void orderEquation(){
-        printElementAndNumber();
-        LinkedList<String> tokens = equationToTokens();
-        /*for (String s: tokens
-             ) {
-            System.out.print(s + " | ");
-        }
-        System.out.println();*/
-
     }
 
     /*
@@ -718,7 +710,6 @@ public class Ecuacion {
         }
         return tokens;
     }
-    // 5x
 
     private void printElementAndNumber(){
         System.out.println();
@@ -738,13 +729,346 @@ public class Ecuacion {
 
     // Ejemplo: x²- 3x + 5 - (15x-3)/(2x²-1)
     public void solve(){
-        orderEquation();
-        // convertToPolinomial();
+        LinkedList<String> tokens = equationToTokens();
+        /*
+        for (int i = 0; i < tokens.size(); i++) {
+            /*
+            Use PEMDAS for operations order
+            - P: Parentesis
+            - E: Exponentes
+            - M: Multiplicacion
+            - D: Division
+            - A: Adicion
+            - S: Sustraccion
+
+            if (getTypeToken(tokens.get(i)) == 6){
+                // Parentesis
+                int start = i;
+                tokens.remove(i);
+                int parentesis = 1;
+                LinkedList<String> aux = new LinkedList<>();
+                while (getTypeToken(tokens.get(i)) != 6 || parentesis > 0){
+                    if (getTypeToken(tokens.get(i)) == 6){
+                        parentesis++;
+                    }else if(getTypeToken(tokens.get(i)) == 7){
+                        parentesis--;
+                    }
+                    aux.add(tokens.get(i));
+                    tokens.remove(i);
+                }
+                tokens.add(start, algebra(aux));
+            }
+        }*/
+        System.out.println(solve_arithmetic(tokens));
     }
 
-    private void convertToPolinomial(){
+    public String solve_arithmetic(LinkedList<String> equation){
+        /*
+        Use PEMDAS for operations order
+            - P: Parentesis
+            - E: Exponentes
+            - M: Multiplicacion
+            - D: Division
+            - A: Adicion
+            - S: Sustraccion
+         */
+        String finalString = "";
+        LinkedList<String> equationAux = equation;
+        LinkedList<String> operaciones = new LinkedList<>();
+        System.out.println("Before start");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
 
+        // Check for parentesis
+        for (int i = 0; i < equationAux.size(); i++) {
+            if (equationAux.get(i).equals("(")){
+                LinkedList<String> aux = new LinkedList<>();
+                i++;
+                int parentesis = 1;
+                while(parentesis > 0){
+                    if (equationAux.get(i).equals("(")) {
+                        aux.add("(");
+                        parentesis++;
+                        i++;
+                    }else if(equationAux.get(i).equals(")")){
+                        if (parentesis != 1){
+                            aux.add(")");
+                        }
+                        parentesis--;
+                        i++;
+                    }else {
+                        aux.add(equationAux.get(i));
+                        i++;
+                    }
+                }
+                operaciones.add(solve_arithmetic(aux));
+                i--;
+            }
+            else{
+                operaciones.add(equationAux.get(i));
+            }
+        }
+        equationAux = operaciones;
+        operaciones = new LinkedList<>();
+
+        System.out.println("After parentesis");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        // Check for exponents
+        for (int i = 0; i < equationAux.size(); i++) {
+            String exponent = "";
+            if (equationAux.get(i).equals("^")){
+                double num = Double.parseDouble(equationAux.get(i-1));
+                operaciones.remove(i-1);
+                i++;
+                if (equationAux.get(i).equals("{")){
+                    LinkedList<String> aux = new LinkedList<>();
+                    i++;
+                    int parentesis = 1;
+                    while(parentesis > 0){
+                        if (equationAux.get(i).equals("{")) {
+                            aux.add("{");
+                            parentesis++;
+                            i++;
+                        }else if(equationAux.get(i).equals("}")){
+                            if (parentesis != 1){
+                                aux.add("}");
+                            }
+                            parentesis--;
+                            i++;
+                        }else {
+                            aux.add(equationAux.get(i));
+                            i++;
+                        }
+                    }
+                    // operaciones.add(solve_arithmetic(aux));
+                    exponent = solve_arithmetic(aux);
+                    i--;
+                }
+                else{
+                    operaciones.add(equationAux.get(i));
+                }
+                double newNum = Math.pow(num, Double.parseDouble(exponent));
+                operaciones.add(newNum+"");
+            }else{
+                operaciones.add(equationAux.get(i));
+            }
+        }
+
+        equationAux = operaciones;
+        operaciones = new LinkedList<>();
+
+        System.out.println("After exponents");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        if (equationAux.get(0).equals("-")){
+            equationAux.add(0, "0");
+        }
+        System.out.println("After minus");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+
+        // Check for multiplication
+        boolean possible_multiplication = false;
+        double numA = 0;
+        for (int i = 0; i < equationAux.size(); i++) {
+            if (Double.isInfinite(numA)){
+                return "Infinity";
+            }else if(Double.isNaN(numA)){
+                return "Not defined";
+            }
+            if (isNumber(equationAux.get(i)) && possible_multiplication){
+                double numB = Double.parseDouble(equationAux.get(i));
+                numA *= numB;
+            }else if(equationAux.get(i).equals("*")){
+                if (equationAux.get(i+1).equals("-")){
+                    numA *= -1;
+                }else{
+                    double numB = Double.parseDouble(equationAux.get(i+1));
+                    numA *= numB;
+                    i++;
+                }
+            }else if(equationAux.get(i).equals("/")){
+                if (equationAux.get(i+1).equals("-")){
+                    numA *= -1;
+                }else{
+                    double numB = Double.parseDouble(equationAux.get(i+1));
+                    numA /= numB;
+                    i++;
+                }
+            }else if(isNumber(equationAux.get(i))) {
+                possible_multiplication = true;
+                numA = Double.parseDouble(equationAux.get(i));
+            }else if(equationAux.get(i) == "-" && isNumber(equationAux.get(i+1))) {
+                equationAux.set(i, "+");
+                double numC = Double.parseDouble(equationAux.get(i + 1));
+                numC *= -1;
+                equationAux.set(i + 1, numC + "");
+                i--;
+            }else if (possible_multiplication){
+                operaciones.add(numA+"");
+                operaciones.add(equationAux.get(i));
+                possible_multiplication = false;
+            }
+        }
+        if(numA != 0){
+            operaciones.add(numA+"");
+        }
+        equationAux = operaciones;
+        operaciones = new LinkedList<>();
+
+        System.out.println("After multiplication");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        // Check for addition
+        boolean possible_sum = false;
+        numA = 0;
+        System.out.println();
+        for (int i = 0; i < equationAux.size(); i++) {
+            if (isNumber(equationAux.get(i)) && possible_sum){
+                double numB = Double.parseDouble(equationAux.get(i));
+                numA += numB;
+            }else if(equationAux.get(i).equals("+")) {
+                double numB = Double.parseDouble(equationAux.get(i + 1));
+                numA += numB;
+                i++;
+            }else if(equationAux.get(i).equals("-")){
+                double numB = Double.parseDouble(equationAux.get(i+1));
+                numA -= numB;
+                i++;
+            }else if(isNumber(equationAux.get(i))){
+                possible_sum = true;
+                numA = Double.parseDouble(equationAux.get(i));
+            }else if (possible_sum){
+                operaciones.add(numA+"");
+                operaciones.add(equationAux.get(i));
+            }
+        }
+        if(numA != 0){
+            operaciones.add(numA+"");
+        }
+        equationAux = operaciones;
+
+        System.out.println("End");
+        for (int i = 0; i < equationAux.size(); i++) {
+            System.out.print(equationAux.get(i) + " . ");
+        }
+        System.out.println();
+
+        for (int i = 0; i < equationAux.size(); i++) {
+            finalString += equationAux.get(i);
+            System.out.println(equationAux.get(i));
+        }
+        System.out.println("Final string: " + finalString);
+        if (finalString.equals("")){
+            return "0.0";
+        }
+        return finalString;
     }
+
+    private String algebra(LinkedList<String> tokens){
+        String result = "";
+        /*
+            Use PEMDAS for operations order
+            - P: Parentesis
+            - E: Exponentes
+            - M: Multiplicacion
+            - D: Division
+            - A: Adicion
+            - S: Sustraccion
+        */
+
+        // Parentesis
+        for (int i = 0; i < tokens.size(); i++) {
+            if (getTypeToken(tokens.get(i)) == 6){
+                // Parentesis
+                int start = i;
+                int parentesis = 1;
+                LinkedList<String> aux = new LinkedList<>();
+                while (getTypeToken(tokens.get(i)) != 6 || parentesis > 0){
+                    if (getTypeToken(tokens.get(i)) == 6){
+                        parentesis++;
+                    }else if(getTypeToken(tokens.get(i)) == 7){
+                        parentesis--;
+                    }
+                    aux.add(tokens.get(i));
+                    tokens.remove(i);
+                }
+                if (i < tokens.size()-1 & getTypeToken(tokens.get(i+1)) == 1){
+                    // Caso ()^n
+
+                }else{
+                    tokens.add(start, algebra(aux));
+                }
+                i--;
+            }
+        }
+
+        // Exponentes
+
+        // Multiplicacion
+
+        // Division
+
+        // Suma
+
+        // Resta
+
+        return result;
+    }
+
+    private int getTypeToken(String token)
+    {
+        switch (token){
+            case "^":
+                return 1;
+            case "{":
+                return 2;
+            case "}":
+                return 3;
+            case "[":
+                return 4;
+            case "]":
+                return 5;
+            case "(":
+                return 6;
+            case ")":
+                return 7;
+            case "\\frac":
+                return 8;
+            case "\\int":
+                return 9;
+            case "\\int_":
+                return 10;
+            case "f\'":
+                return 11;
+            case "dx":
+                return 12;
+            case "\\sqrt":
+                return 13;
+            case "+":
+                return 14;
+            case "-":
+                return 15;
+            case "*":
+                return 16;
+            default:
+                return 0;
+        }
+    }
+
     /*
     \frac{}{}
     \frac{3x^{2} - 2x }{x^{2}} + f'(2x)
@@ -753,5 +1077,210 @@ public class Ecuacion {
     f'(5x²-(3+5x))
     f' ( 5x ^ { 2 } - ( 3 + 5x ) )
      */
+
+    public String dividePolinomios(){
+        getEquationToTransform();
+        return dividirPolinomios(equationToTokens());
+    }
+
+    private String dividirPolinomios(LinkedList<String> tokens){
+
+        return "";
+    }
+
+    public String factorizar(){
+        getEquationToTransform();
+        return factorizar(equationToTokens());
+    }
+
+    private String factorizar(LinkedList<String> equation){
+        String result;
+        try {
+            result = factorComun(equation);
+            if (!result.equals("")){
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            result = binomioCuadrado(equation);
+            if (!result.equals("")){
+                return result;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            result = diferenciaCuadrados(equation);
+            if (!result.equals("")){
+                return result;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("$$"+"No se puede factorizar"+"$$");
+        return "";
+    }
+
+    private String factorComun(LinkedList<String> equation) throws Exception{
+        LinkedList<String> fixed = new LinkedList<>();
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals("-")){
+                if (i != 0){
+                    if (!equation.get(i-1).equals("(")){
+                        fixed.add("+");
+                    }
+                }
+                fixed.add("-"+equation.get(i+1));
+                i++;
+            }else if(equation.get(i).equals("*")) {
+                continue;
+            }else{
+                fixed.add(equation.get(i));
+            }
+        }
+        for (int i = 0; i < fixed.size(); i++) {
+            System.out.println(fixed.get(i) + " . ");
+        }
+        if (fixed.get(fixed.size()-2).equals("x") && isNumber(fixed.get(fixed.size()-3))) {
+            String aStr = fixed.get(fixed.size()-3);
+            String bStr = fixed.get(2);
+            fixed.set(2, aStr);
+            fixed.set(fixed.size()-3, bStr);
+            fixed.remove(fixed.size()-2);
+            fixed.add(3, "x");
+        }
+        if (!fixed.getLast().equals(")")){
+            return "";
+        }
+        // Fixed is now of the form c(ax+b)
+        double c = Double.parseDouble(fixed.getFirst());
+        double a = Double.parseDouble(fixed.get(2));
+        double b = Double.parseDouble(fixed.get(5));
+        return c*a+"x+"+c*b;
+    }
+
+    private String binomioCuadrado(LinkedList<String> equation) throws Exception{
+        LinkedList<String> fixed = new LinkedList<>();
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals("-")){
+                if (i != 0){
+                    fixed.add("+");
+                }
+                fixed.add("-"+equation.get(i+1));
+                i++;
+            }else if(equation.get(i).equals("\\times")){
+                continue;
+            }else{
+                fixed.add(equation.get(i));
+            }
+        }
+        if(fixed.getLast().equals("2") && fixed.get(fixed.size()-2).equals("^")){
+            if(fixed.get(fixed.size()-6).equals("x") && fixed.get(fixed.size()-7).equals("(")) {
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-4)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-4));
+                b = b*b;
+                return x+"+"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-6).equals("-x") && fixed.get(fixed.size()-8).equals("(")){
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-4)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-4));
+                b = b*b;
+                return x+"+-"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-6).equals("x")){
+                double a = Double.parseDouble(fixed.get(fixed.size()-7));
+                a = a*a;
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-4))*Double.parseDouble(fixed.get(fixed.size()-7)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-4));
+                b = b*b;
+                return a+x+"+"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-4).equals("-x") && fixed.get(fixed.size()-2).equals("^") && ((fixed.get(fixed.size()-5).equals("+")) || fixed.get(fixed.size()-5).equals("-"))){
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-7)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-7));
+                b = b*b;
+                return x+"+-"+ab2+"+"+b;
+            }
+            else if(fixed.get(fixed.size()-4).equals("x") && fixed.get(fixed.size()-2).equals("^")){
+                double a = Double.parseDouble(fixed.get(fixed.size()-5));
+                a = a*a;
+                String x = "x^2";
+                String ab2 = (Double.parseDouble(fixed.get(fixed.size()-5))*Double.parseDouble(fixed.get(fixed.size()-7)))*2+"x";
+                double b = Double.parseDouble(fixed.get(fixed.size()-7));
+                b = b*b;
+                return a+x+"+"+ab2+"+"+b;
+            }
+
+        }
+        return "";
+    }
+
+    private String diferenciaCuadrados(LinkedList<String> equation) throws Exception{
+        LinkedList<String> fixed = new LinkedList<>();
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals("-")){
+                if (i != 0){
+                    fixed.add("+");
+                }
+                fixed.add("-"+equation.get(i+1));
+                i++;
+            }else if(equation.get(i).equals("\\times")){
+                continue;
+            }else{
+                fixed.add(equation.get(i));
+            }
+        }
+        if(fixed.getLast().equals("2") && fixed.get(fixed.size() - 2).equals("^") && fixed.get(fixed.size()-3).equals("x") && Double.parseDouble(fixed.get(fixed.size()-4)) < 0){
+            double b = Math.abs(Double.parseDouble(fixed.get(fixed.size()-4)));
+            double a = Double.parseDouble(fixed.get(fixed.size()-6));
+            if(cuadrado(a,b)){
+                return "("+Math.sqrt(a)+"-"+Math.sqrt(b)+"x) ("+Math.sqrt(a)+"+"+Math.sqrt(b)+"x)";
+            }
+            else{
+                return "";
+            }
+        }
+        else if(fixed.get(fixed.size()-3).equals("2") && fixed.get(fixed.size()-4).equals("^") && fixed.get(fixed.size()-4).equals("x") && Double.parseDouble(fixed.getLast()) < 0){
+            double b = Math.abs(Double.parseDouble(fixed.getLast()));
+            double a = Double.parseDouble(fixed.getFirst());
+            if(cuadrado(a,b)){
+                String s = "(" + Math.sqrt(a) + "x -" + Math.sqrt(b) + ") (" + Math.sqrt(a) + "x +" + Math.sqrt(b) + ")";
+                return s;
+            }
+            else{
+                return "";
+            }
+        }
+        else if(Double.parseDouble(fixed.getFirst()) < 0 && fixed.getLast().equals("2") && fixed.get(fixed.size()-2).equals("^") && fixed.get(fixed.size()-3).equals("x") && fixed.get(fixed.size()-5).equals("+")){
+            double b = Math.abs(Double.parseDouble(fixed.getFirst()));
+            double a = Double.parseDouble(fixed.get(fixed.size()-4));
+            if(cuadrado(a,b)){
+                String s = "(" + Math.sqrt(a) + "x -" + Math.sqrt(b) + ") (" + Math.sqrt(a) + "x +" + Math.sqrt(b) + ")";
+                return s;
+            }
+        }
+        else if(Double.parseDouble(fixed.getFirst()) < 0 && fixed.get(fixed.size()-2).equals("+") && fixed.get(fixed.size()-3).equals("2") && fixed.get(fixed.size()-4).equals("^") && fixed.get(fixed.size()-5).equals("x")){
+            double a = Double.parseDouble(fixed.getLast());
+            double b = Math.abs(Double.parseDouble(fixed.getFirst()));
+            if(cuadrado(a,b)){
+                String s = "(" + Math.sqrt(a) + " -" + Math.sqrt(b) + "x ) (" + Math.sqrt(a) + " +" + Math.sqrt(b) + "x )";
+                return s;
+            }
+        }
+        return "";
+    }
+
+    private boolean cuadrado(double a, double b){
+        if(Math.floor(Math.sqrt(b)) == Math.sqrt(b) && Math.floor(Math.sqrt(a)) == Math.sqrt(a)){
+            return true;
+        }
+        return false;
+    }
 }
 
