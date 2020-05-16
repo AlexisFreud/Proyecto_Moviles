@@ -6,16 +6,12 @@ public class Ecuacion {
     private LinkedList<String> polinomios;
     private int numOfElements;
     private int position;
-    public static final String[] signos = {"+", "-", "*", "/"};
+    private final String[] signos = {"+", "-", "*", "/"};
+    private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\", "s", "q", "t",
+                                         "i", "n", "[", "]", "%", "\'", "b", "_"};
+    private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "x"};
+    
     /*
-    Estilo:
-        - Para escribir caracteres especiales se escriben entre %.
-          Ejemplo 1: x^n se traduce en
-                    polinomios = {x%e[n]%}
-          Ejemplo 2: ((ax+b)/(cx))/(dx+e) se traduce en
-                    polinomios = {%d[%d[ax+b][cx]%][dx+e]%}
-     */
-        /*
     Nota:
         Lista de simbolos para funciones especiales:
             - fr:  fraccion
@@ -83,7 +79,7 @@ public class Ecuacion {
                 break;
             case "ro":
                 insert("\\sqrt[]{}");
-                numOfElements += "\\sqrt[]{}".length() - 1;
+                numOfElements += "\\sqrt{}{}".length() - 1;
                 this.position += 5;
                 break;
             case "ee":
@@ -101,20 +97,91 @@ public class Ecuacion {
                 this.numOfElements++;
                 break;
             case "de":
-                insert("%de[]%");
-                numOfElements += "%de[]%".length()-1;
-                this.position += 3;
+                // Option 1
+                /*insert("%\\frac{d}{dx}%()");
+                numOfElements += "%\\frac{d}{dx}%()".length()-1;
+                this.position += 14;
+                break;*/
+
+                // Option 2
+                insert("f\'()");
+                numOfElements += 4;
+                this.position += 2;
                 break;
             case "ii":
-                insert("%ii[]%");
-                numOfElements += "%ii[]%".length()-1;
+                insert("\\int()dx");
+                numOfElements += "\\int()dx".length()-1;
                 this.position += 4;
                 break;
             case "id":
-                insert("%id[][][]%");
-                numOfElements += "%id[][][]%".length()-1;
-                this.position += 3;
+                insert("\\int_{}^{}()dx");
+                numOfElements += "\\int_{}^{}()dx".length()-1;
+                this.position += 8;
                 break;
+        }
+    }
+
+    private void eraseLeft(){
+        if (getElement(position-1).equals("(")){
+            especialDelete();
+            int actualPosition = position;
+            int parentesis = 1;
+            while (parentesis > 0){
+                position++;
+                if (getElement(position-1).equals("(")){
+                    parentesis++;
+                }else if(getElement(position-1).equals(")")){
+                    if (parentesis == 1){
+                        parentesis--;
+                        especialDelete();
+                    }else{
+                        parentesis--;
+                    }
+                }
+            }
+            position = actualPosition;
+        }
+        if (getElement(position-1).equals(")") || getElement(position).equals(")")){
+            int closeKeys = 1;
+            while(closeKeys > 0){
+                especialDelete();
+                if (getElement(position-1).equals("(")){
+                    especialDelete();
+                    closeKeys--;
+                }else if (getElement(position-1).equals(")")){
+                    especialDelete();
+                    closeKeys++;
+                }
+            }
+            eraseLeft();
+        } else if (getElement(position-1).equals("}") || getElement(position).equals("}")){
+            int closeKeys = 1;
+            especialDelete();
+            while(closeKeys > 0){
+                if (getElement(position-1).equals("{")){
+                    especialDelete();
+                    closeKeys--;
+                }else if (getElement(position-1).equals("}")){
+                    especialDelete();
+                    closeKeys++;
+                }else{
+                    especialDelete();
+                }
+            }
+            eraseLeft();
+        }else if(getElement(position-1).equals("^")){
+            especialDelete();
+        }else if(getElement(position-1).equals("t") || getElement(position-1).equals("c")){
+            eraseNElements(5);
+        }else if(getElement(position-1).equals("x") &&
+                 getElement(position-2).equals("d")){
+            eraseNElements(2);
+        }
+    }
+
+    private void eraseNElements(int N){
+        for (int i = 0; i < N; i++) {
+            especialDelete();
         }
     }
 
@@ -122,6 +189,11 @@ public class Ecuacion {
     {
         if (position != 0 && numOfElements != 0)
         {
+            if (isSpecialToErase(position-1)){
+                // Borra todo el caracter especial
+                eraseLeft();
+                return;
+            }
             int posiciones = 0;         // Numero de chars totales
             for (int i = 0; i < this.polinomios.size(); i++) {
                 posiciones += this.polinomios.get(i).length();
@@ -157,9 +229,54 @@ public class Ecuacion {
         }
     }
 
-    private void especialDelete(int i, String polinomito)
-    {
+    private void especialDelete(){
+        if (position != 0 && numOfElements != 0)
+        {
+            int posiciones = 0;         // Numero de chars totales
+            for (int i = 0; i < this.polinomios.size(); i++) {
+                posiciones += this.polinomios.get(i).length();
+                if (posiciones == position) { // Borrar ultimo elemento de String anterior
+                    String polinomito = this.polinomios.get(i);
+                    if (polinomito.length() == 1)
+                    {
+                        this.polinomios.remove(i);
+                        break;
+                    }
+                    else
+                    {
+                        this.polinomios.set(i, polinomito.substring(0, polinomito.length()-1));
+                        break;
+                    }
+                } else if (posiciones > position) {
+                    String polinomito = this.polinomios.get(i);
+                    if (polinomito.length() == 1){
+                        this.polinomios.remove(i);
+                        break;
+                    }else{
+                        posiciones -= this.polinomios.get(i).length();
+                        int posicionString = position-posiciones;
+                        String substringA = polinomito.substring(0, posicionString-1);
+                        String substringB = polinomito.substring(posicionString);
+                        this.polinomios.set(i, substringA+substringB);
+                        break;
+                    }
+                }
+            }
+            numOfElements--;
+            position--;
+        }
+    }
 
+    private boolean isSpecialToErase(int position){
+        String[] erasesableChars = {"(", ")", "{", "}"};
+        String character = getElement(position);
+        for (String c: erasesableChars
+             ) {
+            if (character.equals(c)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void insertInside(String element, int listPosition, int stringPosition)
@@ -230,7 +347,17 @@ public class Ecuacion {
                 }else if (getElement(position).equals("s")){
                     position++;
                     cambiarPosicion(right);
+                }else if(getElement(position).equals("d")){
+                    position += 2;
+                }else if(getElement(position).equals("i")){
+                    position++;
+                    cambiarPosicion(right);
                 }
+                /*else if(getElement(position).equals("%")){
+                    while (!getElement(position).equals("%")){
+                        position++;
+                    }
+                }*/
             }
         }
         else
@@ -244,8 +371,15 @@ public class Ecuacion {
                     position--;
                 }else if (getElement(position).equals("s")){
                     position--;
+                }else if(getElement(position).equals("i")){
+                    position--;
+                }else if(getElement(position).equals("x") &&
+                        getElement(position-1).equals("d")){
+                    position -= 2;
                 }
-                System.out.println(getElement(position));
+                if (position < 0){
+                    position = 0;
+                }
             }
         }
         /*
@@ -317,7 +451,9 @@ public class Ecuacion {
                 }
             }else if(position > 0 & getElement(position).equals("{")) {
                 return false;
-            }else if(isEspecial(prevElem)){
+            }else if(isEspecial(prevElem)) {
+                return false;
+            }else if(getElement(position).equals("\'")){
                 return false;
             }else{
                 return true;
@@ -338,6 +474,8 @@ public class Ecuacion {
                 return false;
             }else if(isEspecial(prevElem)){
                 return false;
+            }else if(getElement(position).equals("\'")){
+                return false;
             }else{
                 return true;
             }
@@ -347,7 +485,9 @@ public class Ecuacion {
     public String getElement(int position){
         if (!this.polinomios.isEmpty())
         {
-            if (position < this.numOfElements){
+            if (position == this.numOfElements){
+                return this.polinomios.getLast().substring(this.polinomios.getLast().length()-1);
+            }else if (position < this.numOfElements){
                 int posiciones = 0;
                 for (int i = 0; i < this.polinomios.size(); i++) {
                     posiciones += polinomios.get(i).length();
@@ -390,7 +530,7 @@ public class Ecuacion {
         {
             for (int i = 0; i < polinomios.size(); i++)
             {
-                System.out.println(polinomios.get(i) + " ");
+                System.out.print(polinomios.get(i) + " ");
             }
             System.out.println();
         }
@@ -430,12 +570,11 @@ public class Ecuacion {
             }
         }
         imprimeEcuacion();
+        // equation = equation.replace("%", "");
         System.out.println("Ecuacion: "+equation);
         return "$$" + equation + "$$";
     }
-
-    private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\",
-                                            "s", "q", "t", "[", "]"};
+    
     private boolean isEspecial(String caracter){
         for (String caracterEspecial: especiales
              ) {
@@ -445,9 +584,7 @@ public class Ecuacion {
         }
         return false;
     }
-
-    private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8",
-                                      "9", ".", "x"};
+    
     private boolean isNumber(String element){
         for (String num: numeros
              ) {
@@ -456,4 +593,13 @@ public class Ecuacion {
         }
         return false;
     }
+
+    public void solve(){
+        convertToPolinomial();
+    }
+
+    private void convertToPolinomial(){
+
+    }
 }
+
