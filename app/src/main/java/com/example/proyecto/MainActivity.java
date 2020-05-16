@@ -798,7 +798,7 @@ public class MainActivity extends AppCompatActivity {
         op5.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return operadoresBasicos("/");
+                return operadoresBasicos("fr");
             }
         });
 

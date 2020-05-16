@@ -77,14 +77,14 @@ public class Ecuacion {
                 this.position += 5;
                 break;
             case "sr":
-                insert("%ro[2][]%");
-                numOfElements += "%ro[2][]%".length() - 1;
-                this.position += 6;
+                insert("\\sqrt[2]{}");
+                numOfElements += "\\sqrt[2]{}".length() - 1;
+                this.position += 8;
                 break;
             case "ro":
-                insert("%ro[][]%");
-                numOfElements += "%ro[][]%".length() - 1;
-                this.position += 3;
+                insert("\\sqrt[]{}");
+                numOfElements += "\\sqrt[]{}".length() - 1;
+                this.position += 5;
                 break;
             case "ee":
                 insert("^{}");
@@ -227,6 +227,9 @@ public class Ecuacion {
                 if (getElement(position).equals("f")){
                     position++;
                     cambiarPosicion(right);
+                }else if (getElement(position).equals("s")){
+                    position++;
+                    cambiarPosicion(right);
                 }
             }
         }
@@ -238,6 +241,8 @@ public class Ecuacion {
                     cambiarPosicion(right);
                 }
                 if (getElement(position).equals("f")){
+                    position--;
+                }else if (getElement(position).equals("s")){
                     position--;
                 }
                 System.out.println(getElement(position));
@@ -302,7 +307,7 @@ public class Ecuacion {
         if (right)
         {
             String prevElem = getElement(position-1);
-            if (prevElem.equals("{")){
+            if (prevElem.equals("{") || prevElem.equals("[")){
                 return true;
             }else if(prevElem.equals("}")) {
                 if (position > 0 & getElement(position).equals("{")) {
@@ -321,7 +326,7 @@ public class Ecuacion {
         else
         {
             String prevElem = getElement(position-1);
-            if (prevElem.equals("{")){
+            if (prevElem.equals("{") || prevElem.equals("[")){
                 return true;
             }else if(prevElem.equals("}")){
                 if (position < numOfElements & getElement(position).equals("{")) {
@@ -429,7 +434,8 @@ public class Ecuacion {
         return "$$" + equation + "$$";
     }
 
-    private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\"};
+    private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\",
+                                            "s", "q", "t", "[", "]"};
     private boolean isEspecial(String caracter){
         for (String caracterEspecial: especiales
              ) {
