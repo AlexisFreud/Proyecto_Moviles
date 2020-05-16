@@ -10,6 +10,7 @@ public class Ecuacion {
     private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\", "s", "q", "t",
                                          "i", "n", "[", "]", "%", "\'", "b", "_"};
     private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "x"};
+    private String equationToTransform;
     
     /*
     Nota:
@@ -97,13 +98,6 @@ public class Ecuacion {
                 this.numOfElements++;
                 break;
             case "de":
-                // Option 1
-                /*insert("%\\frac{d}{dx}%()");
-                numOfElements += "%\\frac{d}{dx}%()".length()-1;
-                this.position += 14;
-                break;*/
-
-                // Option 2
                 insert("f\'()");
                 numOfElements += 3;
                 this.position += 2;
@@ -116,7 +110,7 @@ public class Ecuacion {
             case "id":
                 insert("\\int_{}^{}()dx");
                 numOfElements += "\\int_{}^{}()dx".length()-1;
-                this.position += 8;
+                this.position += 11;
                 break;
         }
     }
@@ -140,9 +134,14 @@ public class Ecuacion {
                     }
                 }
             }
+            if (getElement(position).equals("d")){
+                position += 2;
+                eraseNElements(2);
+            }
             position = actualPosition;
+            eraseLeft();
         }
-        if (getElement(position-1).equals(")") || getElement(position).equals(")"))
+        else if (getElement(position-1).equals(")") || getElement(position).equals(")"))
         {
             int closeKeys = 1;
             while(closeKeys > 0){
@@ -202,6 +201,25 @@ public class Ecuacion {
         else if(getElement(position-1).equals("x") &&
                  getElement(position-2).equals("d"))
         {
+            int N = 2;
+            int auxPos = position-2;
+            int integrales = 1;
+            while(integrales > 0){
+                if(getElement(auxPos).equals("x") &&
+                        getElement(auxPos-1).equals("d"))
+                {
+                    integrales++;
+                }else if(getElement(auxPos).equals("i") &&
+                        getElement(auxPos-1).equals("\\"))
+                {
+                    integrales--;
+                }
+                auxPos--;
+                N++;
+            }
+            eraseNElements(N);
+            eraseLeft();
+        }else if(getElement(position-1).equals("\'")){
             eraseNElements(2);
             eraseLeft();
         }
@@ -304,6 +322,11 @@ public class Ecuacion {
             if (character.equals(c)){
                 return true;
             }
+        }
+        if(character.equals("x") &&
+                getElement(position-1).equals("d"))
+        {
+            return true;
         }
         return false;
     }
@@ -517,11 +540,11 @@ public class Ecuacion {
         if (!this.polinomios.isEmpty())
         {
             if (position == this.numOfElements || position == this.numOfElements-1){
-                System.out.print("if: 1" + "position: " + position + " element: ");
+                System.out.print("if: 1" + " position: " + position + " element: ");
                 return this.polinomios.getLast().substring(this.polinomios.getLast().length()-1);
             }
             else if(position == 0){
-                System.out.print("if: 0 " + "position: " + position + " element: ");
+                System.out.print("if: 0 " + " position: " + position + " element: ");
                 return polinomios.getFirst().charAt(0) + "";
             }
             else {
@@ -539,7 +562,7 @@ public class Ecuacion {
                         posiciones -= polinomios.get(i).length();
                         for (int j = 0; j < polinomios.get(i).length(); j++) {
                             if (posiciones+j == position){
-                                System.out.print("if: 3" + "position: " + position + " element: ");
+                                System.out.print("if: 3" + " position: " + position + " element: ");
                                 return polinomios.get(i).charAt(j) + "";
                             }
                         }
@@ -634,7 +657,70 @@ public class Ecuacion {
         return false;
     }
 
-    private void orderEcuation(){
+    private void orderEquation(){
+        printElementAndNumber();
+        LinkedList<String> tokens = equationToTokens();
+        /*for (String s: tokens
+             ) {
+            System.out.print(s + " | ");
+        }
+        System.out.println();*/
+
+    }
+
+    /*
+        insert("\\frac{}{}");
+        insert("\\sqrt[2]{}");
+        insert("\\sqrt[]{}");
+        insert("\\int()dx");
+        insert("\\int_{}^{}()dx");
+
+        insert("^{}");
+        insert("^{2}");
+        insert("()");
+        insert("f\'()");
+     */
+
+    private LinkedList<String> equationToTokens(){
+        getEquationToTransform();
+        LinkedList<String> tokens = new LinkedList<>();
+        char[] equation = equationToTransform.toCharArray();
+        boolean sameNumber = false;
+        for (int i = 0; i < equation.length; i++) {
+            if (equation[i] == '\\'){
+                sameNumber = false;
+                String s = "";
+                s += equation[i];
+                i++;
+                while (equation[i] != '{' & equation[i] != '[' & equation[i] != '('){
+                    s += equation[i];
+                    i++;
+                }
+                i--;
+                tokens.add(s);
+            }else if(equation[i] == '{' || equation[i] == '[' || equation[i] == '(' ||
+                    equation[i] == '}' || equation[i] == ']' || equation[i] == ')' ||
+                    equation[i] == '^' || isSigno(""+equation[i])) {
+                tokens.add(equation[i] + "");
+                sameNumber = false;
+            }else if (equation[i] == 'd' || equation[i] == 'f'){
+                tokens.add(equation[i] + "" + equation[i+1]);
+                i++;
+                sameNumber = false;
+            }else if (sameNumber){
+                int listSize = tokens.size();
+                String s = tokens.getLast() + equation[i];
+                tokens.set(listSize-1, s);
+            }else{
+                sameNumber = true;
+                tokens.add(equation[i]+"");
+            }
+        }
+        return tokens;
+    }
+    // 5x
+
+    private void printElementAndNumber(){
         System.out.println();
         for (int i = 0; i < numOfElements; i++) {
             System.out.print(getElement(i));
@@ -642,14 +728,30 @@ public class Ecuacion {
         }
     }
 
+    private void getEquationToTransform(){
+        equationToTransform = "";
+        for (String s: this.polinomios
+             ) {
+            equationToTransform += s;
+        }
+    }
+
     // Ejemplo: x²- 3x + 5 - (15x-3)/(2x²-1)
     public void solve(){
-        orderEcuation();
+        orderEquation();
         // convertToPolinomial();
     }
 
     private void convertToPolinomial(){
 
     }
+    /*
+    \frac{}{}
+    \frac{3x^{2} - 2x }{x^{2}} + f'(2x)
+    \frac  {  3x  ^   {  2   }   -   2x  }    {  x   ^    {  2   }   }   +   f'(  2x  )
+
+    f'(5x²-(3+5x))
+    f' ( 5x ^ { 2 } - ( 3 + 5x ) )
+     */
 }
 
