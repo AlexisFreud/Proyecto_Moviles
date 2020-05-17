@@ -10,6 +10,7 @@ public class Ecuacion {
     private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\", "s", "q", "t",
                                          "i", "n", "[", "]", "%", "\'", "b", "_"};
     private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "x"};
+
     
     /*
     Nota:
