@@ -1,5 +1,6 @@
 package com.example.proyecto;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Ecuacion {
@@ -778,7 +779,7 @@ public class Ecuacion {
         System.out.println(solve_arithmetic(tokens));
     }
 
-    public String solve_arithmetic(LinkedList<String> equation){
+    public String solve_arithmetic(LinkedList<String> equation) {
         /*
         Use PEMDAS for operations order
             - P: Parentesis
@@ -799,30 +800,29 @@ public class Ecuacion {
 
         // Check for parentesis
         for (int i = 0; i < equationAux.size(); i++) {
-            if (equationAux.get(i).equals("(")){
+            if (equationAux.get(i).equals("(")) {
                 LinkedList<String> aux = new LinkedList<>();
                 i++;
                 int parentesis = 1;
-                while(parentesis > 0){
+                while (parentesis > 0) {
                     if (equationAux.get(i).equals("(")) {
                         aux.add("(");
                         parentesis++;
                         i++;
-                    }else if(equationAux.get(i).equals(")")){
-                        if (parentesis != 1){
+                    } else if (equationAux.get(i).equals(")")) {
+                        if (parentesis != 1) {
                             aux.add(")");
                         }
                         parentesis--;
                         i++;
-                    }else {
+                    } else {
                         aux.add(equationAux.get(i));
                         i++;
                     }
                 }
                 operaciones.add(solve_arithmetic(aux));
                 i--;
-            }
-            else{
+            } else {
                 operaciones.add(equationAux.get(i));
             }
         }
@@ -838,26 +838,26 @@ public class Ecuacion {
         // Check for exponents
         for (int i = 0; i < equationAux.size(); i++) {
             String exponent = "";
-            if (equationAux.get(i).equals("^") && isNumber(equationAux.get(i-1))){
-                double num = Double.parseDouble(equationAux.get(i-1));
-                operaciones.remove(operaciones.size()-1);
+            if (equationAux.get(i).equals("^") && isNumber(equationAux.get(i - 1))) {
+                double num = Double.parseDouble(equationAux.get(i - 1));
+                operaciones.remove(operaciones.size() - 1);
                 i++;
-                if (equationAux.get(i).equals("{")){
+                if (equationAux.get(i).equals("{")) {
                     LinkedList<String> aux = new LinkedList<>();
                     i++;
                     int parentesis = 1;
-                    while(parentesis > 0){
+                    while (parentesis > 0) {
                         if (equationAux.get(i).equals("{")) {
                             aux.add("{");
                             parentesis++;
                             i++;
-                        }else if(equationAux.get(i).equals("}")){
-                            if (parentesis != 1){
+                        } else if (equationAux.get(i).equals("}")) {
+                            if (parentesis != 1) {
                                 aux.add("}");
                             }
                             parentesis--;
                             i++;
-                        }else {
+                        } else {
                             aux.add(equationAux.get(i));
                             i++;
                         }
@@ -865,46 +865,44 @@ public class Ecuacion {
                     // operaciones.add(solve_arithmetic(aux));
                     exponent = solve_arithmetic(aux);
                     i--;
-                }
-                else{
+                } else {
                     operaciones.add(equationAux.get(i));
                 }
                 double newNum = Math.pow(num, Double.parseDouble(exponent));
-                operaciones.add(newNum+"");
-            } else if(equationAux.get(i).equals("^") && hasX(equationAux.get(i-1))){
-                    System.out.println(":"+equationAux.get(i-1));
-                    String valorX = equationAux.get(i-1);
-                    operaciones.remove(operaciones.size()-1);
+                operaciones.add(newNum + "");
+            } else if (equationAux.get(i).equals("^") && hasX(equationAux.get(i - 1))) {
+                System.out.println(":" + equationAux.get(i - 1));
+                String valorX = equationAux.get(i - 1);
+                operaciones.remove(operaciones.size() - 1);
+                i++;
+                if (equationAux.get(i).equals("{")) {
+                    LinkedList<String> aux = new LinkedList<>();
                     i++;
-                    if(equationAux.get(i).equals("{")){
-                        LinkedList<String> aux = new LinkedList<>();
-                        i++;
-                        int parentesis = 1;
-                        while(parentesis > 0){
-                            if(equationAux.get(i).equals("{")){
-                                aux.add("{");
-                                parentesis++;
-                                i++;
-                            } else if(equationAux.get(i).equals("}")){
-                                if(parentesis != 1){
-                                    aux.add("}");
-                                }
-                                parentesis--;
-                                i++;
-                            } else {
-                                aux.add(equationAux.get(i));
-                                i++;
+                    int parentesis = 1;
+                    while (parentesis > 0) {
+                        if (equationAux.get(i).equals("{")) {
+                            aux.add("{");
+                            parentesis++;
+                            i++;
+                        } else if (equationAux.get(i).equals("}")) {
+                            if (parentesis != 1) {
+                                aux.add("}");
                             }
+                            parentesis--;
+                            i++;
+                        } else {
+                            aux.add(equationAux.get(i));
+                            i++;
                         }
-                        exponent = solve_arithmetic(aux);
-                        i--;
                     }
-                    else {
-                        operaciones.add(equationAux.get(i));
-                    }
-                    String newNum = valorX+"^"+exponent;
+                    exponent = solve_arithmetic(aux);
+                    i--;
+                } else {
+                    operaciones.add(equationAux.get(i));
+                }
+                String newNum = valorX + "^" + exponent;
 
-                    operaciones.add(newNum);
+                operaciones.add(newNum);
             } else {
                 operaciones.add(equationAux.get(i));
             }
@@ -919,108 +917,144 @@ public class Ecuacion {
         }
         System.out.println();
 
-        if (equationAux.get(0).equals("-")){
-            if(isNumber(equationAux.get(1))){
+        if (equationAux.get(0).equals("-")) {
+            if (isNumber(equationAux.get(1))) {
                 equationAux.add(0, "0");
             }
-            if(hasX(equationAux.get(1))){
+            if (hasX(equationAux.get(1))) {
                 equationAux.removeFirst();
-                equationAux.set(0, "-"+equationAux.getFirst());
+                equationAux.set(0, "-" + equationAux.getFirst());
             }
         }
+
         System.out.println("After minus");
         for (int i = 0; i < equationAux.size(); i++) {
             System.out.print(equationAux.get(i) + " . ");
         }
         System.out.println();
 
-        // Check for multiplication
-        boolean possible_multiplication = false;
-        double numA = 0;
-        for (int i = 0; i < equationAux.size(); i++) {
-            if (Double.isInfinite(numA)){
-                return "Infinity";
-            }else if(Double.isNaN(numA)){
-                return "Not defined";
+        LinkedList<String> withX = new LinkedList<>();
+
+        if(equationAux.size() == 1){
+            if(hasX(equationAux.getFirst())){
+                withX.add(equationAux.getFirst());
+                equationAux.remove();
             }
-            if (isNumber(equationAux.get(i)) && possible_multiplication){
-                double numB = Double.parseDouble(equationAux.get(i));
-                numA *= numB;
-            }else if(equationAux.get(i).equals("*")){
-                if (equationAux.get(i+1).equals("-")){
-                    if(isNumber(equationAux.get(i+2))){
-                        numA *= -1;
-                    }
-                }else{
-                    if(isNumber(equationAux.get(i+1))){
-                        double numB = Double.parseDouble(equationAux.get(i+1));
-                        numA *= numB;
-                        i++;
-                    }
-                }
-            }else if(equationAux.get(i).equals("/")){
-                if (equationAux.get(i+1).equals("-")){
-                    numA *= -1;
-                }else{
-                    double numB = Double.parseDouble(equationAux.get(i+1));
-                    numA /= numB;
+        } else {
+            for (int i = 0; i < equationAux.size(); i++) {
+                if(equationAux.getFirst().equals("0") && equationAux.get(i+1).equals("-")){
+                    i++;
                     i++;
                 }
-            }else if(isNumber(equationAux.get(i))) {
-                possible_multiplication = true;
-                numA = Double.parseDouble(equationAux.get(i));
-            }else if(equationAux.get(i) == "-" && isNumber(equationAux.get(i+1))) {
-                equationAux.set(i, "+");
-                double numC = Double.parseDouble(equationAux.get(i + 1));
-                numC *= -1;
-                equationAux.set(i + 1, numC + "");
-                i--;
-            }else if (possible_multiplication){
-                operaciones.add(numA+"");
-                operaciones.add(equationAux.get(i));
-                possible_multiplication = false;
+                if (hasX(equationAux.get(i))) {
+                    withX.add(equationAux.get(i));
+                    equationAux.remove(i);
+                    if(i-1 >= 0) {
+                        if (isSigno(equationAux.get(i - 1))) {
+                            withX.add(equationAux.get(i - 1));
+                            equationAux.remove(i - 1);
+                        }
+                    }
+                }
             }
         }
-        if(numA != 0){
-            operaciones.add(numA+"");
-        }
-        equationAux = operaciones;
-        operaciones = new LinkedList<>();
 
-        System.out.println("After multiplication");
-        for (int i = 0; i < equationAux.size(); i++) {
-            System.out.print(equationAux.get(i) + " . ");
-        }
-        System.out.println();
+        System.out.println(equationAux.toString());
+        System.out.println(withX.toString());
 
-        // Check for addition
-        boolean possible_sum = false;
-        numA = 0;
-        System.out.println();
-        for (int i = 0; i < equationAux.size(); i++) {
-            if (isNumber(equationAux.get(i)) && possible_sum){
-                double numB = Double.parseDouble(equationAux.get(i));
-                numA += numB;
-            }else if(equationAux.get(i).equals("+")) {
-                double numB = Double.parseDouble(equationAux.get(i + 1));
-                numA += numB;
-                i++;
-            }else if(equationAux.get(i).equals("-")){
-                double numB = Double.parseDouble(equationAux.get(i+1));
-                numA -= numB;
-                i++;
-            }else if(isNumber(equationAux.get(i))){
-                possible_sum = true;
-                numA = Double.parseDouble(equationAux.get(i));
-            }else if (possible_sum){
-                operaciones.add(numA+"");
-                operaciones.add(equationAux.get(i));
+        if(!equationAux.isEmpty()){
+            // Check for multiplication
+            boolean possible_multiplication = false;
+            double numA = 0;
+            for (int i = 0; i < equationAux.size(); i++) {
+                if (Double.isInfinite(numA)) {
+                    return "Infinity";
+                } else if (Double.isNaN(numA)) {
+                    return "Not defined";
+                }
+                if (isNumber(equationAux.get(i)) && possible_multiplication) {
+                    double numB = Double.parseDouble(equationAux.get(i));
+                    numA *= numB;
+                } else if (equationAux.get(i).equals("*")) {
+                    if (equationAux.get(i + 1).equals("-")) {
+                        if (isNumber(equationAux.get(i + 2))) {
+                            numA *= -1;
+                        }
+                    } else {
+                        if (isNumber(equationAux.get(i + 1))) {
+                            double numB = Double.parseDouble(equationAux.get(i + 1));
+                            numA *= numB;
+                            i++;
+                        }
+                    }
+                } else if (equationAux.get(i).equals("/")) {
+                    if (equationAux.get(i + 1).equals("-")) {
+                        numA *= -1;
+                    } else {
+                        double numB = Double.parseDouble(equationAux.get(i + 1));
+                        numA /= numB;
+                        i++;
+                    }
+                } else if (isNumber(equationAux.get(i))) {
+                    possible_multiplication = true;
+                    numA = Double.parseDouble(equationAux.get(i));
+                } else if (equationAux.get(i) == "-" && isNumber(equationAux.get(i + 1))) {
+                    equationAux.set(i, "+");
+                    double numC = Double.parseDouble(equationAux.get(i + 1));
+                    numC *= -1;
+                    equationAux.set(i + 1, numC + "");
+                    i--;
+                } else if (possible_multiplication) {
+                    operaciones.add(numA + "");
+                    operaciones.add(equationAux.get(i));
+                    possible_multiplication = false;
+                }
             }
+
+            if (numA != 0) {
+                operaciones.add(numA + "");
+            }
+            equationAux = operaciones;
+            operaciones = new LinkedList<>();
+
+            System.out.println("After multiplication");
+            for (int i = 0; i < equationAux.size(); i++) {
+                System.out.print(equationAux.get(i) + " . ");
+            }
+            System.out.println();
+
+            // Check for addition
+            boolean possible_sum = false;
+            numA = 0;
+            System.out.println();
+            for (int i = 0; i < equationAux.size(); i++) {
+                if (isNumber(equationAux.get(i)) && possible_sum) {
+                    double numB = Double.parseDouble(equationAux.get(i));
+                    numA += numB;
+                } else if (equationAux.get(i).equals("+")) {
+                    double numB = Double.parseDouble(equationAux.get(i + 1));
+                    numA += numB;
+                    i++;
+                } else if (equationAux.get(i).equals("-")) {
+                    double numB = Double.parseDouble(equationAux.get(i + 1));
+                    numA -= numB;
+                    i++;
+                } else if (isNumber(equationAux.get(i))) {
+                    possible_sum = true;
+                    numA = Double.parseDouble(equationAux.get(i));
+                } else if (possible_sum) {
+                    operaciones.add(numA + "");
+                    operaciones.add(equationAux.get(i));
+                }
+            }
+            if (numA != 0) {
+                operaciones.add(numA + "");
+            }
+            equationAux = operaciones;
         }
-        if(numA != 0){
-            operaciones.add(numA+"");
+        if(!withX.isEmpty()){
+            System.out.println(withX.toString());
         }
-        equationAux = operaciones;
 
         System.out.println("End");
         for (int i = 0; i < equationAux.size(); i++) {
