@@ -9,7 +9,7 @@ public class Ecuacion {
     private final String[] signos = {"+", "-", "*", "/"};
     private final String[] especiales = {"^", "{", "}", "f", "r", "a", "c", "\\", "s", "q", "t",
                                          "i", "n", "[", "]", "%", "\'", "b", "_"};
-    private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "x"};
+    private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."};
     private String equationToTransform;
     
     /*
@@ -574,15 +574,6 @@ public class Ecuacion {
         return "";
     }
 
-    private boolean isSigno(String element){
-        for(String s: signos){
-            if (s.equals(element)){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void imprimeEcuacion()
     {
         if (polinomios.isEmpty())
@@ -637,6 +628,15 @@ public class Ecuacion {
         System.out.println("Ecuacion: "+equation);
         return "$$" + equation + "$$";
     }
+
+    private boolean isSigno(String element){
+        for(String s: signos){
+            if (s.equals(element)){
+                return true;
+            }
+        }
+        return false;
+    }
     
     private boolean isEspecial(String caracter){
         for (String caracterEspecial: especiales
@@ -650,10 +650,23 @@ public class Ecuacion {
 
     private boolean isNumber(String str){
         char[] numsArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
-        for (int i = 0; i < numsArray.length; i++) {
-            if (str.charAt(0) == numsArray[i]){
-                return true;
-            }else if(str.length() > 1 && str.charAt(0) == '-'){
+        if(!hasX(str)) {
+            for (int i = 0; i < numsArray.length; i++) {
+                if (str.charAt(0) == numsArray[i]) {
+                    return true;
+                } else if (str.length() > 1 && str.charAt(0) == '-') {
+                    return true;
+                }
+            }
+        } else{
+            return false;
+        }
+        return false;
+    }
+
+    private boolean hasX(String str){
+        for(int i = 0; i < str.length(); i++){
+            if(str.charAt(i) == 'x'){
                 return true;
             }
         }
@@ -723,13 +736,17 @@ public class Ecuacion {
         equationToTransform = "";
         for (String s: this.polinomios
              ) {
+            System.out.print(s+",");
             equationToTransform += s;
         }
+        System.out.println();
     }
 
     // Ejemplo: x²- 3x + 5 - (15x-3)/(2x²-1)
     public void solve(){
         LinkedList<String> tokens = equationToTokens();
+        System.out.print(tokens.toString());
+        System.out.println(":WEBADA");
         /*
         for (int i = 0; i < tokens.size(); i++) {
             /*
@@ -822,7 +839,7 @@ public class Ecuacion {
         // Check for exponents
         for (int i = 0; i < equationAux.size(); i++) {
             String exponent = "";
-            if (equationAux.get(i).equals("^")){
+            if (equationAux.get(i).equals("^") && isNumber(equationAux.get(i-1))){
                 double num = Double.parseDouble(equationAux.get(i-1));
                 operaciones.remove(i-1);
                 i++;
@@ -891,11 +908,15 @@ public class Ecuacion {
                 numA *= numB;
             }else if(equationAux.get(i).equals("*")){
                 if (equationAux.get(i+1).equals("-")){
-                    numA *= -1;
+                    if(isNumber(equationAux.get(i+2))){
+                        numA *= -1;
+                    }
                 }else{
-                    double numB = Double.parseDouble(equationAux.get(i+1));
-                    numA *= numB;
-                    i++;
+                    if(isNumber(equationAux.get(i+1))){
+                        double numB = Double.parseDouble(equationAux.get(i+1));
+                        numA *= numB;
+                        i++;
+                    }
                 }
             }else if(equationAux.get(i).equals("/")){
                 if (equationAux.get(i+1).equals("-")){
