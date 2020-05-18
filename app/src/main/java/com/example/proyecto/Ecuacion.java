@@ -736,7 +736,6 @@ public class Ecuacion {
         equationToTransform = "";
         for (String s: this.polinomios
              ) {
-            System.out.print(s+",");
             equationToTransform += s;
         }
         System.out.println();
@@ -841,7 +840,7 @@ public class Ecuacion {
             String exponent = "";
             if (equationAux.get(i).equals("^") && isNumber(equationAux.get(i-1))){
                 double num = Double.parseDouble(equationAux.get(i-1));
-                operaciones.remove(i-1);
+                operaciones.remove(operaciones.size()-1);
                 i++;
                 if (equationAux.get(i).equals("{")){
                     LinkedList<String> aux = new LinkedList<>();
@@ -872,7 +871,41 @@ public class Ecuacion {
                 }
                 double newNum = Math.pow(num, Double.parseDouble(exponent));
                 operaciones.add(newNum+"");
-            }else{
+            } else if(equationAux.get(i).equals("^") && hasX(equationAux.get(i-1))){
+                    System.out.println(":"+equationAux.get(i-1));
+                    String valorX = equationAux.get(i-1);
+                    operaciones.remove(operaciones.size()-1);
+                    i++;
+                    if(equationAux.get(i).equals("{")){
+                        LinkedList<String> aux = new LinkedList<>();
+                        i++;
+                        int parentesis = 1;
+                        while(parentesis > 0){
+                            if(equationAux.get(i).equals("{")){
+                                aux.add("{");
+                                parentesis++;
+                                i++;
+                            } else if(equationAux.get(i).equals("}")){
+                                if(parentesis != 1){
+                                    aux.add("}");
+                                }
+                                parentesis--;
+                                i++;
+                            } else {
+                                aux.add(equationAux.get(i));
+                                i++;
+                            }
+                        }
+                        exponent = solve_arithmetic(aux);
+                        i--;
+                    }
+                    else {
+                        operaciones.add(equationAux.get(i));
+                    }
+                    String newNum = valorX+"^"+exponent;
+
+                    operaciones.add(newNum);
+            } else {
                 operaciones.add(equationAux.get(i));
             }
         }
@@ -887,12 +920,19 @@ public class Ecuacion {
         System.out.println();
 
         if (equationAux.get(0).equals("-")){
-            equationAux.add(0, "0");
+            if(isNumber(equationAux.get(1))){
+                equationAux.add(0, "0");
+            }
+            if(hasX(equationAux.get(1))){
+                equationAux.removeFirst();
+                equationAux.set(0, "-"+equationAux.getFirst());
+            }
         }
         System.out.println("After minus");
         for (int i = 0; i < equationAux.size(); i++) {
             System.out.print(equationAux.get(i) + " . ");
         }
+        System.out.println();
 
         // Check for multiplication
         boolean possible_multiplication = false;
