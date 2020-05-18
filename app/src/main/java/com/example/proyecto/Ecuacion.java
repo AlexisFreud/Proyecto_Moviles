@@ -11,7 +11,7 @@ public class Ecuacion {
                                          "i", "n", "[", "]", "%", "\'", "b", "_"};
     private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "x"};
 
-    
+
     /*
     Nota:
         Lista de simbolos para funciones especiales:
