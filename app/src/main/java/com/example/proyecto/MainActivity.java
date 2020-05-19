@@ -1216,7 +1216,11 @@ public class MainActivity extends AppCompatActivity {
         rt3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                funcion.delete();
+                try {
+                    funcion.delete();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 ecuacion.setText(funcion.getEquationToShow());
                 return false;
                 /*

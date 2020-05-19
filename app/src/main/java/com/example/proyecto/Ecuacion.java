@@ -26,7 +26,6 @@ public class Ecuacion {
             - id: integral definida
      */
 
-
     public Ecuacion() {
         polinomios = new LinkedList<>();
         numOfElements = 0;
@@ -1178,6 +1177,10 @@ public class Ecuacion {
     }
 
     private LinkedList<String> dividirPolinomios(LinkedList<String> tokens){
+        /*
+        Reducir los exponentes al minimo antes de ordenar, de manera que el exponente sea
+        solo un número y no una suma de ellos.
+         */
         LinkedList<String> completeEquation = new LinkedList<>();
         LinkedList<String> numerador = new LinkedList<>();
         LinkedList<String> denominador = new LinkedList<>();
