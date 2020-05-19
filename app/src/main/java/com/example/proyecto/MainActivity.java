@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    dividePolinomios(notacion);
+                    funcion.dividePolinomios();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

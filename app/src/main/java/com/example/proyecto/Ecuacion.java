@@ -1217,22 +1217,111 @@ public class Ecuacion {
         if (!isPolinomio(numerador) || !isPolinomio(denominador)){
             return tokens;
         }
-        numerador = ordenarPolinomio(numerador);
-        denominador = ordenarPolinomio(denominador);
+        solvePolinomialDivision(numerador, denominador);
 
         return completeEquation;
     }
 
-    private boolean isPolinomio(LinkedList<String> poli){
-
-        return true;
-
+    private void solvePolinomialDivision(LinkedList<String> num, LinkedList<String> den) {
+        /*
+        Reducir los exponentes al minimo antes de ordenar, de manera que el exponente sea
+        solo un número y no una suma de ellos.
+         */
+        LinkedList<Monomio> numerador = ordenarPolinomio(num);
+        LinkedList<Monomio> denominador = ordenarPolinomio(den);
+        System.out.println("Numerador");
+        for (Monomio m: numerador
+             ) {
+            System.out.println(m.toString());
+        }
+        System.out.println("\nDenominador");
+        for (Monomio m :
+                denominador) {
+            System.out.println(m.toString());
+        }
     }
 
-    private LinkedList<String> ordenarPolinomio(LinkedList<String> poli){
-        LinkedList<String> orederedPoli = new LinkedList<>();
+    private boolean isPolinomio(LinkedList<String> poli){
+        if (!poli.isEmpty()){
+            for (String s: poli
+            ) {
+                switch (s) {
+                    case "\\sqrt":
+                        return false;
+                    case "(":
+                        return false;
+                    case "f\'":
+                        return false;
+                    case "\\int":
+                        return false;
+                    case "\\int_":
+                        return false;
+                    default:
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
 
-        return orederedPoli;
+    private LinkedList<Monomio> ordenarPolinomio(LinkedList<String> polinomial){
+        LinkedList<String> poli = polinomial;
+        LinkedList<Monomio> orderedPoli = new LinkedList<>();
+        String expresion;
+        String exponente;
+        // Elimina elementos de Poli mientras los agrega a orderedPoli.
+        while (!poli.isEmpty()){
+            if (isSigno(poli.getFirst())){
+                if (poli.getFirst().equals("-")){
+                    String signo  = poli.getFirst();
+                    poli.remove(0);
+                    poli.set(0, signo+poli.getFirst());
+                }else{
+                    poli.remove(0);
+                }
+
+            }
+            expresion = poli.getFirst();
+            if (poli.size() > 1){
+                if (poli.get(1).equals("^")){
+                    for (int i = 0; i < 3; i++) {
+                        poli.remove(0);
+                    }
+                    exponente = poli.getFirst();
+                    poli.remove(0);
+                }else{
+                    exponente = "0";
+                }
+            }else{
+                exponente = "0";
+            }
+            poli.remove(0);
+            if (expresion.contains("x")){
+                if (exponente.equals("0")){
+                    orderedPoli.add(new Monomio(expresion.substring(0, expresion.length()-1), "1"));
+                }else{
+                    orderedPoli.add(new Monomio(expresion.substring(0, expresion.length()-1), exponente));
+                }
+            }else{
+                orderedPoli.add(new Monomio(expresion, exponente));
+            }
+        }
+        int pos = 0;
+        int biggestExponent = 0;
+        for (int i = 0; i < orderedPoli.size()-1; i++) {
+            biggestExponent = orderedPoli.get(i).getGrado();
+            pos = i;
+            for (int j = i; j < orderedPoli.size(); j++) {
+                if (biggestExponent < orderedPoli.get(j).getGrado()){
+                    pos = j;
+                    biggestExponent = orderedPoli.get(j).getGrado();
+                }
+            }
+            Monomio a = orderedPoli.get(i);
+            orderedPoli.set(i, orderedPoli.get(pos));
+            orderedPoli.set(pos, a);
+        }
+        return orderedPoli;
     }
 
     public String factorizar(){
@@ -1430,13 +1519,13 @@ public class Ecuacion {
         return false;
     }
 }
-class Monomio{
+class Monomio implements Comparable {
     double expresion;       // The expresion but without x
     int grado;
 
-    public Monomio(String expresion, int grado){
+    public Monomio(String expresion, String grado){
         this.expresion = Double.parseDouble(expresion);
-        this.grado = grado;
+        this.grado = Integer.parseInt(grado);
     }
 
     public String[] translateMonomio(){
@@ -1450,5 +1539,14 @@ class Monomio{
 
     public double getExpresion(){
         return this.expresion;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.grado-((Monomio)o).getGrado();
+    }
+
+    public String toString(){
+        return expresion+"x^"+grado;
     }
 }
