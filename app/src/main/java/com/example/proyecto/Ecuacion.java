@@ -868,7 +868,6 @@ public class Ecuacion {
                 double newNum = Math.pow(num, Double.parseDouble(exponent));
                 operaciones.add(newNum + "");
             } else if (equationAux.get(i).equals("^") && hasX(equationAux.get(i - 1))) {
-                System.out.println(":" + equationAux.get(i - 1));
                 String valorX = equationAux.get(i - 1);
                 operaciones.remove(operaciones.size() - 1);
                 i++;
@@ -953,7 +952,7 @@ public class Ecuacion {
                 }
                 for(int i = 1; i < equationAux.size(); i++){
                     if(equationAux.get(i).equals("*")){
-                        if(equationAux.get(i-1).equals(equationAux.getFirst())){
+                        /*if(equationAux.get(i-1).equals(equationAux.getFirst())){
                             if(isNumber(equationAux.getFirst()) && hasX(equationAux.get(i+1))){
                                 withX.add(noX.removeLast());
                                 withX.add(equationAux.get(i));
@@ -966,8 +965,8 @@ public class Ecuacion {
                                 i++;
                                 i++;
                             }
-                        }
-                        else if(equationAux.get(i+1).equals(equationAux.getLast())){
+                        }*/
+                        if(equationAux.get(i+1).equals(equationAux.getLast())){
                             if(hasX(equationAux.getLast()) && isNumber(equationAux.get(i-1))){
                                 withX.add(noX.removeLast());
                                 withX.add(withX.size()-1,noX.removeLast());
@@ -1008,10 +1007,25 @@ public class Ecuacion {
             }
         }
 
+        LinkedList<String> withXTMP = withX;
+        for(int i = 0; i < withXTMP.size(); i++){
+            if(withXTMP.size() == 1){
+                break;
+            } else if (withXTMP.get(i) == "-"){
+                if(isNumber(withXTMP.get(i+1))){
+                    Double tmp = Double.parseDouble(withXTMP.get(i+1));
+                    tmp = tmp*-1;
+                    withXTMP.remove(i);
+                    withXTMP.set(i,tmp+"");
+                }
+            }
+        }
+
+        withX = withXTMP;
+
         System.out.println(noX.toString());
         System.out.println(withX.toString());
         equationAux = noX;
-        LinkedList<String> operacionesX  = new LinkedList<>();
 
         if(!equationAux.isEmpty()){
             // Check for multiplication
@@ -1103,39 +1117,78 @@ public class Ecuacion {
             }
             equationAux = operaciones;
         }
-        /*if(!withX.isEmpty()){
+        /*
+        if(!withX.isEmpty()){
             boolean possible_multiplication = false;
             String numA = "";
+            Double numA2 = 0.0;
             for (int i = 0; i < withX.size(); i++) {
                 if (possible_multiplication) {
-                    String numB = withX.get(i);
+                    if(isNumber(withX.get(i))){
+                        Double numB = Double.parseDouble(withX.get(i));
+                    } else{
+                        String numB = withX.get(i);
+                        if((numA.charAt(0) == '-' && numB.charAt(0) == '-')){
+                            if(numA.length() == 3){
 
-                    if((numA.charAt(0) == '-' && numB.charAt(0) == '-')){
-                        if(numA.length() == 3){
+                            } else if(numB.length() == 3){
 
-                        } else if(numB.length() == 3){
+                            } else {
 
+                            }
+                        } else if((numA.charAt(0) != '-' && numB.charAt(0) != '-')) {
+                            if(numA.length() == 2){
+
+                            }
                         } else {
-
+                            numA = numA + "*" + numB;
                         }
-                    } else if((numA.charAt(0) != '-' && numB.charAt(0) != '-')) {
-                        if(numA.length() == 2){
+                    }
+                } else if (withX.get(i).equals("*") && numA != "") {
+                    if(isNumber(withX.get(i+1))){
+                        Double numB = Double.parseDouble(withX.get(i+1));
+                        if(numA.length() == 2){ //26343634636x
+
+                        } else if(numA.length() == 3){ //-3x
+
+                        } else { //2x^2
 
                         }
                     } else {
+                        String numB = withX.get(i + 1);
                         numA = numA + "*" + numB;
+                        i++;
                     }
-                } else if (withX.get(i).equals("*")) {
-                    String numB = withX.get(i + 1);
-                    numA = numA + "*" + numB;
-                    i++;
-                } else if (withX.get(i).equals("/")) {
+                } else if (withX.get(i).equals("/") && numA != "") {
+                    if(isNumber(withX.get(i+1))){
+
+                    } else{
                         String numB = withX.get(i + 1);
                         numA = numA+"/"+numB;
                         i++;
+                    }
+                } else if (withX.get(i).equals("*") && numA2 != 0.0) {
+                    if(isNumber(withX.get(i+1))){
+
+                    } else {
+                        String numB = withX.get(i + 1);
+                        numA = numA + "*" + numB;
+                        i++;
+                    }
+                } else if (withX.get(i).equals("/") && numA2 != 0.0) {
+                    if(isNumber(withX.get(i+1))){
+
+                    } else{
+                        String numB = withX.get(i + 1);
+                        numA = numA+"/"+numB;
+                        i++;
+                    }
                 } else if (hasX(withX.get(i))) {
                     possible_multiplication = true;
                     numA = withX.get(i);
+                } else if (isNumber(withX.get(i))){
+                    possible_multiplication = true;
+                    numA2 = Double.parseDouble(withX.get(i));
                 } else if (possible_multiplication) {
                     operacionesX.add(numA + "");
                     operacionesX.add(withX.get(i));
@@ -1184,6 +1237,32 @@ public class Ecuacion {
             }
             equationAux = operaciones;
         }*/
+
+        LinkedList<String> operacionesX = new LinkedList<>();
+        if(!withX.isEmpty()){
+            double[] numA = {0.0,0.0};
+            for(int i = 0; i < withX.size(); i++){
+                if(withX.get(i).equals("*")){
+                    double[] numB = getNumAndPotencia(withX.get(i+1));
+                    double num = numB[0]*numA[0];
+                    double potencia = numB[1]+numA[1];
+                    numA[0] = num;
+                    numA[1] = potencia;
+                    if(!operacionesX.isEmpty() && !isSigno(operacionesX.getLast())) {
+                        operacionesX.set(operacionesX.size() - 1, numA[0] + "x^" + numA[1]);
+                    } else {
+                        operacionesX.add(numA[0] + "x^" + numA[1]);
+                    }
+                    i++;
+                } else if(!isSigno(withX.get(i))){
+                    numA = getNumAndPotencia(withX.get(i));
+                } else {
+                    operacionesX.add(withX.get(i));
+                }
+            }
+        }
+
+        System.out.println(operacionesX.toString());
 
         System.out.println("End");
         for (int i = 0; i < equationAux.size(); i++) {
@@ -1652,6 +1731,43 @@ public class Ecuacion {
             return true;
         }
         return false;
+    }
+
+    public double[] getNumAndPotencia(String token){
+        // 15345354x^652
+        // -x^3
+        // x^4
+        // -2x^3
+        // x
+        // -x
+        // 1245344
+        // 5645648x
+        // -45646
+        // -4564x
+        double[] numAndPotencia = new double[2];
+        int i = 0;
+        if (!token.contains("x")){
+            numAndPotencia[0] = Double.parseDouble(token);
+            numAndPotencia[1]  = 0;
+            return numAndPotencia;
+        }
+        else if(token.charAt(0) == '-' && token.charAt(1) == 'x'){
+            numAndPotencia[0] = -1.0;
+        }else if(token.charAt(0) == 'x'){
+            numAndPotencia[0] = 1.0;
+        }else{
+            while (token.charAt(i) != 'x'){
+                i++;
+            }
+            numAndPotencia[0] = Double.parseDouble(token.substring(0, i));
+        }
+
+        if (!token.contains("^")){
+            numAndPotencia[1] = 1;
+            return numAndPotencia;
+        }
+        numAndPotencia[1] = Double.parseDouble(token.substring(i+2));
+        return numAndPotencia;
     }
 }
 class Monomio implements Comparable {
