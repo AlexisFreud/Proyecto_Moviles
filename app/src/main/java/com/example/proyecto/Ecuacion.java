@@ -789,6 +789,10 @@ public class Ecuacion {
         System.out.println(solve_arithmetic(tokens));
     }
 
+    /*
+
+     */
+
     public String solve_arithmetic(LinkedList<String> equation) {
         /*
         Use PEMDAS for operations order
@@ -1555,7 +1559,7 @@ public class Ecuacion {
             System.out.println("El size del denominador es 1");
             return divisionPorMonomio(numerador, denominador);
         }
-        else if (numerador.getFirst().getGrado() <= denominador.getFirst().getGrado())
+        else if (numerador.getFirst().getGrado() < denominador.getFirst().getGrado())
         {
             // Si el grado del numerador es menor o igual al denominador, 
             // entonces no se puede reducir más.
@@ -2010,7 +2014,7 @@ public class Ecuacion {
         LinkedList<String> resultado = getContentOfF(func);
         // Encontrar el tipo de derivada
         System.out.println(resultado.toString());
-        if (resultado.contains("\\fracc")){
+        if (resultado.contains("\\frac")){
             resultado = derivaditaDeDivisionsita(resultado);
         }else if (resultado.contains("(")){
             resultado = derivaditaDeMultiplicacioncita(resultado);
@@ -2133,15 +2137,27 @@ public class Ecuacion {
         LinkedList<String> resultado = new LinkedList<>();
         LinkedList<String> fx = new LinkedList<>();
         LinkedList<String> gx = new LinkedList<>();
-        int pos = 1;
-        while (!func.get(pos).equals(")")){
+        int pos = 2;
+        int keys = 1;
+        while (keys > 0){
             fx.add(func.get(pos));
             pos++;
+            if (func.get(pos).equals("{")){
+                keys++;
+            }else if (func.get(pos).equals("}")){
+                keys--;
+            }
         }
         pos += 2;
-        while (!func.get(pos).equals(")")){
+        keys++;
+        while (keys > 0){
             gx.add(func.get(pos));
             pos++;
+            if (func.get(pos).equals("{")){
+                keys++;
+            }else if (func.get(pos).equals("}")){
+                keys--;
+            }
         }
         if (!isPolinomio(fx) || !isPolinomio(gx)){
             System.out.println("No es polinomica");
@@ -2149,19 +2165,28 @@ public class Ecuacion {
             System.out.println(gx.toString());
             return func;
         }
-        LinkedList<Monomio> u, uPrima, v, vPrima, resPolinomial;
+        LinkedList<Monomio> u, uPrima, v, vPrima, resPolinomial, aux, v2;
         resPolinomial = new LinkedList<>();
+        v2 = new LinkedList<>();
+        aux = new LinkedList<>();
         LinkedList<String> fx2 = (LinkedList<String>) fx.clone();
         LinkedList<String> gx2 = (LinkedList<String>) gx.clone();
         uPrima = ordenarPolinomio(derivaditaNormalita(fx));
         vPrima = ordenarPolinomio(derivaditaNormalita(gx));
         u = ordenarPolinomio(fx2);
         v = ordenarPolinomio(gx2);
-        resPolinomial = multiplicaPolinomios(u, vPrima, resPolinomial);
-        resPolinomial = negatePolinomial(multiplicaPolinomios(uPrima, v, resPolinomial));
+        resPolinomial = multiplicaPolinomios(uPrima, v, resPolinomial);
+        aux = negatePolinomial(multiplicaPolinomios(u, vPrima, aux));
+        for (Monomio m :
+                aux) {
+            resPolinomial.add(m);
+        }
+        v2 = multiplicaPolinomios(v, v, v2);
         boolean first = true;
         resPolinomial = sumaInterna(resPolinomial);
         resPolinomial = eliminateZeros(resPolinomial);
+        resultado.add("\\frac");
+        resultado.add("{");
         for (Monomio m :
                 resPolinomial) {
             if (m.getExpresion() > 0 && !first){
@@ -2173,7 +2198,23 @@ public class Ecuacion {
                 resultado.add(s);
             }
         }
-        return resultado;
+        resultado.add("}");
+        resultado.add("{");
+        for (Monomio m :
+                v2) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        resultado.add("}");
+        System.out.println("resPolinomial "+resPolinomial.toString());
+        System.out.println("v2 " + v2.toString());
+        return dividirPolinomios(resultado);
     }
 
     private LinkedList<Monomio> negatePolinomial(LinkedList<Monomio> polinomial){
@@ -2417,6 +2458,26 @@ public class Ecuacion {
         }
         numAndPotencia[1] = Double.parseDouble(token.substring(i+2));
         return numAndPotencia;
+    }
+
+    private LinkedList<Monomio> convertToMonomios(LinkedList<String> lista){
+        LinkedList<Monomio> listaMonomios = new LinkedList<>();
+        String content, exponent;
+        for (int i = 0; i < lista.size(); i+=2) {
+            content = lista.get(i);
+            for (int j = 0; j < lista.get(i + 1).length(); j++) {
+                if (lista.get(i+1).charAt(j) == 'x'){
+                    content += lista.get(i+1).substring(0, j);
+                    j+=2;
+                    exponent = lista.get(i+1).substring(j);
+                    int aux = (int)Double.parseDouble(exponent);
+                    exponent = aux+"";
+                    listaMonomios.add(new Monomio(content, exponent));
+                    break;
+                }
+            }
+        }
+        return listaMonomios;
     }
 }
 class Monomio {

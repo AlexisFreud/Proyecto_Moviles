@@ -15,11 +15,7 @@ import io.github.kexanie.library.MathView;
 
 public class MainActivity extends AppCompatActivity {
 
-<<<<<<< HEAD
-    MathView ecuacion;
-=======
     MyMathView ecuacion;
->>>>>>> a73277bd8efb7a0f69103742bb921b491c2d89e8
     MathView num1,num2,num3,num4,num5,num6,num7,num8,num9,num0;
     MathView op1,op2,op3,op4,op5,op6,op7,op8,op9,op10;
     MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
@@ -278,12 +274,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-<<<<<<< HEAD
-                    funcion.dividePolinomios();
-=======
                     String s = funcion.dividePolinomios();
                     resultado.setText(s);
->>>>>>> a73277bd8efb7a0f69103742bb921b491c2d89e8
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
