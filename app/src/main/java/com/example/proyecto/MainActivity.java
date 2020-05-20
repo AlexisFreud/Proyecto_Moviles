@@ -269,7 +269,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    funcion.dividePolinomios();
+                    String s = funcion.dividePolinomios();
+                    resultado.setText(s);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
