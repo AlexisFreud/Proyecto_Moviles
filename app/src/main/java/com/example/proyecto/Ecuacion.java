@@ -1273,14 +1273,67 @@ public class Ecuacion {
 
             LinkedList<String> operacionesPegadas = new LinkedList<>();
 
-            operacionesPegadas.add(operacionesX.get(0));
-            for(int i = 1; i < operacionesX.size(); i++){
-                if(!isSigno(operacionesX.get(i))){
-                    operacionesPegadas.add(operacionesX.get(i-1)+operacionesX.get(i));
+            if(operacionesX.size()%2 == 0){
+                for(int i = 1; i < operacionesX.size(); i++){
+                    if(!isSigno(operacionesX.get(i))){
+                        operacionesPegadas.add(operacionesX.get(i-1)+operacionesX.get(i));
+                    }
+                }
+            } else {
+                operacionesPegadas.add(operacionesX.get(0));
+                for(int i = 1; i < operacionesX.size(); i++){
+                    if(!isSigno(operacionesX.get(i))){
+                        operacionesPegadas.add(operacionesX.get(i-1)+operacionesX.get(i));
+                    }
                 }
             }
 
-            System.out.println(operacionesPegadas.toString());
+            int k = 0;
+            int l = 0;
+            double uno, dos;
+            for(int i = 0; i < operacionesPegadas.size()-1; i++){
+                for(int j = 0; j < operacionesPegadas.size()-i-1; j++){
+                    while(operacionesPegadas.get(j).charAt(k) != '^'){
+                        k++;
+                    }
+                    uno = Double.parseDouble(operacionesPegadas.get(j).substring(k+1));
+                    while(operacionesPegadas.get(j+1).charAt(l) != '^'){
+                        l++;
+                    }
+                    dos = Double.parseDouble(operacionesPegadas.get(j+1).substring(l+1));
+                    k = 0;
+                    l = 0;
+                    if( uno < dos){
+                        String tmp = operacionesPegadas.get(j);
+                        operacionesPegadas.set(j, operacionesPegadas.get(j+1));
+                        operacionesPegadas.set(j+1, tmp);
+                    }
+                }
+            }
+
+            System.out.println(operacionesPegadas.toString()+":WEBADA");
+
+            LinkedList<String> operacionesDespegadas = new LinkedList<>();
+            for(int i = 0; i < operacionesPegadas.size(); i++){
+                if(operacionesPegadas.get(i).charAt(0) == '+'){
+                    operacionesDespegadas.add("+");
+                    operacionesDespegadas.add(operacionesPegadas.get(i).substring(1));
+                } else if(operacionesPegadas.get(i).charAt(0) == '-'){
+                    operacionesDespegadas.add("-");
+                    operacionesDespegadas.add(operacionesPegadas.get(i).substring(1));
+                } else {
+                    operacionesDespegadas.add("+");
+                    operacionesDespegadas.add(operacionesPegadas.get(i));
+                }
+            }
+
+            System.out.println(operacionesDespegadas.toString()+";WEBAda");
+
+            withX = operacionesDespegadas;
+
+            for(int i = 1; i < withX.size(); i++){
+
+            }
 
         }
 
