@@ -2100,7 +2100,7 @@ public class Ecuacion {
         return numAndPotencia;
     }
 }
-class Monomio implements Comparable {
+class Monomio {
     double expresion;       // The expresion but without x
     int grado;
 
@@ -2125,6 +2125,15 @@ class Monomio implements Comparable {
         }
         else
         {
+            return null;
+        }
+    }
+
+    public Monomio sum(Monomio B){
+        if (this.grado == B.getGrado()){
+            return new Monomio(this.expresion-B.getExpresion(), this.getGrado());
+        }
+        else{
             return null;
         }
     }
@@ -2172,11 +2181,6 @@ class Monomio implements Comparable {
 
     public double getExpresion(){
         return this.expresion;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return this.grado-((Monomio)o).getGrado();
     }
 
     public String toString(){
