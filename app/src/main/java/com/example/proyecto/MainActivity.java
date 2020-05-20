@@ -1293,8 +1293,8 @@ public class MainActivity extends AppCompatActivity {
         rt4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                funcion.solve();
-                resultado.setText(funcion.getEquationToShow());
+                String s = funcion.solve();
+                resultado.setText(s);
                 //Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
                 return false;
             }
