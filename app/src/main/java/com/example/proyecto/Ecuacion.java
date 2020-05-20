@@ -1452,7 +1452,7 @@ public class Ecuacion {
                 }else if(numerador.get(i).getExpresion() > 0 && i != 0){
                     //ecuacionOrdenada.add("+");
                 }
-                ecuacionOrdenada.add(Math.abs(numerador.get(i).getExpresion())+"");
+                ecuacionOrdenada.add(Math.abs(redondearDouble(numerador.get(i).getExpresion()))+"");
                 ecuacionOrdenada.add("}");
                 ecuacionOrdenada.add("{");
                 ecuacionOrdenada.add("x");
@@ -1529,6 +1529,12 @@ public class Ecuacion {
             }
         }
         return ecuacionOrdenada;
+    }
+
+    private double redondearDouble(double number){
+        double result = number*Math.pow(10, 2);
+        result = Math.round(result);
+        return result/Math.pow(10, 2);
     }
 
     private LinkedList<String> divide(LinkedList<Monomio> num, LinkedList<Monomio> den){
@@ -1706,6 +1712,67 @@ public class Ecuacion {
             orderedPoli.set(pos, a);
         }
         return orderedPoli;
+    }
+
+    public String derivar(){
+        getEquationToTransform();
+        return getEquationToShow(derivadita(equationToTokens()));
+    }
+
+    private LinkedList<String> derivadita(LinkedList<String> func){
+        // Encontrar el tipo de derivada
+        LinkedList<String> resultado = getContentOfF(func);
+        if (func.contains("\\fracc")){
+            resultado = derivaditaDeDivisionsita(resultado);
+        }else if (func.contains("*")){
+            resultado = derivaditaDeMultiplicacioncita(resultado);
+        }else{
+            if (!isPolinomio(resultado)){
+                return func;
+            }
+            resultado = derivaditaNormalita(resultado);
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> getContentOfF(LinkedList<String> func) {
+        LinkedList<String> resultado = new LinkedList<>();
+        for (int i = 2; i < func.size()-1; i++) {
+            resultado.add(func.get(i));
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> derivaditaNormalita(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<Monomio> operaciones = ordenarPolinomio(func);
+        boolean first = true;
+        for (Monomio m :
+                operaciones) {
+            if (m.derivadita().getExpresion() == 0){
+                continue;
+            }else if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.derivadita().translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> derivaditaDeMultiplicacioncita(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+
+        return resultado;
+    }
+
+    private LinkedList<String> derivaditaDeDivisionsita(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+
+        return resultado;
     }
 
     public String factorizar(){
@@ -1978,6 +2045,10 @@ class Monomio implements Comparable {
         return new Monomio(this.expresion/B.expresion, this.grado-B.getGrado());
     }
 
+    public Monomio derivadita(){
+        return new Monomio(expresion*grado, grado-1);
+    }
+    
     public LinkedList<String> translateMonomio(){
         LinkedList<String> translated = new LinkedList<>();
         if (this.expresion < 0){

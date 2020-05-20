@@ -254,7 +254,12 @@ public class MainActivity extends AppCompatActivity {
         calcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                muestraResultado();
+                try{
+                    String s = funcion.derivar();
+                    resultado.setText(s);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         bt_factorizar = findViewById(R.id.bt_factorizar);

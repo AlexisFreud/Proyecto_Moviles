@@ -480,7 +480,7 @@
         android:layout_marginStart="276dp"
         android:layout_marginTop="452dp"
         android:backgroundTint="#801919"
-        android:text="Calcular"
+        android:text="Derivar"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
