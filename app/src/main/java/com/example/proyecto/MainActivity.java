@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import io.github.kexanie.library.MathView;
 
 public class MainActivity extends AppCompatActivity {
-    
+
     MathView ecuacion;
     MathView num1,num2,num3,num4,num5,num6,num7,num8,num9,num0;
     MathView op1,op2,op3,op4,op5,op6,op7,op8,op9,op10;
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    dividePolinomios(notacion);
+                    funcion.dividePolinomios();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1216,7 +1216,11 @@ public class MainActivity extends AppCompatActivity {
         rt3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                funcion.delete();
+                try {
+                    funcion.delete();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 ecuacion.setText(funcion.getEquationToShow());
                 return false;
                 /*
