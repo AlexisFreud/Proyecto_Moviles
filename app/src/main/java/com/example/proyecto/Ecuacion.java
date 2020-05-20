@@ -1255,14 +1255,34 @@ public class Ecuacion {
                     }
                     i++;
                 } else if(!isSigno(withX.get(i))){
+                    operacionesX.add(withX.get(i));
                     numA = getNumAndPotencia(withX.get(i));
                 } else {
                     operacionesX.add(withX.get(i));
                 }
             }
-        }
 
-        System.out.println(operacionesX.toString());
+            for(int i = 0; i < operacionesX.size(); i++){
+                if(!isSigno(operacionesX.get(i)) && operacionesX.get(i).charAt(operacionesX.get(i).length()-1) == 'x'){
+                    double[] num = getNumAndPotencia(operacionesX.get(i));
+                    operacionesX.set(i, num[0]+"x^"+num[1]);
+                }
+            }
+
+            System.out.println(operacionesX.toString());
+
+            LinkedList<String> operacionesPegadas = new LinkedList<>();
+
+            operacionesPegadas.add(operacionesX.get(0));
+            for(int i = 1; i < operacionesX.size(); i++){
+                if(!isSigno(operacionesX.get(i))){
+                    operacionesPegadas.add(operacionesX.get(i-1)+operacionesX.get(i));
+                }
+            }
+
+            System.out.println(operacionesPegadas.toString());
+
+        }
 
         System.out.println("End");
         for (int i = 0; i < equationAux.size(); i++) {
