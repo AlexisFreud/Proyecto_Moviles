@@ -1847,24 +1847,57 @@ public class Ecuacion {
         LinkedList<String> fx = new LinkedList<>();
         LinkedList<String> gx = new LinkedList<>();
         int pos = 1;
-        while (!func.get(pos).equals("}")){
+        while (!func.get(pos).equals(")")){
             fx.add(func.get(pos));
             pos++;
         }
         pos += 2;
-        while (!func.get(pos).equals("}")){
+        while (!func.get(pos).equals(")")){
             gx.add(func.get(pos));
             pos++;
         }
-        if (!isPolinomio(fx) || !isPolinomio(gx))
-        {
+        if (!isPolinomio(fx) || !isPolinomio(gx)){
             System.out.println("No es polinomica");
             System.out.println(fx.toString());
             System.out.println(gx.toString());
             return func;
         }
-
+        LinkedList<Monomio> u, uPrima, v, vPrima, resPolinomial;
+        resPolinomial = new LinkedList<>();
+        LinkedList<String> fx2 = (LinkedList<String>) fx.clone();
+        LinkedList<String> gx2 = (LinkedList<String>) gx.clone();
+        uPrima = ordenarPolinomio(derivaditaNormalita(fx));
+        vPrima = ordenarPolinomio(derivaditaNormalita(gx));
+        u = ordenarPolinomio(fx2);
+        v = ordenarPolinomio(gx2);
+        resPolinomial = multiplicaPolinomios(u, vPrima, resPolinomial);
+        resPolinomial = negatePolinomial(multiplicaPolinomios(uPrima, v, resPolinomial));
+        boolean first = true;
+        resPolinomial = sumaInterna(resPolinomial);
+        resPolinomial = eliminateZeros(resPolinomial);
+        for (Monomio m :
+                resPolinomial) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.translateMonomio()) {
+                resultado.add(s);
+            }
+        }
         return resultado;
+    }
+
+    private LinkedList<Monomio> negatePolinomial(LinkedList<Monomio> polinomial){
+        LinkedList<Monomio> result = new LinkedList<>();
+        Monomio actual;
+        for (Monomio m :
+                polinomial) {
+            actual = new Monomio(m.getExpresion()*-1, m.getGrado());
+            result.add(actual);
+        }
+        return result;
     }
 
     public String factorizar(){
