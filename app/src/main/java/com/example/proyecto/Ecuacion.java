@@ -628,6 +628,18 @@ public class Ecuacion {
         return "$$" + equation + "$$";
     }
 
+    private String getEquationToShow(LinkedList<String> algunaEcuacion){
+        String equation = "";
+        int chars = 0;
+        boolean line_positioned = true;
+        for (int i = 0; i < algunaEcuacion.size(); i++) {
+            equation += algunaEcuacion.get(i);
+
+        }
+        System.out.println("Ecuacion: "+equation);
+        return "$$" + equation + "$$";
+    }
+
     private boolean isSigno(String element){
         for(String s: signos){
             if (s.equals(element)){
@@ -1456,10 +1468,9 @@ public class Ecuacion {
     f' ( 5x ^ { 2 } - ( 3 + 5x ) )
      */
 
-    public String dividePolinomios(){
+    public String dividePolinomios() {
         getEquationToTransform();
-        dividirPolinomios(equationToTokens());
-        return "";
+        return getEquationToShow(dividirPolinomios(equationToTokens()));
     }
 
     private LinkedList<String> dividirPolinomios(LinkedList<String> tokens){
@@ -1506,21 +1517,29 @@ public class Ecuacion {
         if (!isPolinomio(numerador) || !isPolinomio(denominador)){
             return tokens;
         }
-        solvePolinomialDivision(numerador, denominador);
-
-        return completeEquation;
+        LinkedList<String> resultado = solvePolinomialDivision(numerador, denominador);
+        System.out.println("\n\n------------------------------");
+        System.out.println(resultado.toString());
+        System.out.println("------------------------------");
+        // AGREGAR EL RESULTADO AL RESTO DE LA ECUACION
+        // AGREGAR LO QUE SOBRA DE LA ECUACION DESPUES DE LA FRACCION
+        return resultado;
     }
 
-    private void solvePolinomialDivision(LinkedList<String> num, LinkedList<String> den) {
+    private LinkedList<String> solvePolinomialDivision(LinkedList<String> num, 
+                                                       LinkedList<String> den) {
         /*
         Reducir los exponentes al minimo antes de ordenar, de manera que el exponente sea
         solo un número y no una suma de ellos.
          */
         LinkedList<Monomio> numerador = ordenarPolinomio(num);
+
+        numerador = corrigeNumerador(numerador);
         LinkedList<Monomio> denominador = ordenarPolinomio(den);
+        denominador = corrigeNumerador(denominador);
         System.out.println("Numerador");
         for (Monomio m: numerador
-        ) {
+             ) {
             System.out.println(m.toString());
         }
         System.out.println("\nDenominador");
@@ -1528,6 +1547,368 @@ public class Ecuacion {
                 denominador) {
             System.out.println(m.toString());
         }
+        if (getRealSize(denominador) == 1)
+        {
+            // Si el denominar tiene solo un valor, entonces se puede
+            // regresar la division de cada elemento del numerador entre el
+            // valor del denominador
+            System.out.println("El size del denominador es 1");
+            return divisionPorMonomio(numerador, denominador);
+        }
+        else if (numerador.getFirst().getGrado() <= denominador.getFirst().getGrado())
+        {
+            // Si el grado del numerador es menor o igual al denominador, 
+            // entonces no se puede reducir más.
+            // Regresar la ecuacion ahora ordenada
+            System.out.println("El grado del numerador es menor al del denominador");
+            return ordenarFraccion(numerador, denominador);
+        }
+        else
+            {
+            // Efectua división sintética
+            return divide(numerador, denominador);
+        }
+    }
+
+    private int getRealSize(LinkedList<Monomio> denominador) {
+        int size = 0;
+        for (Monomio m :
+                denominador) {
+            if (m.getExpresion() != 0.0) {
+                size++;
+            }
+        }
+        return size;
+    }
+
+    private LinkedList<String> ordenarFraccion(LinkedList<Monomio> numerador, LinkedList<Monomio> denominador) {
+        LinkedList<String> ecuacionOrdenada = new LinkedList<>();
+        ecuacionOrdenada.add("\\frac");
+        ecuacionOrdenada.add("{");
+        for (int i = 0; i < numerador.size(); i++) {
+            if (i == 0){ // El primer elemento puede o no tener signo
+                if (numerador.getFirst().getGrado() == 0){ // Si es un numero sin x
+                    if (numerador.getFirst().getExpresion() < 0){
+                        ecuacionOrdenada.add("-");
+                    }
+                    ecuacionOrdenada.add(Math.abs(numerador.getFirst().getExpresion())+"");
+                }else{
+                    if (numerador.getFirst().getExpresion() < 0){
+                        ecuacionOrdenada.add("-");
+                    }
+                    if (Math.abs(numerador.getFirst().getExpresion()) == 1){
+                        ecuacionOrdenada.add("x");
+                    }else{
+                        ecuacionOrdenada.add(Math.abs(numerador.getFirst().getExpresion())+"x");
+                    }
+                    if (numerador.getFirst().getGrado() > 1){
+                        ecuacionOrdenada.add("^");
+                        ecuacionOrdenada.add("{");
+                        ecuacionOrdenada.add(numerador.getFirst().getGrado() + "");
+                        ecuacionOrdenada.add("}");
+                    }
+                }
+            }
+            else if(numerador.get(i).getExpresion() == 0.0){
+                continue;
+            }else if (numerador.get(i).getExpresion() == 1.0 && numerador.get(i).getGrado() == 1){
+                ecuacionOrdenada.add("x");
+            }else if (numerador.get(i).getExpresion() == 1.0 && numerador.get(i).getGrado() > 1) {
+                ecuacionOrdenada.add("x");
+                ecuacionOrdenada.add("^");
+                ecuacionOrdenada.add("{");
+                ecuacionOrdenada.add(numerador.get(i).getGrado() + "");
+                ecuacionOrdenada.add("}");
+            }else if (numerador.get(i).getExpresion() == -1.0 && numerador.get(i).getGrado() == 1){
+                ecuacionOrdenada.add("-");
+                ecuacionOrdenada.add("x");
+            }else if (numerador.get(i).getExpresion() == -1.0 && numerador.get(i).getGrado() > 1) {
+                ecuacionOrdenada.add("-");
+                ecuacionOrdenada.add("x");
+                ecuacionOrdenada.add("^");
+                ecuacionOrdenada.add("{");
+                ecuacionOrdenada.add(numerador.get(i).getGrado() + "");
+                ecuacionOrdenada.add("}");
+            }
+            else{
+                if (numerador.get(i).getExpresion() < 0){
+                    ecuacionOrdenada.add("-");
+                }else{
+                    ecuacionOrdenada.add("+");
+                }
+                if (numerador.get(i).getGrado() == 0) { // Si es un numero sin x
+                    ecuacionOrdenada.add(Math.abs(numerador.get(i).getExpresion()) + "");
+                }else if(numerador.get(i).getGrado() == 1){
+                    ecuacionOrdenada.add(Math.abs(numerador.get(i).getExpresion())+"x");
+                }else{
+                    ecuacionOrdenada.add(Math.abs(numerador.get(i).getExpresion())+"x");
+                    ecuacionOrdenada.add("^");
+                    ecuacionOrdenada.add("{");
+                    ecuacionOrdenada.add(numerador.get(i).getGrado()+"");
+                    ecuacionOrdenada.add("}");
+                }
+            }
+        }
+        ecuacionOrdenada.add("}");
+        ecuacionOrdenada.add("{");
+        for (int i = 0; i < denominador.size(); i++) {
+            if (i == 0){ // El primer elemento puede o no tener signo
+                if (denominador.getFirst().getGrado() == 0){ // Si es un numero sin x
+                    if (denominador.getFirst().getExpresion() < 0){
+                        ecuacionOrdenada.add("-");
+                    }
+                    ecuacionOrdenada.add(Math.abs(denominador.getFirst().getExpresion())+"");
+                }else{
+                    if (denominador.getFirst().getExpresion() < 0){
+                        ecuacionOrdenada.add("-");
+                    }
+                    if (Math.abs(denominador.getFirst().getExpresion()) == 1){
+                        ecuacionOrdenada.add("x");
+                    }else{
+                        ecuacionOrdenada.add(Math.abs(denominador.getFirst().getExpresion())+"x");
+                    }
+                    if (denominador.getFirst().getGrado() > 1){
+                        ecuacionOrdenada.add("^");
+                        ecuacionOrdenada.add("{");
+                        ecuacionOrdenada.add(denominador.getFirst().getGrado() + "");
+                        ecuacionOrdenada.add("}");
+                    }
+                }
+            }
+            else if(denominador.get(i).getExpresion() == 0.0){
+                continue;
+            }else if (denominador.get(i).getExpresion() == 1.0 && denominador.get(i).getGrado() == 1){
+                ecuacionOrdenada.add("x");
+            }else if (denominador.get(i).getExpresion() == 1.0 && denominador.get(i).getGrado() > 1) {
+                ecuacionOrdenada.add("x");
+                ecuacionOrdenada.add("^");
+                ecuacionOrdenada.add("{");
+                ecuacionOrdenada.add(denominador.get(i).getGrado() + "");
+                ecuacionOrdenada.add("}");
+            }else if (denominador.get(i).getExpresion() == -1.0 && denominador.get(i).getGrado() == 1){
+                ecuacionOrdenada.add("-");
+                ecuacionOrdenada.add("x");
+            }else if (denominador.get(i).getExpresion() == -1.0 && denominador.get(i).getGrado() > 1) {
+                ecuacionOrdenada.add("-");
+                ecuacionOrdenada.add("x");
+                ecuacionOrdenada.add("^");
+                ecuacionOrdenada.add("{");
+                ecuacionOrdenada.add(denominador.get(i).getGrado() + "");
+                ecuacionOrdenada.add("}");
+            }
+            else{
+                if (denominador.get(i).getExpresion() < 0){
+                    ecuacionOrdenada.add("-");
+                }else{
+                    ecuacionOrdenada.add("+");
+                }
+                if (denominador.get(i).getGrado() == 0) { // Si es un numero sin x
+                    ecuacionOrdenada.add(Math.abs(denominador.get(i).getExpresion()) + "");
+                }else if(denominador.get(i).getGrado() == 1){
+                    ecuacionOrdenada.add(Math.abs(denominador.get(i).getExpresion())+"x");
+                }else{
+                    ecuacionOrdenada.add(Math.abs(denominador.get(i).getExpresion())+"x");
+                    ecuacionOrdenada.add("^");
+                    ecuacionOrdenada.add("{");
+                    ecuacionOrdenada.add(denominador.get(i).getGrado()+"");
+                    ecuacionOrdenada.add("}");
+                }
+            }
+        }
+        ecuacionOrdenada.add("}");
+        return ecuacionOrdenada;
+    }
+
+    private LinkedList<String> divisionPorMonomio(LinkedList<Monomio> numerador, LinkedList<Monomio> denominador) {
+        LinkedList<String> ecuacionOrdenada = new LinkedList<>();
+        Monomio divisor = denominador.getFirst();
+        for (Monomio m :
+                numerador) {
+            m.grado -= divisor.getGrado();
+            m.expresion /= divisor.getExpresion();
+        }
+        for (int i = 0; i < numerador.size(); i++) {
+            if (numerador.get(i).grado < 0 && numerador.get(i).getExpresion() != 0){
+                if (i != 0){
+                    ecuacionOrdenada.add("+");
+                }
+                ecuacionOrdenada.add("\\frac");
+                ecuacionOrdenada.add("{");
+                if (numerador.get(i).getExpresion() < 0) {
+                    ecuacionOrdenada.add("-");
+                }else if(numerador.get(i).getExpresion() > 0 && i != 0){
+                    //ecuacionOrdenada.add("+");
+                }
+                ecuacionOrdenada.add(Math.abs(redondearDouble(numerador.get(i).getExpresion()))+"");
+                ecuacionOrdenada.add("}");
+                ecuacionOrdenada.add("{");
+                ecuacionOrdenada.add("x");
+                if (Math.abs(numerador.get(i).getGrado()) != 1){
+                    ecuacionOrdenada.add("^");
+                    ecuacionOrdenada.add("{");
+                    ecuacionOrdenada.add((Math.abs(numerador.get(i).getGrado()))+"");
+                    ecuacionOrdenada.add("}");
+                }
+                ecuacionOrdenada.add("}");
+            }else{
+                if (i == 0){ // El primer elemento puede o no tener signo
+                    if (numerador.getFirst().getGrado() == 0){ // Si es un numero sin x
+                        if (numerador.getFirst().getExpresion() < 0){
+                            ecuacionOrdenada.add("-");
+                        }
+                        ecuacionOrdenada.add(Math.abs(numerador.getFirst().getExpresion())+"");
+                    }else{
+                        if (numerador.getFirst().getExpresion() < 0){
+                            ecuacionOrdenada.add("-");
+                        }
+                        if (Math.abs(numerador.getFirst().getExpresion()) == 1){
+                            ecuacionOrdenada.add("x");
+                        }else{
+                            ecuacionOrdenada.add(Math.abs(numerador.getFirst().getExpresion())+"x");
+                        }
+                        if (numerador.getFirst().getGrado() > 1){
+                            ecuacionOrdenada.add("^");
+                            ecuacionOrdenada.add("{");
+                            ecuacionOrdenada.add(numerador.getFirst().getGrado() + "");
+                            ecuacionOrdenada.add("}");
+                        }
+                    }
+                }
+                else if(numerador.get(i).getExpresion() == 0.0){
+                    continue;
+                }else if (numerador.get(i).getExpresion() == 1.0 && numerador.get(i).getGrado() == 1){
+                    ecuacionOrdenada.add("x");
+                }else if (numerador.get(i).getExpresion() == 1.0 && numerador.get(i).getGrado() > 1) {
+                    ecuacionOrdenada.add("x");
+                    ecuacionOrdenada.add("^");
+                    ecuacionOrdenada.add("{");
+                    ecuacionOrdenada.add(numerador.get(i).getGrado() + "");
+                    ecuacionOrdenada.add("}");
+                }else if (numerador.get(i).getExpresion() == -1.0 && numerador.get(i).getGrado() == 1){
+                    ecuacionOrdenada.add("-");
+                    ecuacionOrdenada.add("x");
+                }else if (numerador.get(i).getExpresion() == -1.0 && numerador.get(i).getGrado() > 1) {
+                    ecuacionOrdenada.add("-");
+                    ecuacionOrdenada.add("x");
+                    ecuacionOrdenada.add("^");
+                    ecuacionOrdenada.add("{");
+                    ecuacionOrdenada.add(numerador.get(i).getGrado() + "");
+                    ecuacionOrdenada.add("}");
+                }
+                else{
+                    if (numerador.get(i).getExpresion() < 0){
+                        ecuacionOrdenada.add("-");
+                    }else{
+                        ecuacionOrdenada.add("+");
+                    }
+                    if (numerador.get(i).getGrado() == 0) { // Si es un numero sin x
+                        ecuacionOrdenada.add(Math.abs(numerador.get(i).getExpresion()) + "");
+                    }else if(numerador.get(i).getGrado() == 1){
+                        ecuacionOrdenada.add(Math.abs(numerador.get(i).getExpresion())+"x");
+                    }else{
+                        ecuacionOrdenada.add(Math.abs(numerador.get(i).getExpresion())+"x");
+                        ecuacionOrdenada.add("^");
+                        ecuacionOrdenada.add("{");
+                        ecuacionOrdenada.add(numerador.get(i).getGrado()+"");
+                        ecuacionOrdenada.add("}");
+                    }
+                }
+            }
+        }
+        return ecuacionOrdenada;
+    }
+
+    private double redondearDouble(double number){
+        double result = number*Math.pow(10, 2);
+        result = Math.round(result);
+        return result/Math.pow(10, 2);
+    }
+
+    private LinkedList<String> divide(LinkedList<Monomio> num, LinkedList<Monomio> den){
+        int mayorNumerador = num.getFirst().getGrado();
+        int mayorDenominador = den.getFirst().getGrado();
+        int numOperaciones = mayorNumerador-mayorDenominador+1;
+        LinkedList<Monomio> residuo = num;
+        LinkedList<Monomio> resultado = new LinkedList<>();
+        Monomio A, B, C;
+        for (int i = 0; i < numOperaciones; i++) {
+            A = residuo.get(i);
+            B = den.getFirst();
+            C = A.dividedBy(B);
+            resultado.add(C);
+            for (int j = 0; j < den.size(); j++) {
+                A = residuo.get(i+j);
+                B = den.get(j);
+                residuo.set(i+j, A.subtract(B.multiply(C)));
+            }
+        }
+        System.out.println("Resultado: " + resultado.toString());
+        residuo = eliminateZeros(residuo);
+        resultado = eliminateZeros(resultado);
+        LinkedList<String> finalResult = convertToString(resultado);
+        if (!residuo.isEmpty()){
+            finalResult.add("+");
+            finalResult.add("\\frac");
+            finalResult.add("{");
+            for (String s :
+                    convertToString(residuo)) {
+                finalResult.add(s);
+            }
+            finalResult.add("}");
+            finalResult.add("{");
+            for (String s :
+                    convertToString(eliminateZeros(den))) {
+                finalResult.add(s);
+            }
+            finalResult.add("}");
+        }
+        System.out.println("Resultado: " + finalResult.toString());
+        return finalResult;
+    }
+
+    private LinkedList<String> convertToString(LinkedList<Monomio> resultado) {
+        LinkedList<String> finalResult = new LinkedList<>();
+        for (Monomio m :
+                resultado) {
+            for (String s :
+                    m.translateMonomio()) {
+                if (finalResult.size() != 0 && m.getExpresion()>0){
+                    finalResult.add("+");
+                }
+                finalResult.add(s);
+            }
+        }
+        return finalResult;
+    }
+
+    public LinkedList<Monomio> eliminateZeros(LinkedList<Monomio> polinomio){
+        LinkedList<Monomio> resultado = new LinkedList<>();
+        for (int i = 0; i < polinomio.size(); i++) {
+            if (polinomio.get(i).expresion != 0){
+                resultado.add(polinomio.get(i));
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<Monomio> corrigeNumerador(LinkedList<Monomio> numerador){
+        // Agrega 0's donde falten
+        LinkedList<Monomio> listaCorregida = new LinkedList<>();
+        int gradoDePolinomio = numerador.getFirst().getGrado();
+        int posMonomio = 0;
+        while (gradoDePolinomio >= 0){
+            if(posMonomio == numerador.size()){
+                listaCorregida.add(new Monomio("0", gradoDePolinomio+""));
+            }
+            else if (numerador.get(posMonomio).getGrado() == gradoDePolinomio){
+                listaCorregida.add(numerador.get(posMonomio));
+                posMonomio++;
+            }else{
+                listaCorregida.add(new Monomio("0", gradoDePolinomio+""));
+            }
+            gradoDePolinomio--;
+        }
+        return listaCorregida;
     }
 
     private boolean isPolinomio(LinkedList<String> poli){
@@ -1564,11 +1945,18 @@ public class Ecuacion {
                 if (poli.getFirst().equals("-")){
                     String signo  = poli.getFirst();
                     poli.remove(0);
-                    poli.set(0, signo+poli.getFirst());
+                    if (poli.getFirst().equals("x")){
+                        poli.set(0, signo+"1"+poli.getFirst());
+                    }else{
+                        poli.set(0, signo+poli.getFirst());
+                    }
                 }else{
                     poli.remove(0);
                 }
 
+            }
+            if (poli.getFirst().equals("x")){
+                poli.set(0, "1"+poli.getFirst());
             }
             expresion = poli.getFirst();
             if (poli.size() > 1){
@@ -1611,6 +1999,192 @@ public class Ecuacion {
             orderedPoli.set(pos, a);
         }
         return orderedPoli;
+    }
+
+    public String derivar(){
+        getEquationToTransform();
+        return getEquationToShow(derivadita(equationToTokens()));
+    }
+
+    private LinkedList<String> derivadita(LinkedList<String> func){
+        LinkedList<String> resultado = getContentOfF(func);
+        // Encontrar el tipo de derivada
+        System.out.println(resultado.toString());
+        if (resultado.contains("\\fracc")){
+            resultado = derivaditaDeDivisionsita(resultado);
+        }else if (resultado.contains("(")){
+            resultado = derivaditaDeMultiplicacioncita(resultado);
+        }else{
+            if (!isPolinomio(resultado)){
+                return func;
+            }
+            resultado = derivaditaNormalita(resultado);
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> getContentOfF(LinkedList<String> func) {
+        LinkedList<String> resultado = new LinkedList<>();
+        for (int i = 2; i < func.size()-1; i++) {
+            resultado.add(func.get(i));
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> derivaditaNormalita(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<Monomio> operaciones = ordenarPolinomio(func);
+        boolean first = true;
+        for (Monomio m :
+                operaciones) {
+            if (m.derivadita().getExpresion() == 0){
+                continue;
+            }else if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.derivadita().translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> derivaditaDeMultiplicacioncita(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<String> fx = new LinkedList<>();
+        LinkedList<String> gx = new LinkedList<>();
+        int pos = 1;
+        while (!func.get(pos).equals(")")){
+            fx.add(func.get(pos));
+            pos++;
+        }
+        pos += 2;
+        while (!func.get(pos).equals(")")){
+            gx.add(func.get(pos));
+            pos++;
+        }
+        if (!isPolinomio(fx) || !isPolinomio(gx)){
+            System.out.println("No es polinomica");
+            System.out.println(fx.toString());
+            System.out.println(gx.toString());
+            return func;
+        }
+        LinkedList<Monomio> u, uPrima, v, vPrima, resPolinomial;
+        resPolinomial = new LinkedList<>();
+        LinkedList<String> fx2 = (LinkedList<String>) fx.clone();
+        LinkedList<String> gx2 = (LinkedList<String>) gx.clone();
+        uPrima = ordenarPolinomio(derivaditaNormalita(fx));
+        vPrima = ordenarPolinomio(derivaditaNormalita(gx));
+        u = ordenarPolinomio(fx2);
+        v = ordenarPolinomio(gx2);
+        resPolinomial = multiplicaPolinomios(u, vPrima, resPolinomial);
+        resPolinomial = multiplicaPolinomios(uPrima, v, resPolinomial);
+        boolean first = true;
+        resPolinomial = sumaInterna(resPolinomial);
+        resPolinomial = eliminateZeros(resPolinomial);
+        for (Monomio m :
+                resPolinomial) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<Monomio> multiplicaPolinomios(LinkedList<Monomio> A, 
+                                                     LinkedList<Monomio> B,
+                                                     LinkedList<Monomio> res){
+        LinkedList<Monomio> resultado = res;
+
+        for (Monomio m :
+                A) {
+            for (Monomio n :
+                    B) {
+                resultado.add(m.multiply(n));
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<Monomio> sumaInterna(LinkedList<Monomio> func){
+        LinkedList<Monomio> resultado = new LinkedList<>();
+        Monomio sum;
+        while (!func.isEmpty()){
+            sum = func.removeFirst();
+            for (int i = 0; i < func.size(); i++) {
+                if (func.get(i).getGrado() == sum.getGrado()){
+                    sum.expresion += func.remove(i).getExpresion();
+                    i = -1;
+                }
+            }
+            resultado.add(sum);
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> derivaditaDeDivisionsita(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<String> fx = new LinkedList<>();
+        LinkedList<String> gx = new LinkedList<>();
+        int pos = 1;
+        while (!func.get(pos).equals(")")){
+            fx.add(func.get(pos));
+            pos++;
+        }
+        pos += 2;
+        while (!func.get(pos).equals(")")){
+            gx.add(func.get(pos));
+            pos++;
+        }
+        if (!isPolinomio(fx) || !isPolinomio(gx)){
+            System.out.println("No es polinomica");
+            System.out.println(fx.toString());
+            System.out.println(gx.toString());
+            return func;
+        }
+        LinkedList<Monomio> u, uPrima, v, vPrima, resPolinomial;
+        resPolinomial = new LinkedList<>();
+        LinkedList<String> fx2 = (LinkedList<String>) fx.clone();
+        LinkedList<String> gx2 = (LinkedList<String>) gx.clone();
+        uPrima = ordenarPolinomio(derivaditaNormalita(fx));
+        vPrima = ordenarPolinomio(derivaditaNormalita(gx));
+        u = ordenarPolinomio(fx2);
+        v = ordenarPolinomio(gx2);
+        resPolinomial = multiplicaPolinomios(u, vPrima, resPolinomial);
+        resPolinomial = negatePolinomial(multiplicaPolinomios(uPrima, v, resPolinomial));
+        boolean first = true;
+        resPolinomial = sumaInterna(resPolinomial);
+        resPolinomial = eliminateZeros(resPolinomial);
+        for (Monomio m :
+                resPolinomial) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<Monomio> negatePolinomial(LinkedList<Monomio> polinomial){
+        LinkedList<Monomio> result = new LinkedList<>();
+        Monomio actual;
+        for (Monomio m :
+                polinomial) {
+            actual = new Monomio(m.getExpresion()*-1, m.getGrado());
+            result.add(actual);
+        }
+        return result;
     }
 
     public String factorizar(){
@@ -1845,18 +2419,79 @@ public class Ecuacion {
         return numAndPotencia;
     }
 }
-class Monomio implements Comparable {
+class Monomio {
     double expresion;       // The expresion but without x
     int grado;
+
+    public Monomio(){
+        this.expresion = 0;
+        this.grado = 0;
+    }
 
     public Monomio(String expresion, String grado){
         this.expresion = Double.parseDouble(expresion);
         this.grado = Integer.parseInt(grado);
     }
 
-    public String[] translateMonomio(){
-        String[] translated = {expresion+"", "^", "{", grado+"", "}"};
+    public Monomio(double expresion, int grado){
+        this.expresion = expresion;
+        this.grado = grado;
+    }
+
+    public Monomio subtract(Monomio B){
+        if (this.grado == B.getGrado()){
+            return new Monomio(this.expresion-B.getExpresion(), this.getGrado());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public Monomio sum(Monomio B){
+        if (this.grado == B.getGrado()){
+            return new Monomio(this.expresion-B.getExpresion(), this.getGrado());
+        }
+        else{
+            return null;
+        }
+    }
+
+    public Monomio multiply(Monomio B){
+        return new Monomio(this.expresion*B.getExpresion(), this.getGrado()+B.getGrado());
+    }
+
+    public Monomio dividedBy(Monomio B){
+        return new Monomio(this.expresion/B.expresion, this.grado-B.getGrado());
+    }
+
+    public Monomio derivadita(){
+        return new Monomio(expresion*grado, grado-1);
+    }
+    
+    public LinkedList<String> translateMonomio(){
+        LinkedList<String> translated = new LinkedList<>();
+        if (this.expresion < 0){
+            translated.add("-");
+        }
+        if (this.grado == 0){
+            translated.add(Math.abs(redondearDouble(this.expresion))+"");
+        }else {
+            translated.add(Math.abs(redondearDouble(this.expresion))+"x");
+        }
+        if (this.grado > 1){
+            translated.add("^");
+            translated.add("{");
+            translated.add(this.grado+"");
+            translated.add("}");
+        }
         return translated;
+    }
+
+    private double redondearDouble(double number){
+        double result = number*Math.pow(10, 2);
+        result = Math.round(result);
+        return result/Math.pow(10, 2);
     }
 
     public int getGrado(){
@@ -1865,11 +2500,6 @@ class Monomio implements Comparable {
 
     public double getExpresion(){
         return this.expresion;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return this.grado-((Monomio)o).getGrado();
     }
 
     public String toString(){

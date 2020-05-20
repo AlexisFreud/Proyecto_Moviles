@@ -2,8 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    android:scrollbars="horizontal|vertical"
     tools:context=".MainActivity">
 
     <view
@@ -461,7 +462,7 @@
 
     <view
         android:id="@+id/ecuacion"
-        class="io.github.kexanie.library.MathView"
+        class="com.example.proyecto.MyMathView"
         android:layout_width="371dp"
         android:layout_height="77dp"
         android:layout_marginStart="16dp"
@@ -471,8 +472,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    =======
-
     <Button
         android:id="@+id/bt_calcular"
         android:layout_width="112dp"
@@ -480,7 +479,7 @@
         android:layout_marginStart="276dp"
         android:layout_marginTop="452dp"
         android:backgroundTint="#801919"
-        android:text="Calcular"
+        android:text="Derivar"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -499,11 +498,11 @@
 
     <view
         android:id="@+id/resultado"
-        class="io.github.kexanie.library.MathView"
-        android:layout_width="366dp"
-        android:layout_height="61dp"
+        class="com.example.proyecto.MyMathView"
+        android:layout_width="371dp"
+        android:layout_height="77dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="236dp"
+        android:layout_marginTop="228dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -518,6 +517,5 @@
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    >>>>>>> d00d8efb41fbf4a1f0cae569b61dffa18f1794b9
 
 </androidx.constraintlayout.widget.ConstraintLayout>
