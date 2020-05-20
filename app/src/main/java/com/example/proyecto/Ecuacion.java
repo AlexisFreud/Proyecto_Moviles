@@ -789,9 +789,6 @@ public class Ecuacion {
         System.out.println(solve_arithmetic(tokens));
     }
 
-    /*
-
-     */
 
     public String solve_arithmetic(LinkedList<String> equation) {
         /*
