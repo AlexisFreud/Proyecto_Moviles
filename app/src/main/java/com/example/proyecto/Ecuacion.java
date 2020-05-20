@@ -1720,11 +1720,12 @@ public class Ecuacion {
     }
 
     private LinkedList<String> derivadita(LinkedList<String> func){
-        // Encontrar el tipo de derivada
         LinkedList<String> resultado = getContentOfF(func);
-        if (func.contains("\\fracc")){
+        // Encontrar el tipo de derivada
+        System.out.println(resultado.toString());
+        if (resultado.contains("\\fracc")){
             resultado = derivaditaDeDivisionsita(resultado);
-        }else if (func.contains("*")){
+        }else if (resultado.contains("(")){
             resultado = derivaditaDeMultiplicacioncita(resultado);
         }else{
             if (!isPolinomio(resultado)){
@@ -1765,12 +1766,103 @@ public class Ecuacion {
 
     private LinkedList<String> derivaditaDeMultiplicacioncita(LinkedList<String> func){
         LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<String> fx = new LinkedList<>();
+        LinkedList<String> gx = new LinkedList<>();
+        int pos = 1;
+        while (!func.get(pos).equals(")")){
+            fx.add(func.get(pos));
+            pos++;
+        }
+        pos += 2;
+        while (!func.get(pos).equals(")")){
+            gx.add(func.get(pos));
+            pos++;
+        }
+        if (!isPolinomio(fx) || !isPolinomio(gx)){
+            System.out.println("No es polinomica");
+            System.out.println(fx.toString());
+            System.out.println(gx.toString());
+            return func;
+        }
+        LinkedList<Monomio> u, uPrima, v, vPrima, resPolinomial;
+        resPolinomial = new LinkedList<>();
+        LinkedList<String> fx2 = (LinkedList<String>) fx.clone();
+        LinkedList<String> gx2 = (LinkedList<String>) gx.clone();
+        uPrima = ordenarPolinomio(derivaditaNormalita(fx));
+        vPrima = ordenarPolinomio(derivaditaNormalita(gx));
+        u = ordenarPolinomio(fx2);
+        v = ordenarPolinomio(gx2);
+        resPolinomial = multiplicaPolinomios(u, vPrima, resPolinomial);
+        resPolinomial = multiplicaPolinomios(uPrima, v, resPolinomial);
+        boolean first = true;
+        resPolinomial = sumaInterna(resPolinomial);
+        resPolinomial = eliminateZeros(resPolinomial);
+        for (Monomio m :
+                resPolinomial) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        return resultado;
+    }
 
+    private LinkedList<Monomio> multiplicaPolinomios(LinkedList<Monomio> A, 
+                                                     LinkedList<Monomio> B,
+                                                     LinkedList<Monomio> res){
+        LinkedList<Monomio> resultado = res;
+
+        for (Monomio m :
+                A) {
+            for (Monomio n :
+                    B) {
+                resultado.add(m.multiply(n));
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<Monomio> sumaInterna(LinkedList<Monomio> func){
+        LinkedList<Monomio> resultado = new LinkedList<>();
+        Monomio sum;
+        while (!func.isEmpty()){
+            sum = func.removeFirst();
+            for (int i = 0; i < func.size(); i++) {
+                if (func.get(i).getGrado() == sum.getGrado()){
+                    sum.expresion += func.remove(i).getExpresion();
+                    i = -1;
+                }
+            }
+            resultado.add(sum);
+        }
         return resultado;
     }
 
     private LinkedList<String> derivaditaDeDivisionsita(LinkedList<String> func){
         LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<String> fx = new LinkedList<>();
+        LinkedList<String> gx = new LinkedList<>();
+        int pos = 1;
+        while (!func.get(pos).equals("}")){
+            fx.add(func.get(pos));
+            pos++;
+        }
+        pos += 2;
+        while (!func.get(pos).equals("}")){
+            gx.add(func.get(pos));
+            pos++;
+        }
+        if (!isPolinomio(fx) || !isPolinomio(gx))
+        {
+            System.out.println("No es polinomica");
+            System.out.println(fx.toString());
+            System.out.println(gx.toString());
+            return func;
+        }
 
         return resultado;
     }
