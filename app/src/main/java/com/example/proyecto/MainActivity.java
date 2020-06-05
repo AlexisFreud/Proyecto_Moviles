@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     Ecuacion funcion;
 
     Button calcular;
-    Button bt_factorizar;
+    Button bt_integrar;
     Button polinomios;
 
     String tex = "$$(3+(2\\times10))10-30+-100$$";
@@ -262,11 +262,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        bt_factorizar = findViewById(R.id.bt_factorizar);
-        bt_factorizar.setOnClickListener(new View.OnClickListener() {
+        bt_integrar = findViewById(R.id.bt_integrar);
+        bt_integrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                funcion.factorizar();
+                try {
+                    String s = funcion.integrar();
+                    resultado.setText(s);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         polinomios = findViewById(R.id.bt_polinomios);

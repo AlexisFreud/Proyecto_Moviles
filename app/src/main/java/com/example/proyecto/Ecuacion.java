@@ -1,6 +1,5 @@
 package com.example.proyecto;
 
-import java.io.LineNumberReader;
 import java.util.LinkedList;
 
 public class Ecuacion {
@@ -111,7 +110,7 @@ public class Ecuacion {
             case "id":
                 insert("\\int_{}^{}()dx");
                 numOfElements += "\\int_{}^{}()dx".length()-1;
-                this.position += 11;
+                this.position += 10;
                 break;
         }
     }
@@ -2080,6 +2079,106 @@ public class Ecuacion {
     f' ( 5x ^ { 2 } - ( 3 + 5x ) )
      */
 
+    public String integrar(){
+        getEquationToTransform();
+        return getEquationToShow(clasificaIntegracion(equationToTokens()));
+    }
+
+    private LinkedList<String> getContentOfInt(LinkedList<String> func, boolean indefinite) {
+        LinkedList<String> resultado = new LinkedList<>();
+        int init;
+        if (indefinite){
+            init = 2;
+        }else{
+            init = 0;
+            while (!func.get(init).equals("(")){
+                init++;
+            }
+        }
+        for (int i = init+1; i < func.size()-2; i++) {
+            resultado.add(func.get(i));
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> clasificaIntegracion(LinkedList<String> tokens){
+        // First, lets identify the type of equation: definite or indefinite integral
+        if (tokens.getFirst().equals("\\int")){
+            return integralIndefinida(getContentOfInt(tokens, true));
+        }else if(tokens.getFirst().equals("\\int_")){
+            double lowerLimit;
+            double upperLimit;
+            try{
+                lowerLimit = Double.parseDouble(tokens.get(2));
+                upperLimit = Double.parseDouble(tokens.get(6));
+            }catch (Exception e){
+                System.out.println("No hay limites");
+                e.printStackTrace();
+                return integralIndefinida(getContentOfInt(tokens, true));
+            }
+            return integralDefinida(getContentOfInt(tokens, false), lowerLimit, upperLimit);
+        }
+        return tokens;
+    }
+
+    private LinkedList<String> integralDefinida(LinkedList<String> func, double lowerLimit, double upperLimit){
+        LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<String> finalResult = new LinkedList<>();
+        LinkedList<Monomio> operaciones = ordenarPolinomio(func);
+        LinkedList<Monomio> firstEvaluation;
+        LinkedList<Monomio> secondEvaluation;
+        boolean first = true;
+        for (Monomio m :
+                operaciones) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.integralita().translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        firstEvaluation = ordenarPolinomio(resultado);
+        secondEvaluation = (LinkedList<Monomio>) firstEvaluation.clone();
+        double a = evaluateFunc(firstEvaluation, upperLimit);
+        double b = evaluateFunc(secondEvaluation, lowerLimit);
+        if (a-b < 0){
+            finalResult.add("-");
+        }
+        finalResult.add((a-b)+"");
+        return finalResult;
+    }
+
+    private double evaluateFunc(LinkedList<Monomio> func, double value){
+        double result = 0;
+        for (Monomio m :
+                func) {
+            result += m.evalateX(value);
+        }
+        return result;
+    }
+
+    private LinkedList<String> integralIndefinida(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<Monomio> operaciones = ordenarPolinomio(func);
+        boolean first = true;
+        for (Monomio m :
+                operaciones) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.integralita().translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        resultado.add("+");
+        resultado.add("C");
+        return resultado;
+    }
+
     public String dividePolinomios() {
         getEquationToTransform();
         return getEquationToShow(dividirPolinomios(equationToTokens()));
@@ -2480,13 +2579,15 @@ public class Ecuacion {
 
     private LinkedList<String> convertToString(LinkedList<Monomio> resultado) {
         LinkedList<String> finalResult = new LinkedList<>();
+        boolean first = true;
         for (Monomio m :
                 resultado) {
+            if (!first && m.getExpresion()>0){
+                finalResult.add("+");
+            }
+            first = false;
             for (String s :
                     m.translateMonomio()) {
-                if (finalResult.size() != 0 && m.getExpresion()>0){
-                    finalResult.add("+");
-                }
                 finalResult.add(s);
             }
         }
@@ -2808,6 +2909,7 @@ public class Ecuacion {
         }
         resultado.add("}");
         resultado.add("{");
+        first =true;
         for (Monomio m :
                 v2) {
             if (m.getExpresion() > 0 && !first){
@@ -3137,7 +3239,15 @@ class Monomio {
     public Monomio derivadita(){
         return new Monomio(expresion*grado, grado-1);
     }
-    
+
+    public Monomio integralita(){
+        return new Monomio(expresion/(grado+1), grado+1);
+    }
+
+    public double evalateX(double value){
+        return Math.pow(value, this.grado)*this.expresion;
+    }
+
     public LinkedList<String> translateMonomio(){
         LinkedList<String> translated = new LinkedList<>();
         if (this.expresion < 0){

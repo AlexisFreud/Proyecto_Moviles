@@ -485,13 +485,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/bt_factorizar"
+        android:id="@+id/bt_integrar"
         android:layout_width="109dp"
         android:layout_height="61dp"
         android:layout_marginStart="148dp"
         android:layout_marginTop="452dp"
         android:backgroundTint="#2247A3"
-        android:text="Factorizar"
+        android:text="integrar"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
