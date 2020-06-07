@@ -16,30 +16,18 @@ import io.github.kexanie.library.MathView;
 public class MainActivity extends AppCompatActivity {
 
     MyMathView ecuacion;
-    MathView num1,num2,num3,num4,num5,num6,num7,num8,num9,num0;
-    MathView op1,op2,op3,op4,op5,op6,op7,op8,op9,op10;
-    MathView pl1,pl2,pl3,pl4,pl5,pl6,pl7,pl8,pl9,pl10;
-    MathView rt1,rt2,rt3,rt4,rt5;
     String numeros;
     MyMathView resultado;
     Ecuacion funcion;
+
+    MathView button0,button1,button2,button3,button4,button5,button6,button7,button8,button9,buttonPunto,buttonX;
+    MathView buttonDer,buttonIzq,buttonCalcular,buttonMas,buttonMenos,buttonPor,buttonDiv,buttonDelete,buttonAc;
+    MathView buttonParentesis,buttonCuadrado,buttonPotencia,buttonRaizC,buttonRaiz,buttonIgual,buttonDerivada,buttonIntegral,buttonIntegralDef;
 
     Button calcular;
     Button bt_integrar;
     Button polinomios;
 
-    String tex = "$$(3+(2\\times10))10-30+-100$$";
-
-    String numerosString[] = {"\\(\\space\\space1\\)","\\(\\space\\space2\\)","\\(\\space\\space3\\)","\\(\\space\\space4\\)","\\(\\space\\space5\\)","\\(\\space\\space6\\)"
-            ,"\\(\\space\\space7\\)","\\(\\space\\space8\\)","\\(\\space\\space9\\)","\\(\\space\\space0\\)"};
-
-    String operadoresString[] = {"\\(\\space+\\)","\\(\\space-\\)","\\(\\space\\space\\centerdot\\)","\\(\\space\\times\\)","\\(\\space\\space/\\)","\\(\\space\\div\\)"
-            ,"\\(\\space\\space(\\)","\\(\\space\\space)\\)","\\(\\space=\\)","\\(\\space\\space\\: .\\)"};
-
-    String potenciaLogaritmos[] = {"\\(\\space\\space x\\)","\\(\\space\\square^2\\)","\\(\\space\\square^{\\square}\\)","\\(\\space\\: \\frac{\\square}{\\square}\\)",
-            "\\(\\sqrt{[]}\\)","\\(\\sqrt[\\square]{[]}\\)","\\((\\square)\\)","\\(\\space\\:\\frac{d}{dx}\\)","\\(\\space\\:\\smallint\\)","\\(\\:\\int_{\\square}^{\\square}\\)"};
-
-    String recorrerTexto[] = {"\\(\\space\\space\\Leftarrow\\)","\\(\\space\\space\\Rightarrow\\)","\\(\\space\\space\\lhd\\)","\\(\\space\\space=\\)","\\(\\space\\space CE\\)"};
 
     LinkedList<String> notacion = new LinkedList<>();
     int apuntador = 0;
@@ -647,7 +635,6 @@ public class MainActivity extends AppCompatActivity {
         setBotonesNumeros();
         setBotonesOperadores();
         setBotonesPotencias();
-        setBotonesRt();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -671,182 +658,131 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     public void setBotonesNumeros(){
-        num1 = findViewById(R.id.num1);
-        num1.setText(numerosString[0]);
-        num1.setOnTouchListener(new View.OnTouchListener() {
+        button0 = findViewById(R.id.boton0);
+        button0.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return escribeNumero("0");
+            }
+        });
+
+        button1 = findViewById(R.id.boton1);
+        button1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("1");
             }
         });
 
-        num2 = findViewById(R.id.num2);
-        num2.setText(numerosString[1]);
-        num2.setOnTouchListener(new View.OnTouchListener() {
+        button2 = findViewById(R.id.boton2);
+        button2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("2");
             }
         });
 
-        num3 = findViewById(R.id.num3);
-        num3.setText(numerosString[2]);
-        num3.setOnTouchListener(new View.OnTouchListener() {
+        button3 = findViewById(R.id.boton3);
+        button3.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("3");
             }
         });
 
-        num4 = findViewById(R.id.num4);
-        num4.setText(numerosString[3]);
-        num4.setOnTouchListener(new View.OnTouchListener() {
+        button4 = findViewById(R.id.boton4);
+        button4.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("4");
             }
         });
 
-        num5 = findViewById(R.id.num5);
-        num5.setText(numerosString[4]);
-        num5.setOnTouchListener(new View.OnTouchListener() {
+        button5 = findViewById(R.id.boton5);
+        button5.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("5");
             }
         });
 
-        num6 = findViewById(R.id.num6);
-        num6.setText(numerosString[5]);
-        num6.setOnTouchListener(new View.OnTouchListener() {
+        button6 = findViewById(R.id.boton6);
+        button6.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("6");
             }
         });
 
-        num7 = findViewById(R.id.num7);
-        num7.setText(numerosString[6]);
-        num7.setOnTouchListener(new View.OnTouchListener() {
+        button7 = findViewById(R.id.boton7);
+        button7.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("7");
             }
         });
 
-        num8 = findViewById(R.id.num8);
-        num8.setText(numerosString[7]);
-        num8.setOnTouchListener(new View.OnTouchListener() {
+        button8 = findViewById(R.id.boton8);
+        button8.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("8");
             }
         });
 
-        num9 = findViewById(R.id.num9);
-        num9.setText(numerosString[8]);
-        num9.setOnTouchListener(new View.OnTouchListener() {
+        button9 = findViewById(R.id.boton9);
+        button9.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero("9");
-            }
-        });
-
-        num0 = findViewById(R.id.num0);
-        num0.setText(numerosString[9]);
-        num0.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return escribeNumero("0");
             }
         });
     }
 
     @SuppressLint("ClickableViewAccessibility")
     public void setBotonesOperadores(){
-        op1 = findViewById(R.id.op1);
-        op1.setText(operadoresString[0]);
-        op1.setOnTouchListener(new View.OnTouchListener() {
+        buttonMas = findViewById(R.id.botonMas);
+        buttonMas.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return operadoresBasicos("+");
             }
         });
 
-        op2 = findViewById(R.id.op2);
-        op2.setText(operadoresString[1]);
-        op2.setOnTouchListener(new View.OnTouchListener() {
+        buttonMenos = findViewById(R.id.botonMenos);
+        buttonMenos.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return operadoresBasicos("-");
             }
         });
 
-        op3 = findViewById(R.id.op3);
-        op3.setText(operadoresString[2]);
-        op3.setOnTouchListener(new View.OnTouchListener() {
+        buttonPor = findViewById(R.id.botonPor);
+        buttonPor.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return operadoresBasicos("\\times");
             }
         });
 
-        op4 = findViewById(R.id.op4);
-        op4.setText(operadoresString[3]);
-        op4.setOnTouchListener(new View.OnTouchListener() {
+        buttonDiv = findViewById(R.id.botonDiv);
+        buttonDiv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return operadoresBasicos("\\times");
+                return operadoresBasicos("fr");
             }
         });
 
-        op5 = findViewById(R.id.op5);
-        op5.setText(operadoresString[4]);
-        op5.setOnTouchListener(new View.OnTouchListener() {
+        buttonParentesis = findViewById(R.id.botonParentesis);
+        buttonParentesis.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return escribeEspecial("fr");
+                return operadoresBasicos("pa");
             }
         });
 
-        op6 = findViewById(R.id.op6);
-        op6.setText(operadoresString[5]);
-        op6.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return escribeEspecial("fr");
-            }
-        });
-
-        op7 = findViewById(R.id.op7);
-        op7.setText(operadoresString[6]);
-        op7.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //num_parentesis++;
-                return escribeEspecial("pa");
-            }
-        });
-
-        op8 = findViewById(R.id.op8);
-        op8.setText(operadoresString[7]);
-        op8.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return escribeEspecial("pa");
-                /*
-                if(num_parentesis != 0){
-                    num_parentesis--;
-                    return operadoresBasicos(")");
-                }
-                return false;
-                 */
-            }
-        });
-
-        op9 = findViewById(R.id.op9);
-        op9.setText(operadoresString[8]);
-        op9.setOnTouchListener(new View.OnTouchListener() {
+        buttonIgual = findViewById(R.id.botonIgual);
+        buttonIgual.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(igual != true){
@@ -857,9 +793,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        op10 = findViewById(R.id.op10);
-        op10.setText(operadoresString[9]);
-        op10.setOnTouchListener(new View.OnTouchListener() {
+        buttonPunto = findViewById(R.id.botonPunto);
+        buttonPunto.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeNumero(".");
@@ -869,363 +804,108 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     public void setBotonesPotencias(){
-        pl1 =  findViewById(R.id.pl1);
-        pl1.setText(potenciaLogaritmos[0]);
-        pl1.setOnTouchListener(new View.OnTouchListener() {
+        buttonX = findViewById(R.id.botonX);
+        buttonX.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.insert("x");
                 ecuacion.setText(funcion.getEquationToShow());
                 return false;
-                /*
-                haveX = true;
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "x");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("x");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
-                 */
             }
         });
 
-        pl2 =  findViewById(R.id.pl2);
-        pl2.setText(potenciaLogaritmos[1]);
-        pl2.setOnTouchListener(new View.OnTouchListener() {
+        buttonCuadrado = findViewById(R.id.botonCuadrado);
+        buttonCuadrado.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("se");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, "^");
-                    notacion.add(notacion.size()-posiciones_atras, "2");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("\\square");
-                    notacion.add("^");
-                    notacion.add("2");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    atras = true;
-                    return false;
-                }
-                 */
             }
         });
 
-        pl3 =  findViewById(R.id.pl3);
-        pl3.setText(potenciaLogaritmos[2]);
-        pl3.setOnTouchListener(new View.OnTouchListener() {
+        buttonPotencia = findViewById(R.id.botonPotencia);
+        buttonPotencia.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("ee");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, "^");
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                }
-                else{
-                    notacion.add("\\square");
-                    notacion.add("^");
-                    notacion.add("\\square");
-                    atras = true;
-                }
-                posiciones_atras++;
-                posiciones_atras++;
-                posiciones_atras++;
-                ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                return false;
-                 */
             }
         });
 
-        pl4 =  findViewById(R.id.pl4);
-        pl4.setText(potenciaLogaritmos[3]);
-        pl4.setOnTouchListener(new View.OnTouchListener() {
+        /*
+        buttonDiv = findViewById(R.id.botonDiv);
+        buttonDiv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("fr");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\frac{");
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, "}{");
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, "}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("\\frac{");
-                    notacion.add("\\square");
-                    notacion.add("}{");
-                    notacion.add("\\square");
-                    notacion.add("}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    atras = true;
-                    return false;
-                }
-                 */
             }
         });
+        */
 
-        pl5 =  findViewById(R.id.pl5);
-        pl5.setText(potenciaLogaritmos[4]);
-        pl5.setOnTouchListener(new View.OnTouchListener() {
+        buttonRaizC = findViewById(R.id.botonRaizCuadrada);
+        buttonRaizC.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("sr");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\sqrt{");
-                    notacion.add(notacion.size()-posiciones_atras, "[]");
-                    notacion.add(notacion.size()-posiciones_atras, "}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("\\sqrt{");
-                    notacion.add("[]");
-                    notacion.add("}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    atras = true;
-                    return false;
-                }
-                 */
             }
         });
 
-        pl6 =  findViewById(R.id.pl6);
-        pl6.setText(potenciaLogaritmos[5]);
-        pl6.setOnTouchListener(new View.OnTouchListener() {
+        buttonRaiz = findViewById(R.id.botonRaiz);
+        buttonRaiz.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("ro");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\sqrt[");
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, "]{");
-                    notacion.add(notacion.size()-posiciones_atras, "[]");
-                    notacion.add(notacion.size()-posiciones_atras, "}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("\\sqrt[");
-                    notacion.add("\\square");
-                    notacion.add("]{");
-                    notacion.add("[]");
-                    notacion.add("}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    atras = true;
-                    return false;
-                }
-                 */
             }
         });
 
-        pl7 =  findViewById(R.id.pl7);
-        pl7.setText(potenciaLogaritmos[6]);
-        pl7.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return escribeEspecial("pa");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "(");
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, ")");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("(");
-                    notacion.add("\\square");
-                    notacion.add(")");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    atras = true;
-                    return false;
-                }
-                 */
-            }
-        });
-
-        pl8 =  findViewById(R.id.pl8);
-        pl8.setText(potenciaLogaritmos[7]);
-        pl8.setOnTouchListener(new View.OnTouchListener() {
+        buttonDerivada = findViewById(R.id.botonDerivada);
+        buttonDerivada.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("de");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\frac{d}{dx}");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("\\frac{d}{dx}");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
-                 */
             }
         });
 
-        pl9 =  findViewById(R.id.pl9);
-        pl9.setText(potenciaLogaritmos[8]);
-        pl9.setOnTouchListener(new View.OnTouchListener() {
+        buttonIntegral = findViewById(R.id.botonIntegral);
+        buttonIntegral.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("ii");
-                /*
-                 if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\smallint");
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("\\smallint");
-                    ecuacion.setText("$$" + getEcuacion(notacion) + "|$$");
-                    return false;
-                }
-                 */
             }
         });
 
-        pl10 =  findViewById(R.id.pl10);
-        pl10.setText(potenciaLogaritmos[9]);
-        pl10.setOnTouchListener(new View.OnTouchListener() {
-            // \\int_{\\square}^{\\square}
+        buttonIntegralDef = findViewById(R.id.botonIntegralDef);
+        buttonIntegralDef.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("id");
-                /*
-                if(atras){
-                    notacion.add(notacion.size()-posiciones_atras, "\\int_{");
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, "}^{");
-                    notacion.add(notacion.size()-posiciones_atras, "\\square");
-                    notacion.add(notacion.size()-posiciones_atras, "}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    return false;
-                }
-                else{
-                    notacion.add("\\int_{");
-                    notacion.add("\\square");
-                    notacion.add("}^{");
-                    notacion.add("\\square");
-                    notacion.add("}");
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    posiciones_atras++;
-                    ecuacion.setText("$$" + getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    atras = true;
-                    return false;
-                }
-                 */
             }
         });
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
     public void setBotonesRt(){
-        rt1 =  findViewById(R.id.rt1);
-        rt1.setText(recorrerTexto[0]);
-        rt1.setOnTouchListener(new View.OnTouchListener() {
+        buttonIzq = findViewById(R.id.botonIzquierda);
+        buttonIzq.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.cambiarPosicion(false);
                 ecuacion.setText(funcion.getEquationToShow());
-                /*
-                if(posiciones_atras != notacion.size()){
-                    posiciones_atras++;
-                    atras = true;
-                    ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                }
-                 */
                 return false;
             }
         });
 
-        rt2 =  findViewById(R.id.rt2);
-        rt2.setText(recorrerTexto[1]);
-        rt2.setOnTouchListener(new View.OnTouchListener() {
+        buttonDer = findViewById(R.id.botonDerecha);
+        buttonDer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 funcion.cambiarPosicion(true);
                 ecuacion.setText(funcion.getEquationToShow());
-                /*
-                if(posiciones_atras != 0 && atras == true){
-                    if(notacion.size()-posiciones_atras > 0){
-                        posiciones_atras--;
-                        apuntador = notacion.size()-posiciones_atras;
-                        ecuacion.setText("$$"+ getEcuacion(notacion, apuntador) + "$$");
-                    }
-                }
-                if(posiciones_atras == 0){
-                    atras = false;
-                }
-                 */
                 return false;
             }
         });
 
-        rt3 =  findViewById(R.id.rt3);
-        rt3.setText(recorrerTexto[2]);
-        rt3.setOnTouchListener(new View.OnTouchListener() {
+        buttonDelete = findViewById(R.id.botonDEL);
+        buttonDelete.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 try {
@@ -1235,79 +915,21 @@ public class MainActivity extends AppCompatActivity {
                 }
                 ecuacion.setText(funcion.getEquationToShow());
                 return false;
-                /*
-                String aux;
-                if(notacion.size() != 0 && posiciones_atras != notacion.size()){
-                    if(atras == false){
-                        aux = notacion.removeLast();
-                        if(aux.compareTo(")") == 0){
-                            num_parentesis++;
-                        }
-                        if(aux.compareTo("=") == 0){
-                            igual = false;
-                        }
-                        if(aux.compareTo("^2") == 0){
-                            if(!notacion.isEmpty()){
-                                if(notacion.getLast().compareTo("\\square") == 0){
-                                    notacion.removeLast();
-                                }
-                            }
-                        }
-                        if(aux.compareTo("^\\square") == 0){
-                            if(!notacion.isEmpty()){
-                                if(notacion.getLast().compareTo("\\square") == 0){
-                                    notacion.removeLast();
-                                }
-                            }
-                        }
-                        ecuacion.setText("$$"+ getEcuacion(notacion) + "|$$");
-                    }
-                    else{
-                        aux = notacion.remove(notacion.size()-posiciones_atras-1);
-                        if(aux.compareTo(")") == 0){
-                            num_parentesis++;
-                        }
-                        if(aux.compareTo("=") == 0){
-                            igual = false;
-                        }
-                        if(aux.compareTo("^2") == 0){
-                            if(!notacion.isEmpty()){
-                                if(notacion.get(notacion.size()-posiciones_atras-1).compareTo("\\square") == 0){
-                                    notacion.remove(notacion.size()-posiciones_atras-1);
-                                }
-                            }
-                        }
-                        if(aux.compareTo("^\\square") == 0){
-                            if(!notacion.isEmpty()){
-                                if(notacion.get(notacion.size()-posiciones_atras-1).compareTo("\\square") == 0){
-                                    notacion.remove(notacion.size()-posiciones_atras-1);
-                                }
-                            }
-                        }
-                        ecuacion.setText("$$"+ getEcuacion(notacion, notacion.size()-posiciones_atras) + "$$");
-                    }
-                }
-
-                 */
             }
         });
 
-        //BOTON DE EVALUAR
-        rt4 =  findViewById(R.id.rt4);
-        rt4.setText(recorrerTexto[3]);
-        rt4.setOnTouchListener(new View.OnTouchListener() {
+        buttonCalcular = findViewById(R.id.botonCalcular);
+        buttonCalcular.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 String s = funcion.solve();
                 resultado.setText(s);
-                //Toast.makeText(getApplicationContext(), "Tosta", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
 
-        rt5 =  findViewById(R.id.rt5);
-        rt5.setText(recorrerTexto[4]);
-        rt5.setOnTouchListener(new View.OnTouchListener() {
+        buttonAc = findViewById(R.id.botonAC);
+        buttonAc.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 ecuacion.setText("$$|$$");
