@@ -89,7 +89,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/botonAC"
         app:layout_constraintEnd_toEndOf="parent"
-        app:text="\\(\\sqrt[y]{x}\\)" />
+        app:text="\\(\\space\\sqrt[y]{x}\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonRaizCuadrada"
@@ -103,7 +103,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/botonDEL"
         app:layout_constraintStart_toEndOf="@+id/botonPotencia"
-        app:text="\\(\\sqrt{x}\\)" />
+        app:text="\\(\\space\\sqrt{x}\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonPotencia"
@@ -117,7 +117,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/boton9"
         app:layout_constraintStart_toEndOf="@+id/botonCuadrado"
-        app:text="\\(\\space x^{y}\\)" />
+        app:text="\\(\\space\\space x^{y}\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonCuadrado"
@@ -131,7 +131,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/boton8"
         app:layout_constraintStart_toEndOf="@+id/botonParentesis"
-        app:text="\\(\\space x^2\\)" />
+        app:text="\\(\\space\\space x^2\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonParentesis"
@@ -145,7 +145,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/boton7"
         app:layout_constraintStart_toStartOf="parent"
-        app:text="\\((x)\\)" />
+        app:text="\\(\\space(x)\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonAC"

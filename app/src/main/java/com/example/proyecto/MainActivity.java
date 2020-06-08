@@ -635,6 +635,7 @@ public class MainActivity extends AppCompatActivity {
         setBotonesNumeros();
         setBotonesOperadores();
         setBotonesPotencias();
+        setBotonesRt();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -769,7 +770,7 @@ public class MainActivity extends AppCompatActivity {
         buttonDiv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return operadoresBasicos("fr");
+                return escribeEspecial("fr");
             }
         });
 
@@ -777,7 +778,7 @@ public class MainActivity extends AppCompatActivity {
         buttonParentesis.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return operadoresBasicos("pa");
+                return escribeEspecial("pa");
             }
         });
 
