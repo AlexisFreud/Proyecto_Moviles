@@ -388,7 +388,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/botonX"
-        app:text="\\(\\space CALC\\)" />
+        app:text="\\(\\space Calcular\\)" />
 
     <view
         android:id="@+id/ecuacion"

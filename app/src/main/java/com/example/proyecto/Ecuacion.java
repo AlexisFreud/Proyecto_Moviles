@@ -863,41 +863,42 @@ public class Ecuacion {
 
     // Ejemplo: x²- 3x + 5 - (15x-3)/(2x²-1)
     public String solve(){
-        LinkedList<String> tokens = equationToTokens();
-        System.out.print(tokens.toString());
-        System.out.println(":WEBADA");
-        /*
-        for (int i = 0; i < tokens.size(); i++) {
-            /*
-            Use PEMDAS for operations order
-            - P: Parentesis
-            - E: Exponentes
-            - M: Multiplicacion
-            - D: Division
-            - A: Adicion
-            - S: Sustraccion
-
-            if (getTypeToken(tokens.get(i)) == 6){
-                // Parentesis
-                int start = i;
-                tokens.remove(i);
-                int parentesis = 1;
-                LinkedList<String> aux = new LinkedList<>();
-                while (getTypeToken(tokens.get(i)) != 6 || parentesis > 0){
-                    if (getTypeToken(tokens.get(i)) == 6){
-                        parentesis++;
-                    }else if(getTypeToken(tokens.get(i)) == 7){
-                        parentesis--;
-                    }
-                    aux.add(tokens.get(i));
-                    tokens.remove(i);
-                }
-                tokens.add(start, algebra(aux));
-            }
-        }*/
-        String resultado = "";
-        resultado = solve_arithmetic(tokens, true);
-        return  especialResult;
+    //        LinkedList<String> tokens = equationToTokens();
+//        System.out.print(tokens.toString());
+//        System.out.println(":WEBADA");
+//        /*
+//        for (int i = 0; i < tokens.size(); i++) {
+//            /*
+//            Use PEMDAS for operations order
+//            - P: Parentesis
+//            - E: Exponentes
+//            - M: Multiplicacion
+//            - D: Division
+//            - A: Adicion
+//            - S: Sustraccion
+//
+//            if (getTypeToken(tokens.get(i)) == 6){
+//                // Parentesis
+//                int start = i;
+//                tokens.remove(i);
+//                int parentesis = 1;
+//                LinkedList<String> aux = new LinkedList<>();
+//                while (getTypeToken(tokens.get(i)) != 6 || parentesis > 0){
+//                    if (getTypeToken(tokens.get(i)) == 6){
+//                        parentesis++;
+//                    }else if(getTypeToken(tokens.get(i)) == 7){
+//                        parentesis--;
+//                    }
+//                    aux.add(tokens.get(i));
+//                    tokens.remove(i);
+//                }
+//                tokens.add(start, algebra(aux));
+//            }
+//        }*/
+//        String resultado = "";
+//        resultado = solve_arithmetic(tokens, true);
+//        return  especialResult;
+        return solve_2();
     }
 
 
@@ -2187,6 +2188,156 @@ public class Ecuacion {
     f' ( 5x ^ { 2 } - ( 3 + 5x ) )
      */
 
+    public String solve_2(){
+        getEquationToTransform();
+        LinkedList<String> solution;
+        try{
+            solution = real_solve(equationToTokens());
+        }catch (Exception e){
+            e.printStackTrace();
+            solution = equationToTokens();
+        }
+        return getEquationToShow(solution);
+    }
+
+    private LinkedList<String> real_solve(LinkedList<String> func){
+        // IDFPEMAS
+        // Solve integrals and derivatives
+        LinkedList<String> equation = (LinkedList<String>) func.clone();
+        LinkedList<String> operaciones = new LinkedList<>();
+        String elem;
+        for (int i = 0; i < equation.size(); i++) {
+            elem = equation.get(i);
+            if (elem.equals("\\int") || elem.equals("\\int_"))
+            {
+                // Solve the integral
+                LinkedList<String> aux = new LinkedList<>();
+                aux.add(elem);
+                i++;
+                int dxs = 1;
+                while (dxs > 0){
+                    if (equation.get(i).equals("\\int")){
+                        dxs++;
+                    }
+                    else if(equation.get(i).equals("\\int_")){
+                        dxs++;
+                    }
+                    else if(equation.get(i).equals("dx")){
+                        dxs--;
+                    }
+                    aux.add(equation.get(i));
+                    i++;
+                }
+                LinkedList<String> integral = arithmetic_clasificaIntegracion(aux);
+                operaciones.add("(");
+                for (String s :
+                        integral) {
+                    operaciones.add(s);
+                }
+                operaciones.add(")");
+            }else if(elem.equals("f\'"))
+            {
+                // Solve the derivative
+                LinkedList<String> aux = new LinkedList<>();
+                aux.add(equation.get(i));
+                i++;
+                aux.add(equation.get(i));
+                int parentesis = 1;
+                while (parentesis > 0){
+                    i++;
+                    if (equation.get(i).equals("(")){
+                        parentesis++;
+                    }else if(equation.get(i).equals(")")){
+                        parentesis--;
+                    }
+                    aux.add(equation.get(i));
+                }
+                LinkedList<String> derivada = arithmetic_derivadita(aux);
+                operaciones.add("(");
+                for (String s :
+                        derivada) {
+                    operaciones.add(s);
+                }
+                operaciones.add(")");
+            }else{
+                operaciones.add(equation.get(i));
+            }
+        }
+
+        // Termino de derivar e integrar
+        equation = operaciones;
+        operaciones = new LinkedList<>();
+
+        // Revisar fracciones
+        elem = "";
+        for (int i = 0; i < equation.size(); i++) {
+            elem = equation.get(i);
+            if(elem.equals("\\frac")){
+                // Resuleve fraccion y escribe el resultado entre parentesis
+                LinkedList<String> aux = new LinkedList<>();
+                aux.add(equation.get(i));
+                i++;
+                aux.add(equation.get(i));
+                i++;
+                int keys = 1;
+                while (keys > 0){
+                    if (equation.get(i).equals("{")){
+                        keys++;
+                    }else if(equation.get(i).equals("}")){
+                        keys--;
+                    }
+                    aux.add(equation.get(i));
+                    i++;
+                }
+                aux.add(equation.get(i));
+                i++;
+                keys = 1;
+                while (keys > 0){
+                    if (equation.get(i).equals("{")){
+                        keys++;
+                    }else if(equation.get(i).equals("}")){
+                        keys--;
+                    }
+                    aux.add(equation.get(i));
+                    i++;
+                }
+                i--;
+                LinkedList<String> division = arithmetic_dividirPolinomios(aux);
+                operaciones.add("(");
+                for (String s :
+                        division) {
+                    operaciones.add(s);
+                }
+                operaciones.add(")");
+            }else{
+                operaciones.add(equation.get(i));
+            }
+        }
+
+        equation = operaciones;
+        operaciones = new LinkedList<>();
+
+        // Checar parentesis, potencias y multiplicaciones
+        // (poli)^n = (poli)*(poli)*...*(poli) n veces
+        // mono*(poli) = (poli) * (poli)
+        if (isSigno(equation.getFirst())){
+            // Elemento es signo menos
+        }else{
+
+        }
+        for (int i = 0; i < equation.size(); i++) {
+            if (equation.get(i).equals("(")){
+                // Resolver interior de parentesis (poli)
+
+            }else if(equation.get(i).equals("*")){
+                // Revisar el elemento anterior
+
+            }
+        }
+
+        return equation;
+    }
+
     public String integrar(){
         getEquationToTransform();
         return getEquationToShow(clasificaIntegracion(equationToTokens()));
@@ -2285,9 +2436,102 @@ public class Ecuacion {
         return resultado;
     }
 
+    private LinkedList<String> arithmetic_integralIndefinida(LinkedList<String> func){
+        LinkedList<String> resultado = new LinkedList<>();
+        LinkedList<Monomio> operaciones = ordenarPolinomio(func);
+        boolean first = true;
+        for (Monomio m :
+                operaciones) {
+            if (m.getExpresion() > 0 && !first){
+                resultado.add("+");
+            }
+            first = false;
+            for (String s :
+                    m.integralita().translateMonomio()) {
+                resultado.add(s);
+            }
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> arithmetic_clasificaIntegracion(LinkedList<String> tokens){
+        // First, lets identify the type of equation: definite or indefinite integral
+        if (tokens.getFirst().equals("\\int")){
+            return arithmetic_integralIndefinida(real_solve(getContentOfInt(tokens, true)));
+        }else if(tokens.getFirst().equals("\\int_")){
+            double lowerLimit;
+            double upperLimit;
+            try{
+                lowerLimit = Double.parseDouble(tokens.get(2));
+                upperLimit = Double.parseDouble(tokens.get(6));
+            }catch (Exception e){
+                System.out.println("No hay limites");
+                e.printStackTrace();
+                return integralIndefinida(real_solve(getContentOfInt(tokens, true)));
+            }
+            return integralDefinida(real_solve(getContentOfInt(tokens, false)), lowerLimit, upperLimit);
+        }
+        return tokens;
+    }
+
     public String dividePolinomios() {
         getEquationToTransform();
         return getEquationToShow(dividirPolinomios(equationToTokens()));
+    }
+
+    private LinkedList<String> arithmetic_dividirPolinomios(LinkedList<String> tokens){
+        /*
+        Reducir los exponentes al minimo antes de ordenar, de manera que el exponente sea
+        solo un número y no una suma de ellos.
+         */
+        LinkedList<String> completeEquation = new LinkedList<>();
+        LinkedList<String> numerador = new LinkedList<>();
+        LinkedList<String> denominador = new LinkedList<>();
+
+        // Find the start of the polinomial (\frac declaration)
+        int numToken = 0;
+        while (!tokens.get(numToken).equals("\\frac")){
+            completeEquation.add(tokens.get(numToken));
+            numToken++;
+        }
+        numToken += 2;     // numToken -> {
+        int keys = 1;
+        while (keys > 0)    // fill numerador
+        {
+            numerador.add(tokens.get(numToken));
+            numToken++;
+            if (tokens.get(numToken).equals("{")){
+                keys++;
+            }else if (tokens.get(numToken).equals("}")){
+                keys--;
+            }
+        }
+        // numToken -> }
+        numToken += 2;         // numToken points to one step over {
+        keys = 1;
+        while (keys > 0)    // fill denominador
+        {
+            denominador.add(tokens.get(numToken));
+            numToken++;
+            if (tokens.get(numToken).equals("{")){
+                keys++;
+            }else if (tokens.get(numToken).equals("}")){
+                keys--;
+            }
+        }
+        // Check for polinomial functions
+        numerador = real_solve(numerador);
+        denominador = real_solve(denominador);
+        if (!isPolinomio(numerador) || !isPolinomio(denominador)){
+            return tokens;
+        }
+        LinkedList<String> resultado = solvePolinomialDivision(numerador, denominador);
+        System.out.println("\n\n------------------------------");
+        System.out.println(resultado.toString());
+        System.out.println("------------------------------");
+        // AGREGAR EL RESULTADO AL RESTO DE LA ECUACION
+        // AGREGAR LO QUE SOBRA DE LA ECUACION DESPUES DE LA FRACCION
+        return resultado;
     }
 
     private LinkedList<String> dividirPolinomios(LinkedList<String> tokens){
@@ -2838,6 +3082,26 @@ public class Ecuacion {
                 return func;
             }
             resultado = derivaditaNormalita(resultado);
+        }
+        return resultado;
+    }
+
+    private LinkedList<String> arithmetic_derivadita(LinkedList<String> func){
+        LinkedList<String> resultado = getContentOfF(func);
+        // Encontrar el tipo de derivada
+        System.out.println(resultado.toString());
+        if (resultado.contains("\\frac")){
+            resultado = derivaditaDeDivisionsita(resultado);
+        }else if (resultado.contains("(")){
+            resultado = derivaditaDeMultiplicacioncita(resultado);
+        }else{
+            if (!isPolinomio(resultado)){
+                return func;
+            }
+            resultado = derivaditaNormalita(resultado);
+        }
+        if (resultado.size() == 0){
+            resultado.add("0");
         }
         return resultado;
     }

@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     Button bt_integrar;
     Button polinomios;
 
-
     LinkedList<String> notacion = new LinkedList<>();
     int apuntador = 0;
     int num_parentesis = 0;
