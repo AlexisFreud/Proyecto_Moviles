@@ -123,7 +123,13 @@ public class Ecuacion {
     private void checkForPotencia() {
         if(getElement(position-1).equals("{")){
             isInPotencia = true;
-        }else if (getElement(position-1).equals("}")){
+        }else if (getElement(position-1).equals("}")) {
+            isInPotencia = true;
+        }else if(getElement(position-1).equals("(")) {
+            isInPotencia = true;
+        }else if(isSigno(getElement(position-1))){
+            isInPotencia = true;
+        }else if(numOfElements == 0){
             isInPotencia = true;
         }else{
             isInPotencia = false;
