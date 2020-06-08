@@ -2,6 +2,12 @@ package com.example.proyecto;
 
 import java.util.LinkedList;
 
+/*
+Listado de errores:
+                Error                                             Status
+    -   Error al borrar una integral definida           -          Fixed
+    -   Error al eliminar una potencia cuando esta vacia-          Fixed
+ */
 public class Ecuacion {
     private LinkedList<String> polinomios;
     private int numOfElements;
@@ -137,9 +143,77 @@ public class Ecuacion {
             if (getElement(position).equals("d")){
                 position += 2;
                 eraseNElements(2);
+                while (!getElement(position-1).equals("\\")){
+                    String elemento = getElement(position-1);
+                    eraseNElements(1);
+                }
+                eraseNElements(1);
+                if (isSigno(getElement(position-1))){
+                    eraseNElements(1);
+                }
             }
             position = actualPosition;
             eraseLeft();
+        }
+        else if (getElement(position-1).equals("{"))
+        {
+            // First identify the case: exponent, integral, fracc or sqrt.
+            String prevElem = getElement(position-2);
+            if (prevElem.equals("^"))
+            {
+                if (getElement(position-3).equals("}")){
+                    // Integral 2
+                    while (!getElement(position-1).equals("d")){
+                        position++;
+                    }
+                    position++;
+                    while (!getElement(position-1).equals("i")){
+                        eraseNElements(1);
+                    }
+                    eraseNElements(2);
+                }else{
+                    // Exponent
+                    eraseNElements(2);
+                    int keys = 1;
+                    position++;
+                    while (keys > 0){
+                        if (getElement(position-1).equals("{")){
+                            keys++;
+                        }else if(getElement(position-1).equals("}")){
+                            keys--;
+                        }
+                        eraseNElements(1);
+                        position++;
+                    }
+                    position--;
+                }
+            }
+            else if(prevElem.equals("_"))
+            {
+                // Integral 1
+                while (!getElement(position-1).equals("d")){
+                    position++;
+                }
+                position++;
+                while (!getElement(position-1).equals("i")){
+                    eraseNElements(1);
+                }
+                eraseNElements(2);
+            }
+            else if(prevElem.equals("c"))
+            {
+                // Fracc 1
+                int keys = 1;
+                while(keys > 0){
+                    if (getElement(position-1).equals("{")){
+                        keys++;
+                    }else if(getElement(position-1).equals("}")){
+                        keys--;
+                    }
+                    position++;
+                }
+                eraseLeft();
+            }
         }
         else if (getElement(position-1).equals(")") || getElement(position).equals(")"))
         {
@@ -156,7 +230,7 @@ public class Ecuacion {
             }
             eraseLeft();
         }
-        else if (getElement(position-1).equals("}") || getElement(position).equals("}"))
+        else if (getElement(position-1).equals("}") )//|| getElement(position).equals("}"))
         {
             int closeKeys = 1;
             especialDelete();
@@ -173,7 +247,7 @@ public class Ecuacion {
             }
             eraseLeft();
         }
-        else if (getElement(position-1).equals("]") || getElement(position).equals("]"))
+        else if (getElement(position-1).equals("]") )//|| getElement(position).equals("]"))
         {
             int closeKeys = 1;
             especialDelete();
@@ -219,7 +293,8 @@ public class Ecuacion {
             }
             eraseNElements(N);
             eraseLeft();
-        }else if(getElement(position-1).equals("\'")){
+        }
+        else if(getElement(position-1).equals("\'")){
             eraseNElements(2);
             eraseLeft();
         }
@@ -237,7 +312,7 @@ public class Ecuacion {
         if (position != 0 && numOfElements != 0)
         {
             if (isSpecialToErase(position-1)){
-                // Borra todo el caracter especial
+                // Borra el caracter especial
                 eraseLeft();
                 return;
             }
@@ -3254,9 +3329,17 @@ class Monomio {
             translated.add("-");
         }
         if (this.grado == 0){
-            translated.add(Math.abs(redondearDouble(this.expresion))+"");
+            if (Math.abs(redondearDouble(this.expresion)) == (int)Math.abs(redondearDouble(this.expresion))){
+                translated.add(Math.abs((int)Math.abs(redondearDouble(this.expresion)))+"");
+            }else{
+                translated.add(Math.abs(redondearDouble(this.expresion))+"");
+            }
         }else {
-            translated.add(Math.abs(redondearDouble(this.expresion))+"x");
+            if (Math.abs(redondearDouble(this.expresion)) == (int)Math.abs(redondearDouble(this.expresion))){
+                translated.add(Math.abs((int)Math.abs(redondearDouble(this.expresion)))+"x");
+            }else{
+                translated.add(Math.abs(redondearDouble(this.expresion))+"x");
+            }
         }
         if (this.grado > 1){
             translated.add("^");
