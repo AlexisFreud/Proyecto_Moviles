@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     MathView button0,button1,button2,button3,button4,button5,button6,button7,button8,button9,buttonPunto,buttonX;
     MathView buttonDer,buttonIzq,buttonCalcular,buttonMas,buttonMenos,buttonPor,buttonDiv,buttonDelete,buttonAc;
-    MathView buttonParentesis,buttonCuadrado,buttonPotencia,buttonRaizC,buttonRaiz,buttonIgual,buttonDerivada,buttonIntegral,buttonIntegralDef;
+    MathView buttonParentesis,buttonCuadrado,buttonPotencia,buttonDerivada,buttonIntegral,buttonIntegralDef;
 
     Button calcular;
     Button bt_integrar;
@@ -782,18 +782,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonIgual = findViewById(R.id.botonIgual);
-        buttonIgual.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(igual != true){
-                    igual = true;
-                    return operadoresBasicos("=");
-                }
-                return  false;
-            }
-        });
-
         buttonPunto = findViewById(R.id.botonPunto);
         buttonPunto.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -828,32 +816,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return escribeEspecial("ee");
-            }
-        });
-
-        /*
-        buttonDiv = findViewById(R.id.botonDiv);
-        buttonDiv.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return escribeEspecial("fr");
-            }
-        });
-        */
-
-        buttonRaizC = findViewById(R.id.botonRaizCuadrada);
-        buttonRaizC.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return escribeEspecial("sr");
-            }
-        });
-
-        buttonRaiz = findViewById(R.id.botonRaiz);
-        buttonRaiz.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return escribeEspecial("ro");
             }
         });
 
