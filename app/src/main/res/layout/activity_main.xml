@@ -441,45 +441,45 @@
         android:id="@+id/bt_integrar"
         android:layout_width="109dp"
         android:layout_height="61dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="400dp"
         android:backgroundTint="#2247A3"
         android:text="integrar"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@+id/bt_polinomios"
-        app:layout_constraintTop_toBottomOf="@+id/resultado" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/bt_calcular"
         android:layout_width="112dp"
         android:layout_height="66dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="396dp"
         android:backgroundTint="#801919"
         android:text="Derivar"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@+id/bt_integrar"
-        app:layout_constraintTop_toBottomOf="@+id/resultado" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/bt_polinomios"
         android:layout_width="101dp"
         android:layout_height="62dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="400dp"
         android:backgroundTint="#8C2D93"
         android:text="Divide polinomio"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultado" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <view
         android:id="@+id/resultado"
         class="com.example.proyecto.MyMathView"
         android:layout_width="371dp"
         android:layout_height="77dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="208dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ecuacion" />
 

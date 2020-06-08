@@ -2169,8 +2169,9 @@ public class Ecuacion {
             while (!func.get(init).equals("(")){
                 init++;
             }
+            init++;
         }
-        for (int i = init+1; i < func.size()-2; i++) {
+        for (int i = init; i < func.size()-2; i++) {
             resultado.add(func.get(i));
         }
         return resultado;
