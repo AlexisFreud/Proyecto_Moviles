@@ -18,6 +18,7 @@ public class Ecuacion {
     private final String[] numeros = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."};
     private String equationToTransform;
     private String especialResult;
+    private boolean isInPotencia = false;
 
     /*
     Nota:
@@ -90,14 +91,12 @@ public class Ecuacion {
                 this.position += 5;
                 break;
             case "ee":
-                insert("^{}");
-                numOfElements += "^{}".length() - 1;
-                this.position += 1;
+                checkForPotencia();
+                insertPotencia("^{}");
                 break;
             case "se":
-                insert("^{2}");
-                numOfElements += "^{2}".length() - 1;
-                this.position += 3;
+                checkForPotencia();
+                insertPotencia("^{2}");
                 break;
             case "pa":
                 insert("()");
@@ -118,6 +117,30 @@ public class Ecuacion {
                 numOfElements += "\\int_{}^{}()dx".length()-1;
                 this.position += 10;
                 break;
+        }
+    }
+
+    private void checkForPotencia() {
+        if(getElement(position-1).equals("{")){
+            isInPotencia = true;
+        }else if (getElement(position-1).equals("}")){
+            isInPotencia = true;
+        }else{
+            isInPotencia = false;
+        }
+    }
+
+    private void insertPotencia(String potencia){
+        if(!isInPotencia)
+        {
+            insert(potencia);
+            if(potencia.equals("^{}")){
+                numOfElements += "^{}".length() - 1;
+                this.position += 1;
+            }else{
+                numOfElements += "^{2}".length() - 1;
+                this.position += 3;
+            }
         }
     }
 
