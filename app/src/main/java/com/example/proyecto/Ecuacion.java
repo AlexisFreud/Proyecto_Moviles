@@ -127,7 +127,9 @@ public class Ecuacion {
             isInPotencia = true;
         }else if(getElement(position-1).equals("(")) {
             isInPotencia = true;
-        }else if(isSigno(getElement(position-1))){
+        }else if(isSigno(getElement(position-1))) {
+            isInPotencia = true;
+        }else if (getElement(position-1).equals("x") && getElement(position-2).equals("d")){
             isInPotencia = true;
         }else if(numOfElements == 0){
             isInPotencia = true;
@@ -236,10 +238,12 @@ public class Ecuacion {
                 while(keys > 0){
                     if (getElement(position-1).equals("{")){
                         keys++;
-                    }else if(getElement(position-1).equals("}")){
+                    }
+                    else if(getElement(position-1).equals("}"))
+                    {
                         keys--;
                     }
-                    position++;
+                    cambiarPosicion(true);
                 }
                 eraseLeft();
             }
