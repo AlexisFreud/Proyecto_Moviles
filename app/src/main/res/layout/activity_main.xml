@@ -19,7 +19,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/botonRaiz"
         app:layout_constraintEnd_toEndOf="parent"
-        app:text="\\(\\space\\space\\space\\space\\:\\int_{x}^{y}\\)" />
+        app:text="\\(\\space\\space\\int_{a}^{b}\\:dx\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonIntegral"
@@ -33,7 +33,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/botonRaizCuadrada"
         app:layout_constraintStart_toEndOf="@+id/botonDerivada"
-        app:text="\\(\\space\\:\\smallint\\)" />
+        app:text="\\(\\space\\:\\smallint \\:dx\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonDerivada"
@@ -47,7 +47,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/botonPotencia"
         app:layout_constraintStart_toEndOf="@+id/botonIgual"
-        app:text="\\(\\space\\:\\frac{d}{dx}\\)" />
+        app:text="\\(\\space\\:f\'\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonIgual"
@@ -117,7 +117,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/boton9"
         app:layout_constraintStart_toEndOf="@+id/botonCuadrado"
-        app:text="\\(\\space\\space x^{y}\\)" />
+        app:text="\\(\\space\\space a^{b}\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonCuadrado"
@@ -131,7 +131,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/boton8"
         app:layout_constraintStart_toEndOf="@+id/botonParentesis"
-        app:text="\\(\\space\\space x^2\\)" />
+        app:text="\\(\\space\\space a^2\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonParentesis"
@@ -145,7 +145,7 @@
         app:engine="KaTeX"
         app:layout_constraintBottom_toTopOf="@+id/boton7"
         app:layout_constraintStart_toStartOf="parent"
-        app:text="\\(\\space(x)\\)" />
+        app:text="\\(\\space(\\space)\\)" />
 
     <io.github.kexanie.library.MathView
         android:id="@+id/botonAC"
@@ -420,12 +420,13 @@
         android:layout_height="42dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="4dp"
+        android:backgroundTint="#7C47DC"
         android:clickable="true"
         android:visibility="visible"
         app:engine="KaTeX"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:text="\\(\\space RESP\\)" />
+        app:text="\\(\\space CALC\\)" />
 
     <view
         android:id="@+id/ecuacion"

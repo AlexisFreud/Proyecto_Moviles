@@ -2219,9 +2219,6 @@ public class Ecuacion {
         secondEvaluation = (LinkedList<Monomio>) firstEvaluation.clone();
         double a = evaluateFunc(firstEvaluation, upperLimit);
         double b = evaluateFunc(secondEvaluation, lowerLimit);
-        if (a-b < 0){
-            finalResult.add("-");
-        }
         finalResult.add((a-b)+"");
         return finalResult;
     }
@@ -3330,15 +3327,21 @@ class Monomio {
             translated.add("-");
         }
         if (this.grado == 0){
-            if (Math.abs(redondearDouble(this.expresion)) == (int)Math.abs(redondearDouble(this.expresion))){
-                translated.add(Math.abs((int)Math.abs(redondearDouble(this.expresion)))+"");
-            }else{
+            if (Math.abs(redondearDouble(this.expresion)) == (int)Math.abs(redondearDouble(this.expresion)))
+            {
+                translated.add(Math.abs((int)redondearDouble(this.expresion))+"");
+            }
+            else
+                {
                 translated.add(Math.abs(redondearDouble(this.expresion))+"");
             }
         }else {
-            if (Math.abs(redondearDouble(this.expresion)) == (int)Math.abs(redondearDouble(this.expresion))){
-                translated.add(Math.abs((int)Math.abs(redondearDouble(this.expresion)))+"x");
-            }else{
+            if (Math.abs(redondearDouble(this.expresion)) == (int)Math.abs(redondearDouble(this.expresion)))
+            {
+                translated.add(Math.abs((int)redondearDouble(this.expresion))+"x");
+            }
+            else
+                {
                 translated.add(Math.abs(redondearDouble(this.expresion))+"x");
             }
         }
