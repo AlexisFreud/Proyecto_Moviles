@@ -8,8 +8,6 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.LinkedList;
-
 import io.github.kexanie.library.MathView;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,14 +24,6 @@ public class MainActivity extends AppCompatActivity {
     Button calcular;
     Button bt_integrar;
     Button polinomios;
-
-    LinkedList<String> notacion = new LinkedList<>();
-    int apuntador = 0;
-    int num_parentesis = 0;
-    boolean atras = false;
-    int posiciones_atras = 0;
-    boolean igual = false;
-    boolean haveX = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,308 +67,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         funcion = new Ecuacion();
-    }
-
-    public void dividePolinomios(LinkedList<String> equation) throws Exception{
-        LinkedList<String> polinomioA = new LinkedList<>();
-        LinkedList<String> polinomioB = new LinkedList<>();
-        int last_parentesis = 0;
-        for (int i = 1; i < equation.size(); i++) {
-            if (equation.get(i).equals(")")){
-                last_parentesis = i+3;
-                break;
-            }else{
-                polinomioA.add(equation.get(i));
-            }
-        }
-        for (int i = last_parentesis; i<equation.size()-1;i++){
-            polinomioB.add(equation.get(i));
-        }
-        for (int i = 0; i < polinomioA.size(); i++) {
-            if (i != 0){
-                if (polinomioA.get(i).equals("-")){
-                    if (polinomioA.get(i+1).equals("x")){
-                        polinomioA.set(i, "-1");
-                    }else{
-                        polinomioA.set(i, "-"+polinomioA.get(i+1));
-                        polinomioA.remove(i+1);
-                    }
-                }else if(polinomioA.get(i).equals("x") && !isNumber(polinomioA.get(i-1))){
-                    polinomioA.add(i, "1");
-                    i++;
-                }
-            }else{
-                if (polinomioA.getFirst().equals("-")){
-                    if (polinomioA.get(1).equals("x")){
-                        polinomioA.set(0, "-1");
-                    }else{
-                        polinomioA.set(0, "-"+polinomioA.get(1));
-                    }
-                }else if(polinomioA.getFirst().equals("x")){
-                    polinomioA.add(0, "1");
-                    i++;
-                }
-            }
-        }
-
-        for (int i = 0; i < polinomioB.size(); i++) {
-            if (i != 0){
-                if (polinomioB.get(i).equals("-")){
-                    if (polinomioB.get(i+1).equals("x")){
-                        polinomioB.set(i, "-1");
-                    }else{
-                        polinomioB.set(i, "-"+polinomioB.get(i+1));
-                        polinomioB.remove(i+1);
-                    }
-                }else if(polinomioB.get(i).equals("x") && !isNumber(polinomioB.get(i-1))){
-                    polinomioB.add(i, "1");
-                    i++;
-                }
-            }else{
-                if (polinomioB.getFirst().equals("-")){
-                    if (polinomioB.get(1).equals("x")){
-                        polinomioB.set(0, "-1");
-                    }else{
-                        polinomioB.set(0, "-"+polinomioB.get(1));
-                    }
-                }else if(polinomioB.getFirst().equals("x")){
-                    polinomioB.add(0, "1");
-                    i++;
-                }
-            }
-        }
-
-        LinkedList<Double> coeficientesA = new LinkedList<>();
-        LinkedList<Double> coeficientesB = new LinkedList<>();
-        for (int i = 0; i < polinomioA.size(); i++) {
-            if (isNumber(polinomioA.get(i))){
-                if (i-1 >= 0){
-                    if (!polinomioA.get(i-1).equals("^")){
-                        coeficientesA.add(Double.parseDouble(polinomioA.get(i)));
-                    }
-                }else{
-                    coeficientesA.add(Double.parseDouble(polinomioA.get(i)));
-                }
-            }
-        }
-        for (int i = 0; i < polinomioB.size(); i++) {
-            if (isNumber(polinomioB.get(i))){
-                coeficientesB.add(Double.parseDouble(polinomioB.get(i)));
-            }
-        }
-        double[] results = new double[coeficientesA.size()];
-        for (int i = 0; i < results.length-1; i++) {
-            results[i] = coeficientesA.get(i)/coeficientesB.get(0);
-            for (int j = 0; j < coeficientesB.size(); j++) {
-                coeficientesA.set(i+j, coeficientesA.get(i+j)-results[i]*coeficientesB.get(j));
-            }
-        }
-        String result = "";
-        result = results[0]+"x"+results[1];
-        if (coeficientesA.getLast() != 0.0){
-            result += "+\\frac{"+coeficientesA.getLast()+"}{"+coeficientesB.getFirst()+"x+"+coeficientesB.getLast()+"}";
-        }
-        this.resultado.setText("$$"+result+"$$");
-    }
-
-    public void muestraResultado(){
-        String result = solve_arithmetic(notacion);
-        if (result.equals("")){
-            result = "0.0";
-        }
-        this.resultado.setText("Resultado: " + result);
-    }
-
-    public boolean isHaveX(LinkedList<String> equation){
-        for (String num: equation){
-            for (char c: num.toCharArray()){
-                if (c == 'x'){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public String solve_withX(LinkedList<String> equation){
-        String finalString = "Invalido." +
-                "\nNo se puede calcular con x." +
-                "\n Espere futuras actualizaciones.";
-        return finalString;
-    }
-
-    public String solve_arithmetic(LinkedList<String> equation){
-        /*
-        Use PEMDAS for operations order
-            - P: Parentesis
-            - E: Exponentes
-            - M: Multiplicacion
-            - D: Division
-            - A: Adicion
-            - S: Sustraccion
-         */
-        if (isHaveX(equation)){
-            return solve_withX(equation);
-        }
-        String finalString = "";
-        LinkedList<String> equationAux = equation;
-        LinkedList<String> operaciones = new LinkedList<>();
-        System.out.println("Before start");
-        for (int i = 0; i < equationAux.size(); i++) {
-            System.out.print(equationAux.get(i) + " . ");
-        }
-        System.out.println();
-
-        // Check for parentesis
-        for (int i = 0; i < equationAux.size(); i++) {
-            if (equationAux.get(i).equals("(")){
-                LinkedList<String> aux = new LinkedList<>();
-                i++;
-                int parentesis = 1;
-                while(parentesis > 0){
-                    if (equationAux.get(i).equals("(")) {
-                        aux.add("(");
-                        parentesis++;
-                        i++;
-                    }else if(equationAux.get(i).equals(")")){
-                        if (parentesis != 1){
-                            aux.add(")");
-                        }
-                        parentesis--;
-                        i++;
-                    }else {
-                        aux.add(equationAux.get(i));
-                        i++;
-                    }
-                }
-                operaciones.add(solve_arithmetic(aux));
-                i--;
-            }
-            else{
-                operaciones.add(equationAux.get(i));
-            }
-        }
-        equationAux = operaciones;
-        operaciones = new LinkedList<>();
-
-        System.out.println("After parentesis");
-        for (int i = 0; i < equationAux.size(); i++) {
-            System.out.print(equationAux.get(i) + " . ");
-        }
-        System.out.println();
-
-        // Check for exponents
-
-        // Check for multiplication
-        boolean possible_multiplication = false;
-        double numA = 0;
-        for (int i = 0; i < equationAux.size(); i++) {
-            if (Double.isInfinite(numA)){
-                return "Infinity";
-            }else if(Double.isNaN(numA)){
-                return "Not defined";
-            }
-            if (isNumber(equationAux.get(i)) && possible_multiplication){
-                double numB = Double.parseDouble(equationAux.get(i));
-                numA *= numB;
-            }else if(equationAux.get(i).equals("\\times")){
-                if (equationAux.get(i+1).equals("-")){
-                    numA *= -1;
-                }else{
-                    double numB = Double.parseDouble(equationAux.get(i+1));
-                    numA *= numB;
-                    i++;
-                }
-            }else if(equationAux.get(i).equals("/")){
-                if (equationAux.get(i+1).equals("-")){
-                    numA *= -1;
-                }else{
-                    double numB = Double.parseDouble(equationAux.get(i+1));
-                    numA /= numB;
-                    i++;
-                }
-            }else if(isNumber(equationAux.get(i))) {
-                possible_multiplication = true;
-                numA = Double.parseDouble(equationAux.get(i));
-            }else if(equationAux.get(i) == "-" && isNumber(equationAux.get(i+1))) {
-                equationAux.set(i, "+");
-                double numC = Double.parseDouble(equationAux.get(i + 1));
-                numC *= -1;
-                equationAux.set(i + 1, numC + "");
-                i--;
-            }else if (possible_multiplication){
-                operaciones.add(numA+"");
-                operaciones.add(equationAux.get(i));
-                possible_multiplication = false;
-            }
-        }
-        if(numA != 0){
-            operaciones.add(numA+"");
-        }
-        equationAux = operaciones;
-        operaciones = new LinkedList<>();
-
-        System.out.println("After multiplication");
-        for (int i = 0; i < equationAux.size(); i++) {
-            System.out.print(equationAux.get(i) + " . ");
-        }
-        System.out.println();
-
-        // Check for addition
-        boolean possible_sum = false;
-        numA = 0;
-        for (int i = 0; i < equationAux.size(); i++) {
-            if (isNumber(equationAux.get(i)) && possible_sum){
-                double numB = Double.parseDouble(equationAux.get(i));
-                numA += numB;
-            }else if(equationAux.get(i).equals("+")) {
-                double numB = Double.parseDouble(equationAux.get(i + 1));
-                numA += numB;
-                i++;
-            }else if(equationAux.get(i).equals("-")){
-                double numB = Double.parseDouble(equationAux.get(i+1));
-                numA -= numB;
-                i++;
-            }else if(isNumber(equationAux.get(i))){
-                possible_sum = true;
-                numA = Double.parseDouble(equationAux.get(i));
-            }else if (possible_sum){
-                operaciones.add(numA+"");
-                operaciones.add(equationAux.get(i));
-            }
-        }
-        if(numA != 0){
-            operaciones.add(numA+"");
-        }
-        equationAux = operaciones;
-
-        System.out.println("End");
-        for (int i = 0; i < equationAux.size(); i++) {
-            System.out.print(equationAux.get(i) + " . ");
-        }
-        System.out.println();
-
-        for (int i = 0; i < equationAux.size(); i++) {
-            finalString += equationAux.get(i);
-            System.out.println(equationAux.get(i));
-        }
-        System.out.println("Final string: " + finalString);
-        if (finalString.equals("")){
-            return "0.0";
-        }
-        return finalString;
-    }
-
-    private boolean isNumber(String str){
-        char[] numsArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
-        for (int i = 0; i < numsArray.length; i++) {
-            if (str.charAt(0) == numsArray[i]){
-                return true;
-            }else if(str.length() > 1 && str.charAt(0) == '-'){
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -687,7 +375,13 @@ public class MainActivity extends AppCompatActivity {
         buttonCalcular.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                String s = funcion.solve();
+                String s;
+                try {
+                    s = funcion.solve();
+                }catch (ArithmeticException e){
+                    e.printStackTrace();
+                    s = "division by zero is not allowed to mortals yet";
+                }
                 resultado.setText(s);
                 return false;
             }
@@ -697,43 +391,12 @@ public class MainActivity extends AppCompatActivity {
         buttonAc.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                ecuacion.setText("$$|$$");
-                notacion = new LinkedList<String>();
-                apuntador = 0;
-                num_parentesis = 0;
-                atras = false;
-                posiciones_atras = 0;
-                igual = false;
-                resultado.setText("");
-                haveX = false;
                 funcion = new Ecuacion();
                 resultado.setText(funcion.getEquationToShow());
+                funcion.cambiarPosicion(true);
                 return false;
             }
         });
-    }
-
-    public String getEcuacion(LinkedList<String> notacion){
-        String ecuacion = "";
-        for(int i = 0; i < notacion.size(); i++){
-            ecuacion = ecuacion + notacion.get(i);
-        }
-        return  ecuacion;
-    }
-
-    public String getEcuacion(LinkedList<String> notacion,int apuntador){
-        String ecuacion = "";
-        int i = 0;
-        while(i < apuntador){
-            ecuacion = ecuacion + notacion.get(i);
-            i++;
-        }
-        ecuacion = ecuacion + "|";
-        while(apuntador < notacion.size()){
-            ecuacion = ecuacion + notacion.get(apuntador);
-            apuntador++;
-        }
-        return  ecuacion;
     }
 
 }
