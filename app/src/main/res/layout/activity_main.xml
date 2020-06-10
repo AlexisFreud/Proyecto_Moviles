@@ -407,8 +407,10 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="400dp"
         android:backgroundTint="#2247A3"
+        android:clickable="false"
         android:text="integrar"
         android:textColor="#FFFFFF"
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/bt_polinomios"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -419,8 +421,10 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="396dp"
         android:backgroundTint="#801919"
+        android:clickable="false"
         android:text="Derivar"
         android:textColor="#FFFFFF"
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/bt_integrar"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -431,8 +435,10 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="400dp"
         android:backgroundTint="#8C2D93"
+        android:clickable="false"
         android:text="Divide polinomio"
         android:textColor="#FFFFFF"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         calcular = findViewById(R.id.bt_calcular);
         numeros = "";
         calcular.setOnClickListener(new View.OnClickListener() {
@@ -393,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 funcion = new Ecuacion();
                 resultado.setText(funcion.getEquationToShow());
-                funcion.cambiarPosicion(true);
+                ecuacion.setText("$$|$$");
                 return false;
             }
         });
